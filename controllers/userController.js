@@ -1,6 +1,6 @@
 const { User } = require('../models/userModels');
 const { Role } = require('../models/roleModels');
-const crypto = require('crypto-js')
+const { Token } = require('../models/tokenModels')
 const {generateToken}= require('../middlewares')
 const moment = require('moment')
 
@@ -18,9 +18,12 @@ const createUser =  async (req, res) => {
     const duration = moment.duration(expiration.diff(moment()));
     const remainingTime  = duration.humanize();
 
-    user.token = token;
-    user.tokenExpiration = remainingTime;
-
+    const dataToken = new Token({
+      user: user._id,
+      token : token,
+      tokenExpiration : remainingTime
+    })
+    await dataToken.save()
     await user.save();
     res.status(200).json({
       status: "Success",
@@ -41,14 +44,22 @@ const getAllUser =  async (req, res) => {
         }
       },
       {
+        $lookup: {
+          from:"tokens",
+          localField:"_id",
+          foreignField:"user",
+          as: "tokenDetails"
+        }
+      },
+      {
         $project: {
           name: 1,
           age: 1,
           gmail: 1,
           address: 1,
           password: 1,
-          token:1,
-          tokenExpiration: 1,
+          'tokenDetails.token':1,
+          'tokenDetails.tokenExpiration': 1,
           'roleDetails.nameRole': 1
         },
       }

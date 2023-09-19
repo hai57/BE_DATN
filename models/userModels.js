@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   role: {type: mongoose.Schema.Types.ObjectId,ref:'roles',required:true},
+  token: {type: mongoose.Schema.Types.ObjectId,ref:'token'},
   name: {
     type: String,
     required: true
@@ -22,12 +23,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  },
-  token: {
-    type: String
-  },
-  tokenExpiration: {
-    type: String
   },
 })
 
