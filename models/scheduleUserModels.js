@@ -33,4 +33,4 @@ const scheduleUserSchema = new mongoose.Schema({
 
 const ScheduleUser = mongoose.model('scheduleUsers', scheduleUserSchema);
 
-module.exports = ScheduleUser;
+module.exports = {ScheduleUser}

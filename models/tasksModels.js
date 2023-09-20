@@ -5,7 +5,7 @@ const tasksSchema = new mongoose.Schema({
     required: true
   },
   taskContent: {
-    type: String,
+    type: mongoose.Schema.Types.Mixed,
     required: true
   },
   typeTask: {type: mongoose.Schema.Types.ObjectId, ref: 'types', required: true}

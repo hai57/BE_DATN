@@ -5,10 +5,6 @@ const typeTask = new mongoose.Schema({
     type: String,
     required: true
   },
-  typeTasks: {
-    type: mongoose.Schema.Types.Mixed.apply,
-    required: true
-  }
 })
 
 const TypeTask = mongoose.model('types', typeTask)

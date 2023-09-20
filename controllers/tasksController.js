@@ -1,35 +1,39 @@
-const mongoose = require('mongoose');
 const {Tasks} = require('../models/tasksModels')
+const {TypeTask} = require('../models/typeTaskModels')
 
+const createTypeTask = async(req,res) => {
+  try{
+    const typeTask = new TypeTask(req.body)
+    await typeTask.save()
+    return res.status(200).json({message: ' Success'})
+  } catch(err){
+    return res.status(500).json({message: 'Error creating type task'})
+  }
+};
+const getTypeTask = async(req,res) => {
+  try{
+    const typeTask = await TypeTask.find()
+    return res.status(200).json(typeTask)
+  } catch(err){
+    return res.status(500).json({message: 'Error creating type task'})
+  }
+};
 const getAllTasks = async (req, res)=> {
   try {
     const tasks = await Tasks.aggregate([
       {
-        $match: { user: new mongoose.Types.ObjectId(req.userId) },
-        $match: { schedule: new mongoose.Types.ObjectId(req.schedule._id) }
-      },
-      {
         $lookup: {
-          from: 'users',
-          localField: 'user',
+          from: 'types',
+          localField: 'typeTask',
           foreignField: '_id',
-          as: 'userDetails'
-        }
-      },
-      {
-        $lookup: {
-          from: 'schedules',
-          localField: 'schedule',
-          foreignField: '_id',
-          as: 'scheduleDetails'
+          as: 'typeTaskDetails'
         }
       },
       {
         $project: {
           nameTask: 1,
-          time: 1,
-          'userDetails.gmail': 1, // bao gom gmail trong userDetails
-          'scheduleDetails.content': 1
+          taskContent: 1,
+          'typeTaskDetails.nameType': 1,
         },
       },
 
@@ -41,53 +45,9 @@ const getAllTasks = async (req, res)=> {
     return res.status(500).json({ msg: err.message });
   }
 }
-const getTask = async(req,res) => {
-  try{
-    const task = await Tasks.aggregate([
-      {
-        $match: { task: new mongoose.Types.ObjectId(req.body.taskId) },
-        $match: { user: new mongoose.Types.ObjectId(req.userId) },
-        $match: { schedule: new mongoose.Types.ObjectId(req.schedule._id) }
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'user',
-          foreignField: '_id',
-          as: 'userDetails'
-        }
-      },
-      {
-        $lookup: {
-          from: 'schedules',
-          localField: 'schedule',
-          foreignField: '_id',
-          as: 'scheduleDetails'
-        }
-      },
-      {
-        $project: {
-          nameTask: 1,
-          time: 1,
-          'userDetails.gmail': 1, // bao gom gmail trong userDetails
-          'scheduleDetails.content': 1
-        },
-      },
-    ])
-    res.status(200).json(task);
-  } catch(err) {
-      console.error(err)
-      return res.status(500).json({ msg: err.message });
-  }
-}
 const createTasks = async(req,res) => {
   try {
-    const newTask = new Tasks({
-      user: req.userId,
-      schedule: req.schedule._id,
-      nameTask: req.body.nameTask,
-      time: req.body.time,
-    });
+    const newTask = new Tasks(req.body);
 
     await newTask.save();
     console.log("created")
@@ -97,4 +57,4 @@ const createTasks = async(req,res) => {
   }
 }
 
-module.exports = {getAllTasks, createTasks,getTask}
+module.exports = {getAllTasks, createTasks,createTypeTask, getTypeTask}

@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const {getAllTasks, createTasks, getTask} = require('../controllers/tasksController')
-const {authenticateToken,getScheduleId} = require('../middlewares')
+const {getAllTasks, createTasks, createTypeTask, getTypeTask} = require('../controllers/tasksController')
+const {taskContentMiddleware} = require('../middlewares')
 
-router.get('/getAllTasks/:scheduleId',getScheduleId,authenticateToken.verifyToken, getAllTasks)
-router.get('/getTask/:scheduleId',getScheduleId,authenticateToken.verifyToken, getTask)
-router.post('/createTask/:scheduleId',getScheduleId,authenticateToken.verifyToken, createTasks)
+router.get('/getAllTasks', getAllTasks)
+router.post('/createTask/',taskContentMiddleware, createTasks)
+router.post('/createTypeTask', createTypeTask)
+router.get('/getTypeTask', getTypeTask)
 
 module.exports = router;

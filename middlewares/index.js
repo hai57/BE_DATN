@@ -1,8 +1,8 @@
 const {authenticateToken, generateToken}  = require("./authenticateToken")
-const {getScheduleId} = require("./getSchedule")
+const {taskContentMiddleware} = require("./taskContentMiddleware")
 
 module.exports = {
   generateToken,
   authenticateToken,
-  getScheduleId,
+  taskContentMiddleware,
 }

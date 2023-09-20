@@ -1,5 +1,6 @@
 
 const {Schedule} = require('../models/scheduleModels')
+const {ScheduleUser} = require('../models/scheduleUserModels')
 const mongoose = require('mongoose')
 
 const createSchedule = async (req, res) => {
@@ -13,8 +14,8 @@ const createSchedule = async (req, res) => {
     });
     await newschedule.save();
     res.status(200).json(newschedule);
-  } catch (error) {
-    return res.status(500).json({ msg: error.message });
+  } catch (err) {
+    return res.status(500).json({message: 'Error create schedule'})
   }
 }
 const getAllSchedule = async (req,res) => {
@@ -48,8 +49,8 @@ const getAllSchedule = async (req,res) => {
       }
     ])
     res.status(200).json(schedule);
-  } catch (error) {
-    return res.status(500).json({ msg: error.message });
+  } catch (err) {
+    return res.status(500).json({message: 'Error get all schedule'})
   }
 }
 const getSchedule = async (req,res) => {
@@ -87,8 +88,25 @@ const getSchedule = async (req,res) => {
       }
     ])
     res.status(200).json(schedule);
-  } catch (error) {
-    return res.status(500).json({ msg: error.message });
+  } catch (err) {
+    return res.status(500).json({message: 'Error get Schedule'})
   }
 }
-module.exports = {createSchedule, getSchedule,getAllSchedule}
+//ScheduleUser
+
+const createScheduleUser = async(req,res)=> {
+  try{
+    const scheduleUser = new ScheduleUser({
+      user: req.userId,
+      schedule: req.body.scheduleId,
+      time: req.body.time
+    })
+    await scheduleUser.save()
+    res.status(200).json(scheduleUser)
+  } catch(err) {
+    return res.status(500).json({message: 'Error create schedule user'})
+  }
+}
+
+
+module.exports = {createSchedule, getSchedule,getAllSchedule,createScheduleUser}
