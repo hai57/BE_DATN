@@ -1,23 +1,11 @@
 const mongoose = require('mongoose')
 
 const scheduleSchema = new mongoose.Schema({
-  user: {type:mongoose.Schema.Types.ObjectId,ref:'users',required: true},
-  tasks: {type:mongoose.Schema.Types.ObjectId,ref:'tasks'},
-  day: {
+  scheduleUser : {type : mongoose.Schema.Types.ObjectId, ref:"scheduleUsers", required: true},
+  tasks: {type:mongoose.Schema.Types.ObjectId,ref:'tasks', required: true},
+  nameSchedule: {
     type: String,
-    required: true
-  },
-  content: {
-    type: String,
-    required: true
-  },
-  meal: {
-    type: String,
-    required: true,
-  },
-  exercises: {
-    type: String,
-    required: true
+    required : true
   }
 })
 

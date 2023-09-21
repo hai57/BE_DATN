@@ -163,17 +163,19 @@ const login = async(req,res) => {
     }
     if(user.password === password ){
       const token = generateToken(user);
-      user.token = token;
       const newExpiration = moment().add(4, 'months').format('YYYY-MM-DD HH:mm:ss');
-      user.tokenExpiration = newExpiration;
-
-      await user.save();
-      res.status(200).json({ token });
+      const dataToken = new Token({
+        user: user._id,
+        token : token,
+        tokenExpiration : newExpiration
+      })
+      res.status(200).json({ dataToken });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
     }
   }
-  catch (error) {
+  catch (err) {
+    console.error(err)
     res.status(500).json({ message: 'Server error at login' });
   }
 };

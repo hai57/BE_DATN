@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 const scheduleUserSchema = new mongoose.Schema({
   user: {type: mongoose.Schema.Types.ObjectId, ref: 'users',required: true},
   schedule: {type: mongoose.Schema.Types.ObjectId, ref: 'schedules',required: true},
-  Date: {
+  date: {
     type: Date,
     required: true
   },
   times: [
     {
-      id: {
+      customId: {
         type: Number,
         min: 1,
         max: 24,

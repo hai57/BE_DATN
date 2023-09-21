@@ -96,17 +96,58 @@ const getSchedule = async (req,res) => {
 
 const createScheduleUser = async(req,res)=> {
   try{
+    const currentDate = new Date();
     const scheduleUser = new ScheduleUser({
-      user: req.userId,
-      schedule: req.body.scheduleId,
-      time: req.body.time
+      user : req.userId,
+      schedule: req.body.schedule,
+      date : currentDate,
+      times : req.body.times,
     })
     await scheduleUser.save()
     res.status(200).json(scheduleUser)
   } catch(err) {
+    console.error(err)
     return res.status(500).json({message: 'Error create schedule user'})
+  }
+}
+const getscheduleUser = async(req,res) => {
+  try{
+    const scheduleUser = await ScheduleUser.aggregate([
+      {
+          $match: { user: new mongoose.Types.ObjectId(req.userId) },
+          $match: { schedule: new mongoose.Types.ObjectId(req.body.schedule)}
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'userDetails'
+        }
+      },
+      {
+        $lookup: {
+          from: 'schedules',
+          localField: 'schedule',
+          foreignField: '_id',
+          as: 'scheduleDetails'
+        }
+      },
+      {
+        $project: {
+          date: 1,
+          times: 1,
+          'userDetails.gmail': 1,
+          'scheduleDetails._id': 1,
+        },
+      },
+    ])
+    res.status(200).json(scheduleUser)
+  } catch(err) {
+    console.error(err)
+    return res.status(500).json({message: 'Error get schedule user'})
   }
 }
 
 
-module.exports = {createSchedule, getSchedule,getAllSchedule,createScheduleUser}
+module.exports = {createSchedule, getSchedule,getAllSchedule,createScheduleUser, getscheduleUser}
