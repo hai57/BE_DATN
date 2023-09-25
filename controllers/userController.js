@@ -25,10 +25,13 @@ const createUser =  async (req, res) => {
     })
     await dataToken.save()
     await user.save();
-    res.status(200).json({
+    res.status(201).json({
       status: "Success",
     });
-  } catch (error) {
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ message: 'Validation error' });
+    }
     return res.status(500).json({ msg: error.message });
   }
 };
@@ -75,7 +78,7 @@ const getUser = async(req,res) => {
   try{
     const user = await User.findOne({gmail});
     if(!user) {
-      return res.status(401).json({message: 'invalid gmail'})
+      return res.status(404).json({message: 'invalid gmail'})
     } else {
       const usersWithRoles = await User.aggregate([
         {
@@ -113,7 +116,7 @@ const deleteUser = async(req,res) => {
   try {
     const user = await User.findOne({gmail});
     if(!user){
-      return res.status(401).json({message: 'invalid email'})
+      return res.status(404).json({message: 'invalid email'})
     }
     await User.findByIdAndRemove(user._id);
     res.status(200).json({ message: 'User deleted successfully' });
@@ -127,7 +130,7 @@ const updateUser = async(req,res) => {
     const userId = req.userId;
     const user = await User.findById(userId).exec();
     if(!user) {
-      return res.status(401).json({message:'User not found'})
+      return res.status(404).json({message:'User not found'})
     }
     user.name = req.body.name;
     user.age = req.body.age;
@@ -136,6 +139,7 @@ const updateUser = async(req,res) => {
     await user.save();
     res.status(200).json({message: 'Update success'})
   } catch(err){
+    console.error(err)
     return res.status(500).json({message: 'Server error at update user'})
   }
 };
@@ -144,13 +148,15 @@ const changePassword = async(req,res) => {
     const userId = req.userId;
     const user = await User.findById(userId).exec();
     if(!user) {
-      return res.status(401).json({message:'User not found'})
-    } if(user.password === req.body.oldPassword) {
-      user.password == req.body.newPassword
+      return res.status(404).json({message:'User not found'})
+    } if (user.password !== req.body.oldPassword) {
+      return res.status(401).json({ message: 'Incorrect old password' });
     }
+    user.password = req.body.newPassword;
     await user.save()
     res.status(200).json({message: 'Change password success'})
   } catch(err) {
+    console.error(err);
     return res.status(500).json({message: 'Server error at change password'})
   }
 };
@@ -169,7 +175,7 @@ const login = async(req,res) => {
         token : token,
         tokenExpiration : newExpiration
       })
-      res.status(200).json({ dataToken });
+      res.status(200).json({ token : dataToken });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
     }

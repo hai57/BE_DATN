@@ -96,15 +96,19 @@ const getSchedule = async (req,res) => {
 
 const createScheduleUser = async(req,res)=> {
   try{
+    const schedule = await Schedule.findById(req.body.schedule)
+    if(!schedule) {
+      return res.status(404).json({message : 'Schedule not found'})
+    }
     const currentDate = new Date();
     const scheduleUser = new ScheduleUser({
       user : req.userId,
-      schedule: req.body.schedule,
+      schedule: schedule,
       date : currentDate,
       times : req.body.times,
     })
     await scheduleUser.save()
-    res.status(200).json(scheduleUser)
+    res.status(201).json(scheduleUser)
   } catch(err) {
     console.error(err)
     return res.status(500).json({message: 'Error create schedule user'})
@@ -142,6 +146,9 @@ const getscheduleUser = async(req,res) => {
         },
       },
     ])
+    if (!scheduleUser || scheduleUser.length === 0) {
+      return res.status(404).json({ message: 'Schedule user not found' });
+    }
     res.status(200).json(scheduleUser)
   } catch(err) {
     console.error(err)
