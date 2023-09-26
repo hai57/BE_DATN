@@ -96,17 +96,26 @@ const getSchedule = async (req,res) => {
 
 const createScheduleUser = async(req,res)=> {
   try{
-    const schedule = await Schedule.findById(req.body.schedule)
-    if(!schedule) {
-      return res.status(404).json({message : 'Schedule not found'})
-    }
     const currentDate = new Date();
     const scheduleUser = new ScheduleUser({
       user : req.userId,
-      schedule: schedule,
+      schedule: req.body.schedule,
       date : currentDate,
-      times : req.body.times,
     })
+    let maxCustomId = 0;
+    scheduleUser.times.forEach((time) => {
+      if (time.customId > maxCustomId) {
+        maxCustomId = time.customId;
+      }
+    });
+
+    const newTime = {
+      customId: maxCustomId + 1,
+      hour: req.body.times[0].hour,
+      minutes: req.body.times[0].minutes,
+    };
+
+    scheduleUser.times.push(newTime)
     await scheduleUser.save()
     res.status(201).json(scheduleUser)
   } catch(err) {
@@ -155,6 +164,5 @@ const getscheduleUser = async(req,res) => {
     return res.status(500).json({message: 'Error get schedule user'})
   }
 }
-
 
 module.exports = {createSchedule, getSchedule,getAllSchedule,createScheduleUser, getscheduleUser}

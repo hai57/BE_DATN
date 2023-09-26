@@ -12,7 +12,7 @@ const createRole = async(req,res) => {
   try {
     const newRole = new Role(req.body)
     await newRole.save()
-    res.status(200).json({status: 'created'})
+    res.status(201).json({status: 'created'})
   } catch (error) {
     return res.status(500).json({ msg: error.message });
   }

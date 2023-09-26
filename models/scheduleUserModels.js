@@ -9,12 +9,6 @@ const scheduleUserSchema = new mongoose.Schema({
   },
   times: [
     {
-      customId: {
-        type: Number,
-        min: 1,
-        max: 24,
-        required: true,
-      },
       hour: {
         type: Number,
         min: 0,
