@@ -175,7 +175,7 @@ const login = async(req,res) => {
         token : token,
         tokenExpiration : newExpiration
       })
-      res.status(200).json({ token : dataToken });
+      res.status(200).json({ token : dataToken.token });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
     }

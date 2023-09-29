@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const scheduleSchema = new mongoose.Schema({
-  scheduleUser : {type : mongoose.Schema.Types.ObjectId, ref:"scheduleUsers", required: true},
+  times : {type : mongoose.Schema.Types.ObjectId, ref:"times", required: true},
   tasks: {type:mongoose.Schema.Types.ObjectId,ref:'tasks', required: true},
   nameSchedule: {
     type: String,

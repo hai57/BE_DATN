@@ -97,27 +97,17 @@ const getSchedule = async (req,res) => {
 const createScheduleUser = async(req,res)=> {
   try{
     const currentDate = new Date();
-    const scheduleUser = new ScheduleUser({
-      user : req.userId,
-      schedule: req.body.schedule,
-      date : currentDate,
+    const userId = req.userId;
+    const scheduleId = req.body.schedule;
+    const newScheduleUser = new ScheduleUser({
+      user : userId,
+      schedule: scheduleId,
+      time: req.body.timeId,
+      date: currentDate
     })
-    let maxCustomId = 0;
-    scheduleUser.times.forEach((time) => {
-      if (time.customId > maxCustomId) {
-        maxCustomId = time.customId;
-      }
-    });
 
-    const newTime = {
-      customId: maxCustomId + 1,
-      hour: req.body.times[0].hour,
-      minutes: req.body.times[0].minutes,
-    };
-
-    scheduleUser.times.push(newTime)
-    await scheduleUser.save()
-    res.status(201).json(scheduleUser)
+    await newScheduleUser.save();
+    res.status(201).json(newScheduleUser);
   } catch(err) {
     console.error(err)
     return res.status(500).json({message: 'Error create schedule user'})
@@ -147,11 +137,22 @@ const getscheduleUser = async(req,res) => {
         }
       },
       {
+        $lookup: {
+          from: 'times',
+          localField: 'time',
+          foreignField: '_id',
+          as: 'timeDetails'
+        }
+      },
+      {
         $project: {
           date: 1,
           times: 1,
           'userDetails.gmail': 1,
           'scheduleDetails._id': 1,
+          'timeDetails._id': 1,
+          'timeDetails.hour': 1,
+          'timeDetails.minutes': 1,
         },
       },
     ])
