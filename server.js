@@ -7,6 +7,8 @@ const userRoute = require("./routes/userRoute")
 const scheduleRoute = require("./routes/scheduleRoute")
 const taskRoute = require("./routes/taskRoute")
 const notiRoute = require("./routes/notificationRoute")
+const timeRoute = require("./routes/timeRoute")
+
 var bodyParser = require("body-parser")
 
 dotenv.config();
@@ -26,19 +28,4 @@ app.use("/api/user", userRoute);
 app.use('/api/schedule', scheduleRoute);
 app.use('/api/task', taskRoute);
 app.use('/api/noti', notiRoute);
-
-app.get('/test',(req, res) => {
-  console.log("Nhận duoc test ")
-  res.status(200).json({"message": "Success"});
-})
-app.post('/', (req,res) => {
-  try {
-    res.status(200).json({ msg:"created" });
-  } catch (error) {
-    return res.status(500).json({ msg: error.message });
-  }
-})
-app.get('/check',(req, res) => {
-  console.log("Nhận duoc test ")
-  user.find
-})
+app.use('/api/time', timeRoute);

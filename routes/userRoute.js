@@ -8,7 +8,7 @@ const {authenticateToken } = require("../middlewares")
 router.get('/getAllUser', getAllUser)
 router.get('/getUser',getUser)
 router.post('/createUser', createUser)
-router.delete('/deleteUser', deleteUser)
+router.delete('/deleteUser',authenticateToken.verifyToken, deleteUser)
 router.put('/updateUser',authenticateToken.verifyToken,updateUser)
 
 //Role route
