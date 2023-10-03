@@ -1,6 +1,7 @@
 
 const {Schedule} = require('../models/scheduleModels')
 const {ScheduleUser} = require('../models/scheduleUserModels')
+const {Time} = require('../models/timeModels')
 const mongoose = require('mongoose')
 
 const createSchedule = async (req, res) => {
@@ -34,10 +35,7 @@ const getSchedule = async (req,res) => {
       },
       {
         $project: {
-         day : 1,
-         content: 1,
-         meal: 1,
-         exercise: 1,
+          nameSchedule: 1,
          'tasks.nameTask':1,
          'times.hour':1,
          'times.minutes':1,
@@ -52,16 +50,21 @@ const getSchedule = async (req,res) => {
 const updateSchedule = async(req,res) => {
   try {
     const scheduleId = req.body.scheduleId;
-    console.log(scheduleId)
     const schedule = await Schedule.findById(scheduleId).exec();
+    const timeId = req.body.time;
+    const existingTime = await Time.findById(timeId).exec();
     if(!schedule) {
       return res.status(404).json({message:'Schedule not found'})
+    }  if (!req.body.time || !req.body.task || !req.body.nameSchedule) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }  if (!existingTime) {
+      return res.status(400).json({ message: 'Time does not exist' });
     }
-    schedule.time = req.body.time;
+    schedule.time = timeId;
     schedule.task = req.body.task;
     schedule.nameSchedule = req.body.nameSchedule;
     await schedule.save();
-    res.status(200).json({message: 'Update success'})
+    res.status(200).json({message: 'Update success', schedule})
   } catch(err){
     console.error(err)
     return res.status(500).json({message: 'Server error at update user'})
