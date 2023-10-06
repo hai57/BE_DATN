@@ -5,6 +5,10 @@ const {TypeTask} = require('../models/typeTaskModels')
 const createTypeTask = async(req,res) => {
   try{
     const typeTask = new TypeTask(req.body)
+    if (!req.body.nameType) {
+      return res.status(400).json({ message: 'Thiếu trường nameType.' });
+    }
+
     await typeTask.save()
     return res.status(201).json({message: ' Success'})
   } catch(err){
@@ -14,6 +18,9 @@ const createTypeTask = async(req,res) => {
 const getTypeTask = async(req,res) => {
   try{
     const typeTask = await TypeTask.find()
+    if(typeTask.length === 0) {
+      return res.status(404).json({message: 'Không tìm thấy dữ liệu '})
+    }
     return res.status(200).json(typeTask)
   } catch(err){
     console.error(err);
@@ -31,18 +38,21 @@ const getAllTasks = async (req, res)=> {
           from: 'types',
           localField: 'typeTask',
           foreignField: '_id',
-          as: 'typeTaskDetails'
+          as: 'typeTask'
         }
       },
       {
         $project: {
           nameTask: 1,
           taskContent: 1,
-          'typeTaskDetails.nameType': 1,
+          'typeTask.nameType': 1,
         },
       },
 
     ]);
+    if(tasks.length === 0 || !tasks[0].typeTask.length) {
+      return res.status(404).json({message: 'Không tìm thấy dữ liệu '})
+    }
 
     res.status(200).json(tasks);
   } catch(err) {
@@ -56,8 +66,11 @@ const createTasks = async(req,res) => {
     const typeTask = await TypeTask.findById(req.body.typeTask);
     if (!typeTask) {
       return res.status(404).json({ message: "Type task not found" });
+    } else if (!req.body.nameTask) {
+      return res.status(400).json({ message: 'Missing nameTask field.' });
+    } else if(!req.body.taskContent ) {
+      return res.status(400).json({ message: 'Missing taskContent field.' });
     }
-    newTask.typeTask = typeTask
     await newTask.save();
     console.log("created")
     res.status(201).json(newTask);
