@@ -7,6 +7,14 @@ const mongoose = require('mongoose')
 const createSchedule = async (req, res) => {
   try {
     const newschedule = new Schedule(req.body);
+    if (!req.body.time) {
+      return res.status(400).json({ message: 'Missing time field.' });
+    } else if(!req.body.task ) {
+      return res.status(400).json({ message: 'Missing task field.' });
+    } else if(!req.body.nameSchedule ) {
+      return res.status(400).json({ message: 'Missing nameSchedule field.' });
+    }
+
     await newschedule.save();
     res.status(200).json(newschedule);
   } catch (err) {
@@ -37,13 +45,19 @@ const getSchedule = async (req,res) => {
         $project: {
           nameSchedule: 1,
          'tasks.nameTask':1,
-         'times.hour':1,
-         'times.minutes':1,
+          times: {
+            hour: '$times.hour',
+            minutes: '$times.minutes'
+          }
         }
       }
     ])
+    if(schedule.length === 0 || !schedule[0].times.length ||!schedule[0].tasks.length) {
+      return res.status(404).json({message: 'Không tìm thấy dữ liệu lịch trình.'})
+    }
     res.status(200).json(schedule);
   } catch (err) {
+    console.error(err)
     return res.status(500).json({message: 'Error get Schedule'})
   }
 }
@@ -55,9 +69,9 @@ const updateSchedule = async(req,res) => {
     const existingTime = await Time.findById(timeId).exec();
     if(!schedule) {
       return res.status(404).json({message:'Schedule not found'})
-    }  if (!req.body.time || !req.body.task || !req.body.nameSchedule) {
+    } else if (!req.body.time || !req.body.task || !req.body.nameSchedule) {
       return res.status(400).json({ message: 'Missing required fields' });
-    }  if (!existingTime) {
+    } else if (!existingTime) {
       return res.status(400).json({ message: 'Time does not exist' });
     }
     schedule.time = timeId;
@@ -77,15 +91,19 @@ const updateSchedule = async(req,res) => {
 const createScheduleUser = async(req,res)=> {
   try{
     const currentDate = new Date();
-    const userId = req.userId;
-    const scheduleId = req.body.schedule;
     const newScheduleUser = new ScheduleUser({
-      user : userId,
-      schedule: scheduleId,
+      user : req.userId,
+      schedule: req.body.scheduleId,
       time: req.body.timeId,
       date: currentDate
     })
-
+    if (!req.userId) {
+      return res.status(400).json({ message: 'Missing user field.' });
+    } else if(!req.body.scheduleId ) {
+      return res.status(400).json({ message: 'Missing schedule field.' });
+    } else if(!req.body.time ) {
+      return res.status(400).json({ message: 'Missing time field.' });
+    }
     await newScheduleUser.save();
     res.status(201).json(newScheduleUser);
   } catch(err) {
