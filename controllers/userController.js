@@ -10,6 +10,16 @@ const createUser =  async (req, res) => {
     const role = await Role.findById(req.body.role);
     if (!role) {
       return res.status(404).json({ message: "Role not found" });
+    } else if (!req.body.name) {
+      return res.status(400).json({ message: 'Missing name field.' });
+    } else if(!req.body.age ) {
+      return res.status(400).json({ message: 'Missing age field.' });
+    } else if(!req.body.gmail ) {
+      return res.status(400).json({ message: 'Missing gmail field.' });
+    } else if(!req.body.address ) {
+      return res.status(400).json({ message: 'Missing address field.' });
+    } else if(!req.body.password ) {
+      return res.status(400).json({ message: 'Missing password field.' });
     }
     user.role = role._id;
     //token
@@ -23,6 +33,7 @@ const createUser =  async (req, res) => {
       token : token,
       tokenExpiration : remainingTime
     })
+
     await dataToken.save()
     await user.save();
     res.status(201).json({
@@ -67,7 +78,9 @@ const getAllUser =  async (req, res) => {
         },
       }
     ])
-
+    if(user.length === 0 || !user[0].roles.length) {
+      return res.status(404).json({message: 'Không tìm thấy dữ liệu '})
+    }
     res.status(200).json(usersWithRoles);
   } catch (error) {
     return res.status(500).json({ msg: error.message });
@@ -89,7 +102,7 @@ const getUser = async(req,res) => {
             from: 'roles',
             localField: 'role',
             foreignField: '_id',
-            as: 'roleDetails'
+            as: 'roles'
           }
         },
         {
@@ -101,12 +114,16 @@ const getUser = async(req,res) => {
             password: 1,
             token:1,
             tokenExpiration: 1,
-            'roleDetails.nameRole': 1
+            'roles.nameRole': 1
           }
         }
       ])
+      if(user.length === 0 || !user[0].roles.length) {
+        return res.status(404).json({message: 'Không tìm thấy dữ liệu '})
+      }
+
       res.status(200).json(usersWithRoles)
-    }
+  }
   } catch(err) {
     return res.status(500).json({message: 'Server error at get user'})
   }
@@ -131,11 +148,15 @@ const updateUser = async(req,res) => {
     const user = await User.findById(userId).exec();
     if(!user) {
       return res.status(404).json({message:'User not found'})
+    } else if ( !req.body.name || !req.body.age || !req.body.gmail || !req.body.address || !req.body.password) {
+      return res.status(400).json({ message: 'Missing required fields' });
     }
     user.name = req.body.name;
     user.age = req.body.age;
     user.gmail = req.body.gmail;
     user.address = req.body.address
+    user.password = req.body.password
+
     await user.save();
     res.status(200).json({message: 'Update success'})
   } catch(err){
