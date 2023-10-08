@@ -17,4 +17,33 @@ const createRole = async(req,res) => {
     return res.status(500).json({ msg: error.message });
   }
 }
-module.exports = {getRole,createRole}
+const updateRole = async(req,res) => {
+  try {
+    const checkRoleID = await Role.findById(req.body.roleId).exec()
+    if(!checkRoleID) {
+      return res.status(404).json({message:'Role not found'})
+    } else if (!req.body.nameRole) {
+      return res.status(400).json({ message: 'Missing nameRole fields' });
+    }
+    checkRoleID.nameRole = req.body.nameRole
+    await checkRoleID.save()
+    res.status(200).json({message: 'Update success', checkRoleID})
+  } catch(err) {
+    console.error(err);
+    return res.status(500).json({message: 'Error at update role'})
+  }
+}
+const deleteRole = async(req,res) => {
+  try{
+    const checkRoleID = await Role.findById(req.body.idRole).exec()
+    if(!checkRoleID) {
+      return res.status(404).json({message:'Role not found'})
+    }
+    await checkRoleID.deleteOne()
+    return res.status(204).send()
+  } catch(err) {
+    console.error(err);
+    return res.status(500).json({message: 'Error at delete role'})
+  }
+}
+module.exports = {getRole,createRole,updateRole,deleteRole}

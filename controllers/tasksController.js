@@ -27,6 +27,33 @@ const getTypeTask = async(req,res) => {
     return res.status(500).json({message: 'Error creating type task'})
   }
 };
+const updateTypeTask = async(req,res) => {
+  try{
+    const idType = await TypeTask.findById(req.body.idType).exec()
+    if(!idType) {
+      return res.status(404).json({message: 'Type task not found'})
+    }
+    idType.nameType = req.body.nameType;
+    await idType.save()
+    return res.status(200).json({message: 'update success', idType})
+  } catch(err) {
+    console.error(err);
+    return res.status(500).json({message: 'Error at update type task'})
+  }
+};
+const deleteTypeTask = async(req,res) => {
+  try {
+    const idType = await TypeTask.findById(req.body.idType).exec()
+    if(!idType) {
+      return res.status(404).json({message:'Type task not found'})
+    }
+    await idType.deleteOne()
+    return res.status(204).send()
+  } catch(err){
+    console.error(err);
+    return res.status(500).json({message: 'Error at delete Type task'})
+  }
+}
 
 //Task
 
@@ -78,5 +105,35 @@ const createTasks = async(req,res) => {
     res.status(500).json({ message: 'Error creating task' });
   }
 }
+const updateTask = async(req,res) => {
+  try{
+    const idTask = await Tasks.findById(req.body.idTask).exec()
+    if(!idTask) {
+      return res.status(404).json({message: 'Task not found'})
+    }
+    idTask.typeTask = req.body.typeTask;
+    idTask.nameTask = req.body.nameTask;
+    idTask.taskContent = req.body.taskContent;
+    await idTask.save()
+    return res.status(200).json({message: 'update success', idTask})
+  } catch(err) {
+    console.error(err);
+    return res.status(500).json({message: 'Error at update task'})
+  }
+};
+const deleteTask = async(req,res) => {
+  try {
+    const idTask = await TypeTask.findById(req.body.idTask).exec()
+    if(!idTask) {
+      return res.status(404).json({message:'Task not found'})
+    }
+    await idTask.deleteOne()
+    return res.status(204).send()
+  } catch(err){
+    console.error(err);
+    return res.status(500).json({message: 'Error at delete task'})
+  }
+}
 
-module.exports = {getAllTasks, createTasks,createTypeTask, getTypeTask}
+
+module.exports = {createTasks,getAllTasks,updateTask,deleteTask, createTypeTask, getTypeTask,updateTypeTask,deleteTypeTask}

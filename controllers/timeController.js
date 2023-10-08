@@ -18,7 +18,7 @@ const createTime = async (req, res) => {
     return res.status(201).json(createdTimes);
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: 'Lỗi khi tạo thời gian.' });
+    return res.status(500).json({ message: 'Error at create time' });
   }
 };
 const getTime = async(req,res) => {
@@ -30,4 +30,32 @@ const getTime = async(req,res) => {
     return res.status(500).json({message: 'Error at get time'})
   }
 }
-module.exports = {createTime, getTime}
+const updateTime = async(req,res) => {
+  try{
+    const idTimes = await Time.findById(req.body.idTimes).exec()
+    if(!idTimes) {
+      return res.status(404).json({message: 'Time not found'})
+    }
+    idTimes.hour = req.body.hour;
+    idTimes.minutes = req.body.minutes
+    await idTimes.save()
+    return res.status(200).json({message: 'update success', idTimes})
+  } catch(err) {
+    console.error(err);
+    return res.status(500).json({message: 'Error at update time'})
+  }
+};
+const deleteTime = async(req,res) => {
+  try {
+    const idTimes = await Time.findById(req.body.idTimes).exec()
+    if(!idTimes) {
+      return res.status(404).json({message:'Time not found'})
+    }
+    await idTimes.deleteOne()
+    return res.status(204).send()
+  } catch(err){
+    console.error(err);
+    return res.status(500).json({message: 'Error at delete time'})
+  }
+}
+module.exports = {createTime, getTime, updateTime, deleteTime}

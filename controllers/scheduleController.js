@@ -2,6 +2,8 @@
 const {Schedule} = require('../models/scheduleModels')
 const {ScheduleUser} = require('../models/scheduleUserModels')
 const {Time} = require('../models/timeModels')
+const {User} = require('../models/userModels')
+
 const mongoose = require('mongoose')
 
 const createSchedule = async (req, res) => {
@@ -81,11 +83,23 @@ const updateSchedule = async(req,res) => {
     res.status(200).json({message: 'Update success', schedule})
   } catch(err){
     console.error(err)
-    return res.status(500).json({message: 'Server error at update user'})
+    return res.status(500).json({message: 'Server error at update schedule'})
   }
 };
 
-
+const deleteSchedule = async(req,res) => {
+  try {
+    const scheduleId = await Schedule.findById(req.body.scheduleId).exec()
+    if(!scheduleId) {
+      return res.status(404).json({message:'Schedule not found'})
+    }
+    await scheduleId.deleteOne()
+    return res.status(204).send()
+  } catch(err){
+    console.error(err);
+    return res.status(500).json({message: 'Error at delete schedule'})
+  }
+}
 //ScheduleUser
 
 const createScheduleUser = async(req,res)=> {
@@ -163,5 +177,41 @@ const getscheduleUser = async(req,res) => {
     return res.status(500).json({message: 'Error get schedule user'})
   }
 }
+const updateScheduleUser = async(req,res) => {
+  try {
+    const scheduleUserId = await ScheduleUser.findById(req.body.scheduleUserId).exec();
+    const existingUser = await User.findById(req.userId).exec();
+    const existingTime = await Time.findById(req.body.timeId).exec();
+    if(!existingUser) {
+      return res.status(404).json({message:'User not found'})
+    } else if (!scheduleUserId) {
+      return res.status(400).json({ message: 'Schedule user does not exist' });
+    } else if (!existingTime) {
+      return res.status(400).json({ message: 'Time does not exist' });
+    }
 
-module.exports = {createSchedule, getSchedule,updateSchedule ,createScheduleUser, getscheduleUser}
+    scheduleUserId.timeId = req.body.timeId;
+    scheduleUserId.date = req.body.date;
+    await scheduleUserId.save();
+    res.status(200).json({message: 'Update success', scheduleUserId})
+  } catch(err){
+    console.error(err)
+    return res.status(500).json({message: 'Server error at update schedule user'})
+  }
+};
+
+const deleteScheduleUser = async(req,res) => {
+  try {
+    const scheduleUserId = await Schedule.findById(req.body.scheduleUserId).exec()
+    if(!scheduleUserId) {
+      return res.status(404).json({message:'schedule user not found'})
+    }
+    await scheduleUserId.deleteOne()
+    return res.status(204).send()
+  } catch(err){
+    console.error(err);
+    return res.status(500).json({message: 'Error at delete schedule user'})
+  }
+}
+
+module.exports = {createSchedule, getSchedule,updateSchedule, deleteSchedule ,createScheduleUser, getscheduleUser, updateScheduleUser,deleteScheduleUser}
