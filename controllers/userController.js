@@ -1,7 +1,7 @@
-const { User } = require('../models/userModels');
-const { Role } = require('../models/roleModels');
-const { Token } = require('../models/tokenModels')
-const {generateToken}= require('../middlewares')
+const { User } = require('@/models/userModels');
+const { Role } = require('@/models/roleModels');
+const { Token } = require('@/models/tokenModels')
+const {generateToken}= require('@/middlewares')
 const moment = require('moment')
 
 const createUser =  async (req, res) => {

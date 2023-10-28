@@ -1,3 +1,4 @@
+require('./app-aliases');
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 8000
@@ -8,6 +9,7 @@ const scheduleRoute = require("./routes/scheduleRoute")
 const taskRoute = require("./routes/taskRoute")
 const notiRoute = require("./routes/notificationRoute")
 const timeRoute = require("./routes/timeRoute")
+
 
 var bodyParser = require("body-parser")
 

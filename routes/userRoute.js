@@ -1,8 +1,8 @@
 const express = require('express')
-const { createRole, getRole,updateRole, deleteRole } = require('../controllers/roleController')
+const { createRole, getRole,updateRole, deleteRole } = require('@/controllers/roleController')
 const router = express.Router()
-const {createUser,getUser,login,refreshToken,deleteUser, getAllUser, updateUser } = require("../controllers/userController")
-const {authenticateToken } = require("../middlewares")
+const {createUser,getUser,login,refreshToken,deleteUser, getAllUser, updateUser } = require("@/controllers/userController")
+const {authenticateToken } = require("@/middlewares")
 
 
 router.get('/getAllUser',authenticateToken.verifyToken,authenticateToken.isAdmin, getAllUser)

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const secretKey = 'abc';
-const {Role} = require('../models/roleModels')
-const {User} = require('../models/userModels')
+const {Role} = require('@/models/roleModels')
+const {User} = require('@/models/userModels')
 
 
 const generateToken = (user) => {

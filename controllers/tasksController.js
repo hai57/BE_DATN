@@ -1,5 +1,5 @@
-const {Tasks} = require('../models/tasksModels')
-const {TypeTask} = require('../models/typeTaskModels')
+const {Tasks} = require('@/models/tasksModels')
+const {TypeTask} = require('@/models/typeTaskModels')
 
 //type task
 const createTypeTask = async(req,res) => {

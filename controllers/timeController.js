@@ -1,4 +1,4 @@
-const {Time} = require('../models/timeModels')
+const {Time} = require('@/models/timeModels')
 
 const createTime = async (req, res) => {
   try {

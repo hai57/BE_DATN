@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const {createSchedule,getSchedule,updateSchedule,deleteSchedule,createScheduleUser,getscheduleUser,updateScheduleUser,deleteScheduleUser} = require('../controllers/scheduleController')
-const {authenticateToken} = require('../middlewares')
+const {createSchedule,getSchedule,updateSchedule,deleteSchedule,createScheduleUser,getscheduleUser,updateScheduleUser,deleteScheduleUser} = require('@/controllers/scheduleController')
+const {authenticateToken} = require('@/middlewares')
 
 router.get('/getSchedule',getSchedule);
 router.post('/createSchedule',createSchedule);

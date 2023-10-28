@@ -1,8 +1,8 @@
 
-const {Schedule} = require('../models/scheduleModels')
-const {ScheduleUser} = require('../models/scheduleUserModels')
-const {Time} = require('../models/timeModels')
-const {User} = require('../models/userModels')
+const {Schedule} = require('@/models/scheduleModels')
+const {ScheduleUser} = require('@/models/scheduleUserModels')
+const {Time} = require('@/models/timeModels')
+const {User} = require('@/models/userModels')
 
 const mongoose = require('mongoose')
 

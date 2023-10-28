@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const {getAllTasks, createTasks,updateTask,deleteTask, createTypeTask, getTypeTask,updateTypeTask,deleteTypeTask } = require('../controllers/tasksController')
-const {taskContentMiddleware} = require('../middlewares')
+const {getAllTasks, createTasks,updateTask,deleteTask, createTypeTask, getTypeTask,updateTypeTask,deleteTypeTask } = require('@/controllers/tasksController')
+const {taskContentMiddleware} = require('@/middlewares')
 
 router.post('/createTask',taskContentMiddleware, createTasks)
 router.get('/getAllTasks', getAllTasks)
