@@ -1,8 +1,8 @@
-const {authenticateToken, generateToken}  = require("./authenticateToken")
-const {taskContentMiddleware} = require("./taskContentMiddleware")
+import { authenticateToken, generateToken}  from "./authenticateToken.js"
+import {taskContentMiddleware} from "./taskContentMiddleware.js"
 
-module.exports = {
+export {
   generateToken,
   authenticateToken,
-  taskContentMiddleware,
+  taskContentMiddleware
 }

@@ -1,5 +1,11 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
+
 const tasksSchema = new mongoose.Schema({
+  typeTask: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'types',
+    required: true
+  },
   nameTask: {
     type: String,
     required: true
@@ -8,10 +14,9 @@ const tasksSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     required: true
   },
-  typeTask: {type: mongoose.Schema.Types.ObjectId, ref: 'types', required: true}
 
 })
 
 const Tasks = mongoose.model("tasks", tasksSchema);
 
-module.exports = {Tasks}
+export { Tasks }

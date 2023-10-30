@@ -1,7 +1,9 @@
-const express = require('express')
+import express from 'express'
+
+import { getAllTasks, createTasks,updateTask,deleteTask, createTypeTask, getTypeTask,updateTypeTask,deleteTypeTask } from '../controllers/tasksController.js';
+import { taskContentMiddleware } from '../middlewares/index.js';
+
 const router = express.Router()
-const {getAllTasks, createTasks,updateTask,deleteTask, createTypeTask, getTypeTask,updateTypeTask,deleteTypeTask } = require('@/controllers/tasksController')
-const {taskContentMiddleware} = require('@/middlewares')
 
 router.post('/createTask',taskContentMiddleware, createTasks)
 router.get('/getAllTasks', getAllTasks)
@@ -16,4 +18,4 @@ router.get('/getTypeTask', getTypeTask)
 router.put('/updateTypeTask', updateTypeTask)
 router.delete('/deleteTypeTask', deleteTypeTask)
 
-module.exports = router;
+export default router;

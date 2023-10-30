@@ -1,4 +1,5 @@
-const {Time} = require('@/models/timeModels')
+import { Time } from '../models/timeModels.js';
+import { status } from '../constant/status.js';
 
 const createTime = async (req, res) => {
   try {
@@ -15,47 +16,51 @@ const createTime = async (req, res) => {
 
     return newTime.save();
     }));
-    return res.status(201).json(createdTimes);
+    return res.status(status.CREATED).json(createdTimes);
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: 'Error at create time' });
+    return res.status(status.ERROR).json({ message: 'Error at create time' });
   }
 };
+
 const getTime = async(req,res) => {
   try {
     //Sử dụng sort lấy dữ liệu sx tăng dần
     const time = await Time.find().sort({_id:1})
-    return res.status(200).json(time)
+    return res.status(status.OK).json(time)
   }catch(err) {
-    return res.status(500).json({message: 'Error at get time'})
+    return res.status(status.ERROR).json({message: 'Error at get time'})
   }
-}
+};
+
 const updateTime = async(req,res) => {
   try{
     const idTimes = await Time.findById(req.body.idTimes).exec()
     if(!idTimes) {
-      return res.status(404).json({message: 'Time not found'})
+      return res.status(status.NOT_FOUND).json({message: 'Time not found'})
     }
     idTimes.hour = req.body.hour;
     idTimes.minutes = req.body.minutes
     await idTimes.save()
-    return res.status(200).json({message: 'update success', idTimes})
+    return res.status(status.OK).json({message: 'update success', idTimes})
   } catch(err) {
     console.error(err);
-    return res.status(500).json({message: 'Error at update time'})
+    return res.status(status.ERROR).json({message: 'Error at update time'})
   }
 };
+
 const deleteTime = async(req,res) => {
   try {
     const idTimes = await Time.findById(req.body.idTimes).exec()
     if(!idTimes) {
-      return res.status(404).json({message:'Time not found'})
+      return res.status(status.NOT_FOUND).json({message:'Time not found'})
     }
     await idTimes.deleteOne()
     return res.status(204).send()
   } catch(err){
     console.error(err);
-    return res.status(500).json({message: 'Error at delete time'})
+    return res.status(status.ERROR).json({message: 'Error at delete time'})
   }
-}
-module.exports = {createTime, getTime, updateTime, deleteTime}
+};
+
+export { createTime, getTime, updateTime, deleteTime }

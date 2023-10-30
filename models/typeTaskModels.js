@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const typeTask = new mongoose.Schema({
   nameType: {
@@ -9,4 +9,4 @@ const typeTask = new mongoose.Schema({
 
 const TypeTask = mongoose.model('types', typeTask)
 
-module.exports = {TypeTask}
+export { TypeTask }

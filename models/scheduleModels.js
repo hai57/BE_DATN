@@ -1,8 +1,16 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const scheduleSchema = new mongoose.Schema({
-  time : {type : mongoose.Schema.Types.Number, ref:"times", required: true},
-  task: {type:mongoose.Schema.Types.ObjectId,ref:'tasks', required: true},
+  time : {
+    type : mongoose.Schema.Types.Number,
+    ref:"times",
+    required: true
+  },
+  task: {
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'tasks',
+    required: true
+  },
   nameSchedule: {
     type: String,
     required : true
@@ -11,4 +19,4 @@ const scheduleSchema = new mongoose.Schema({
 
 const Schedule = mongoose.model('schedules', scheduleSchema)
 
-module.exports = { Schedule }
+export { Schedule }

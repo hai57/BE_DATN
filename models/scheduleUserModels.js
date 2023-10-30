@@ -1,9 +1,21 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const scheduleUserSchema = new mongoose.Schema({
-  user: {type: mongoose.Schema.Types.ObjectId, ref: 'users',required: true},
-  schedule: {type: mongoose.Schema.Types.ObjectId, ref: 'schedules',required: true},
-  time: {type: mongoose.Schema.Types.Number, ref: 'times', required: true},
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'users',
+    required: true
+  },
+  schedule: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'schedules',
+    required: true
+  },
+  time: {
+    type: mongoose.Schema.Types.Number,
+    ref: 'times',
+    required: true
+  },
   date: {
     type: Date,
     required: true
@@ -13,4 +25,4 @@ const scheduleUserSchema = new mongoose.Schema({
 
 const ScheduleUser = mongoose.model('scheduleUsers', scheduleUserSchema);
 
-module.exports = {ScheduleUser}
+export {ScheduleUser}

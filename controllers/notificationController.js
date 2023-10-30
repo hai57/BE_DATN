@@ -1,4 +1,5 @@
-const {Notification} = require('@/models/notificationModels')
+import { Notification } from '../models/notificationModels.js';
+import { status } from '../constant/status.js';
 
 const createNotification = async (req, res) => {
   try {
@@ -8,34 +9,37 @@ const createNotification = async (req, res) => {
       content: req.body.content,
     });
     await newNotification.save();
-    res.status(200).json(newNotification);
+    res.status(status.CREATED).json(newNotification);
   } catch (err) {
     console.error(err)
-    res.status(500).json({ message: 'Server error at createNotification' });
+    res.status(status.ERROR).json({ message: 'Server error at createNotification' });
   }
 };
+
 const getNotificationsForUser = async (req, res) => {
   try {
     const notifications = await Notification.find({ user: req.userId });
-    res.status(200).json(notifications);
+    res.status(status.OK).json(notifications);
   } catch (err) {
     console.error(err)
-    res.status(500).json({ message: 'Server error at getNotificationsForUser' });
+    res.status(status.ERROR).json({ message: 'Server error at getNotificationsForUser' });
   }
 };
+
 const markNotificationAsRead = async (req, res) => {
   try {
     const notificationId = req.params.notiId;
     const notification = await Notification.findById(notificationId);
     if(!notification) {
-      return res.status(404).json({message: 'Notification not found'})
+      return res.status(status.NOT_FOUND).json({message: 'Notification not found'})
     }
     notification.isRead = true;
     await notification.save();
-    res.status(200).json(notification);
+    res.status(status.OK).json(notification);
   } catch (err) {
     console.error(err)
-    res.status(500).json({ message: 'Server error at markNotificationAsRead' });
+    res.status(status.ERROR).json({ message: 'Server error at markNotificationAsRead' });
   }
 };
-module.exports = {createNotification,getNotificationsForUser,markNotificationAsRead}
+
+export { createNotification,getNotificationsForUser,markNotificationAsRead }

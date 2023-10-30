@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@controllers": [
+        "./controllers"
+      ],
+      // Thêm các alias khác nếu cần, dựa trên tệp .babelrc.js
+    }
+  }
+}

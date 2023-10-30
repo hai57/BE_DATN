@@ -1,8 +1,15 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  role: {type: mongoose.Schema.Types.ObjectId,ref:'roles',required:true},
-  token: {type: mongoose.Schema.Types.ObjectId,ref:'token'},
+  role: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'roles',
+    required:true
+  },
+  token: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'token'
+  },
   name: {
     type: String,
     required: true
@@ -28,4 +35,4 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('users', userSchema)
 
-module.exports = { User }
+export { User }

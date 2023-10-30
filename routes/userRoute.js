@@ -1,15 +1,17 @@
-const express = require('express')
-const { createRole, getRole,updateRole, deleteRole } = require('@/controllers/roleController')
-const router = express.Router()
-const {createUser,getUser,login,refreshToken,deleteUser, getAllUser, updateUser } = require("@/controllers/userController")
-const {authenticateToken } = require("@/middlewares")
+import express from 'express';
 
+import { createRole, getRole,updateRole, deleteRole } from '../controllers/roleController.js';
+import { createUser,getUser,login,refreshToken,deleteUser, getAllUser, updateUser, getToken } from "../controllers/userController.js";
+import { authenticateToken } from '../middlewares/index.js';
+
+const router = express.Router()
 
 router.get('/getAllUser',authenticateToken.verifyToken,authenticateToken.isAdmin, getAllUser)
 router.get('/getUser',getUser)
 router.post('/createUser', createUser)
 router.delete('/deleteUser',authenticateToken.verifyToken, deleteUser)
 router.put('/updateUser',authenticateToken.verifyToken,updateUser)
+router.get('/getToken',getToken)
 
 router.post('/login', login)
 router.put('/refreshToken',authenticateToken.verifyToken, authenticateToken.isAdmin, refreshToken)
@@ -20,4 +22,4 @@ router.get('/getRole', getRole)
 router.put('/updateRole', updateRole)
 router.delete('/deleteRole', deleteRole)
 
-module.exports=router;
+export default router;
