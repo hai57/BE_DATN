@@ -1,13 +1,13 @@
 import express from 'express'
 
-import { getAllTasks, createTasks,updateTask,deleteTask, createTypeTask, getTypeTask,updateTypeTask,deleteTypeTask } from '../controllers/tasksController.js';
+import { getAllTasks, createTasks, updateTask, deleteTask, createTypeTask, getTypeTask, updateTypeTask, deleteTypeTask } from '../controllers/tasksController.js';
 import { taskContentMiddleware } from '../middlewares/index.js';
 
 const router = express.Router()
 
-router.post('/createTask',taskContentMiddleware, createTasks)
+router.post('/createTask', taskContentMiddleware, createTasks)
 router.get('/getAllTasks', getAllTasks)
-router.put('/updateTask',taskContentMiddleware, updateTask)
+router.put('/updateTask', taskContentMiddleware, updateTask)
 router.post('/deleteTask', deleteTask)
 
 

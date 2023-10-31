@@ -45,17 +45,22 @@ const getSchedule = async (req,res) => {
         },
       },
       {
+        $addFields: {
+          nameType: { $arrayElemAt: ['$tasks.nameTask', 0] },
+          hour: { $addFields: ['$times.hour',0] },
+          minutes: { $addFields: ['$times.minutes', 0] }
+        }
+      },
+      {
         $project: {
           nameSchedule: 1,
-         'tasks.nameTask':1,
-          times: {
-            hour: '$times.hour',
-            minutes: '$times.minutes'
-          }
+          nameType: 1,
+          hour: 1,
+          minutes: 1
         }
       }
     ])
-    if(schedule.length === 0 || !schedule[0].times.length ||!schedule[0].tasks.length) {
+    if(!schedule || schedule.length === 0 ) {
       return res.status(status.NOT_FOUND).json({message: 'Không tìm thấy dữ liệu lịch trình.'})
     }
     res.status(status.OK).json(schedule);
@@ -161,14 +166,25 @@ const getscheduleUser = async(req,res) => {
         }
       },
       {
+        $addFields: [
+          {
+            gmail: { $arrayElemAt: ['$userDetails.gmail', 0] },
+            scheduleID: { $addFields: ['$scheduleDetails._id',0] },
+            timeID: { $addFields: ['$timeDetails._id', 0] },
+            hour: { $addFields: ['$timeDetails.hour', 0] },
+            minutes: { $addFields: ['$timeDetails.minutes', 0] }
+          }
+        ]
+      },
+      {
         $project: {
           date: 1,
           times: 1,
-          'userDetails.gmail': 1,
-          'scheduleDetails._id': 1,
-          'timeDetails._id': 1,
-          'timeDetails.hour': 1,
-          'timeDetails.minutes': 1,
+          gmail: 1,
+          scheduleID: 1,
+          timeID: 1,
+          hour: 1,
+          minutes: 1,
         },
       },
     ])

@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { createTime,getTime,updateTime,deleteTime } from '../controllers/timeController.js';
+import { createTime, getTime, updateTime, deleteTime } from '../controllers/timeController.js';
 
 const router = express.Router();
 

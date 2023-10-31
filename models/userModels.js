@@ -1,14 +1,10 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
   role: {
     type: mongoose.Schema.Types.ObjectId,
     ref:'roles',
     required:true
-  },
-  token: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref:'token'
   },
   name: {
     type: String,

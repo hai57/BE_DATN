@@ -73,15 +73,20 @@ const getAllTasks = async (req, res)=> {
         }
       },
       {
+        $addFields: {
+          nameType : { $arrayElemAt: ['$typeTask.nameType', 0] }
+        }
+      },
+      {
         $project: {
           nameTask: 1,
           taskContent: 1,
-          'typeTask.nameType': 1,
+          nameType: 1,
         },
       },
 
     ]);
-    if(tasks.length === 0 || !tasks[0].typeTask.length) {
+    if(!tasks || tasks.length === 0 ) {
       return res.status(status.NOT_FOUND).json({message: 'Không tìm thấy dữ liệu '})
     }
 
@@ -97,14 +102,14 @@ const createTasks = async(req,res) => {
     const newTask = new Tasks(req.body);
     const typeTask = await TypeTask.findById(req.body.typeTask);
     if (!typeTask) {
-      return res.status(status.NOT_FOUND).json({ message: "Type task not found" });
+      return res.status(status.NOT_FOUND).json({ message: 'Type task not found' });
     } else if (!req.body.nameTask) {
       return res.status(status.BAD_REQUEST).json({ message: 'Missing nameTask field.' });
     } else if(!req.body.taskContent ) {
       return res.status(status.BAD_REQUEST).json({ message: 'Missing taskContent field.' });
     }
     await newTask.save();
-    console.log("created")
+    console.log('created')
     res.status(status.CREATED).json(newTask);
   } catch (error) {
     res.status(status.ERROR).json({ message: 'Error creating task' });

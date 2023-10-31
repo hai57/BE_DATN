@@ -6,7 +6,7 @@ import { status } from '../constant/status.js';
 const secretKey = 'abc';
 
 const generateToken = (user) => {
-  const tokenExpiration = Math.floor(Date.now() / 1000) + 2 * 60;
+  const tokenExpiration = Math.floor(Date.now() / 1000) + 4 * 60;
   return jwt.sign({ userId: user._id, tokenExpiration  }, secretKey);
 };
 

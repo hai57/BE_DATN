@@ -12,7 +12,7 @@ const createUser =  async (req, res) => {
     const user = new User(req.body);
     const role = await Role.findById(req.body.role);
     if (!role) {
-      return res.status(status.NOT_FOUND).json({ message: "Role not found" });
+      return res.status(status.NOT_FOUND).json({ message: 'Role not found' });
     } else if (!req.body.name) {
       return res.status(status.BAD_REQUEST).json({ message: 'Missing name field.' });
     } else if(!req.body.age ) {
@@ -30,7 +30,7 @@ const createUser =  async (req, res) => {
 
     await user.save();
     res.status(status.CREATED).json({
-      status: "Success",
+      status: 'Success',
       token: token
     });
   } catch (err) {
@@ -46,34 +46,31 @@ const getAllUser =  async (req, res) => {
     const usersWithRoles = await User.aggregate([
       {
         $lookup: {
-          from:"roles",
-          localField:"role",
-          foreignField:"_id",
-          as : "roleDetails"
+          from:'roles',
+          localField:'role',
+          foreignField:'_id',
+          as : 'roleDetails'
         }
       },
       {
-        $lookup: {
-          from:"tokens",
-          localField:"_id",
-          foreignField:"user",
-          as: "tokenDetails"
+        $addFields: {
+          nameRole: { $arrayElemAt: ['$roleDetails.nameRole', 0] }
+          //$roleDetails.nameRole là một mảng các giá trị nameRole lấy từ việc thực hiện $lookup.
+          //0 chỉ đến phần tử đầu tiên của mảng nameRole.
         }
       },
       {
         $project: {
-          name: 1,
+          name: 1, // 1 la duoc liet ke, 0 la khong bao gom
           age: 1,
           gmail: 1,
           address: 1,
           password: 1,
-          'tokenDetails.token':1,
-          'tokenDetails.tokenExpiration': 1,
-          'roleDetails.nameRole': 1
+          nameRole: 1
         },
       }
     ])
-    if (!usersWithRoles || usersWithRoles.length === 0 || !usersWithRoles[0].roleDetails.length) {
+    if (!usersWithRoles || usersWithRoles.length === 0 ) {
       return res.status(status.NOT_FOUND).json({ message: 'Không tìm thấy dữ liệu' });
     }
     res.status(status.OK).json(usersWithRoles);
@@ -102,19 +99,22 @@ const getUser = async(req,res) => {
           }
         },
         {
+          $addFields : {
+            nameRole: { $arrayElemAt: ['$roles.nameRole', 0] }
+          }
+        },
+        {
           $project: {
             name: 1,
             age: 1,
             gmail: 1,
             address: 1,
             password: 1,
-            token:1,
-            tokenExpiration: 1,
-            'roles.nameRole': 1
+            nameRole: 1
           }
         }
       ])
-      if (!usersWithRoles || usersWithRoles.length === 0 || !usersWithRoles[0].roleDetails.length) {
+      if (!usersWithRoles || usersWithRoles.length === 0) {
         return res.status(status.NOT_FOUND).json({message: 'Không tìm thấy dữ liệu '})
       }
 
@@ -200,11 +200,10 @@ const login = async(req,res) => {
       });
       try {
         await newToken.save();
-        console.log('Token saved successfully');
         return res.status(status.OK).json( newToken.token  );
       } catch (error) {
         console.error('Error saving token:', error);
-        return res.status(status.ERROR).json({message:"Error"})
+        return res.status(status.ERROR).json({message:'Error'})
       }
 
     } else {
@@ -248,7 +247,7 @@ const getToken = async (req, res) => {
     res.status(status.OK).json(token)
   }
   catch(err) {
-    res.status(status.ERROR).json({message: "error"})
+    res.status(status.ERROR).json({message: 'error'})
   }
 };
 
