@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
-import './babel.config.js'
 import userRoute from './routes/userRoute.js';
 import scheduleRoute from './routes/scheduleRoute.js';
 import taskRoute from './routes/taskRoute.js';

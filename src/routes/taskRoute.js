@@ -1,7 +1,7 @@
 import express from 'express'
 
-import { getAllTasks, createTasks, updateTask, deleteTask, createTypeTask, getTypeTask, updateTypeTask, deleteTypeTask } from '../controllers/tasksController.js';
-import { taskContentMiddleware } from '../middlewares/index.js';
+import { getAllTasks, createTasks, updateTask, deleteTask, createTypeTask, getTypeTask, updateTypeTask, deleteTypeTask } from '@/controllers/tasksController.js';
+import { taskContentMiddleware } from '@/middlewares/index.js';
 
 const router = express.Router()
 

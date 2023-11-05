@@ -1,5 +1,6 @@
-import { TypeTask } from '../models/typeTaskModels.js';
-import { status } from '../constant/status.js';
+import { TypeTask } from '@/models/typeTaskModels.js';
+import { status } from '@/constant/status.js';
+import { message } from '@/constant/message.js';
 
 const taskContentMiddleware = async function (req, res, next) {
   try {
@@ -17,7 +18,7 @@ const taskContentMiddleware = async function (req, res, next) {
 
     next();
   } catch (error) {
-    return res.status(status.ERROR).json({ message: 'Middleware error at task content' });
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
 

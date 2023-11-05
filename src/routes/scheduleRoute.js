@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { createSchedule, getSchedule, updateSchedule, deleteSchedule, createScheduleUser, getscheduleUser, updateScheduleUser, deleteScheduleUser } from '../controllers/scheduleController.js';
-import { authenticateToken } from '../middlewares/index.js';
+import { createSchedule, getSchedule, updateSchedule, deleteSchedule, createScheduleUser, getscheduleUser, updateScheduleUser, deleteScheduleUser } from '@/controllers/scheduleController.js';
+import { authenticateToken } from '@/middlewares/index.js';
 
 const router = express.Router()
 

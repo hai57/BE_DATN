@@ -1,8 +1,8 @@
 import express from 'express';
 
-import { createRole, getRole, updateRole, deleteRole } from '../controllers/roleController.js';
-import { createUser, getAllUser,getUser, updateUser, deleteUser, getToken, refreshToken, login} from '../controllers/userController.js';
-import { authenticateToken } from '../middlewares/index.js';
+import { createRole, getRole, updateRole, deleteRole } from '@/controllers/roleController.js';
+import { createUser, getAllUser,getUser, updateUser, deleteUser, getToken, login} from '@/controllers/userController.js';
+import { authenticateToken } from '@/middlewares/index.js';
 
 const router = express.Router()
 
@@ -14,7 +14,7 @@ router.put('/updateUser', authenticateToken.verifyToken, updateUser)
 router.get('/getToken', getToken)
 
 router.post('/login', login)
-router.put('/refreshToken', authenticateToken.verifyToken, authenticateToken.isAdmin, refreshToken)
+// router.put('/refreshToken', authenticateToken.verifyToken, authenticateToken.isAdmin, refreshToken)
 
 //Role route
 router.post('/createRole', createRole)
