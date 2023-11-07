@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
-import { Role } from '../models/roleModels.js'
-import { User } from '../models/userModels.js'
-import { status } from '../constant/status.js';
-import { message } from '../constant/message.js';
+import { Role } from '@/models/roleModels.js'
+import { User } from '@/models/userModels.js'
+import { status } from '@/constant/status.js';
+import { message } from '@/constant/message.js';
 
 const secretKey = 'abc';
 

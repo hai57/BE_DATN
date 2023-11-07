@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 import userRoute from './routes/userRoute.js';
 import scheduleRoute from './routes/scheduleRoute.js';
@@ -24,9 +25,10 @@ mongoose.connect((process.env.MONGODB_URL) , {useUnifiedTopology:true, useNewUrl
 //Cấu hình Express để xử lý dữ liệu lớn, đa dạng
 app.use(bodyParser.json({limit:'50mb'}));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
+app.use(cors())
 
-app.use('/api/user', userRoute);
-app.use('/api/schedule', scheduleRoute);
-app.use('/api/task', taskRoute);
-app.use('/api/noti', notiRoute);
-app.use('/api/time', timeRoute);
+app.use('/v1/api/user', userRoute);
+app.use('/v1/api/schedule', scheduleRoute);
+app.use('/v1/api/task', taskRoute);
+app.use('/v1/api/noti', notiRoute);
+app.use('/v1/api/time', timeRoute);
