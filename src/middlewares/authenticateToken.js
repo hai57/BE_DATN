@@ -7,7 +7,7 @@ import { message } from '@/constant/message.js';
 const secretKey = 'abc';
 
 const generateToken = (user) => {
-  const tokenExpiration = Math.floor(Date.now() / 1000) + 4 * 60;
+  const tokenExpiration = Math.floor(Date.now() / 1000) + 4 * 30 * 24 * 60 * 60;
   return jwt.sign({ userId: user._id, tokenExpiration  }, secretKey);
 };
 
