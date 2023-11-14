@@ -32,6 +32,7 @@ const createUser =  async (req, res) => {
     await user.save();
     res.status(status.CREATED).json({
       status: 'Success',
+      user: user,
       token: token
     });
   } catch (err) {
@@ -125,7 +126,7 @@ const getUser = async(req,res) => {
 
 const deleteUser = async(req,res) => {
   try {
-    const userId = req.userId;
+    const userId = req.body.userId;
     const user = await User.findById(userId).exec();
     if(!user){
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
@@ -139,7 +140,7 @@ const deleteUser = async(req,res) => {
 
 const updateUser = async(req,res) => {
   try {
-    const userId = req.userId;
+    const userId = req.body.userId;
     const user = await User.findById(userId).exec();
     if(!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })

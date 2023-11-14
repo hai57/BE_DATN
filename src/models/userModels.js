@@ -27,6 +27,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  // weight: {
+  //   type: String,
+  //   required: true
+  // },
+  // height: {
+  //   type: String,
+  //   required: true
+  // }
 })
 
 const User = mongoose.model('users', userSchema)

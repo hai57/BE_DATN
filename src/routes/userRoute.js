@@ -6,8 +6,8 @@ import { authenticateToken } from '@/middlewares/index.js';
 
 const router = express.Router()
 
-router.get('/getAllUser', authenticateToken.verifyToken, authenticateToken.isAdmin, getAllUser)
-router.get('/getUser', getUser)
+router.get('/getAllUser', authenticateToken.verifyToken, getAllUser)
+router.get('/getUser',authenticateToken.verifyToken, getUser)
 router.post('/createUser', createUser)
 router.delete('/deleteUser', authenticateToken.verifyToken, deleteUser)
 router.put('/updateUser', authenticateToken.verifyToken, updateUser)
