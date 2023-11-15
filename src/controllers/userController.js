@@ -127,7 +127,7 @@ const getUser = async(req,res) => {
 
 const deleteUser = async(req,res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.params.id;
     const user = await User.findById(userId).exec();
     if(!user){
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
