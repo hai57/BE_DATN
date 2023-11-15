@@ -11,7 +11,8 @@ import { message } from '@/constant/message.js';
 const createUser =  async (req, res) => {
   try {
     const user = new User(req.body);
-    const role = await Role.findById(req.body.role);
+    const defaultRole = '6503ee3bae3b2ccd6dae5fab'
+    const role = await Role.findById(defaultRole);
     if (!role) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.MISS_FIELD });
     } else if (!req.body.name) {
@@ -25,7 +26,7 @@ const createUser =  async (req, res) => {
     } else if(!req.body.password ) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    user.role = role._id;
+    user.role = defaultRole;
     //token
     const token = generateToken(user);
 
