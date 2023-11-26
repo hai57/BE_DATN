@@ -33,6 +33,7 @@ const createUser =  async (req, res) => {
     await user.save();
     res.status(status.CREATED).json({
       status: 'Success',
+      message: message.CREATED ,
       user: user,
       token: token
     });
@@ -42,6 +43,8 @@ const createUser =  async (req, res) => {
 };
 
 const getAllUser =  async (req, res) => {
+  const offset  =req.query.offset || 0 // Giá trị mặc định là 0 nếu không có tham số offset được cung cấp
+  const limit = req.query.limit || 10 // Giá trị mặc định là 10 nếu không có tham số limit được cung cấp
   try {
     const usersWithRoles = await User.aggregate([
       {
@@ -70,6 +73,8 @@ const getAllUser =  async (req, res) => {
         },
       }
     ])
+    .skip(parseInt(offset))
+    .limit(parseInt(limit));
     if (!usersWithRoles || usersWithRoles.length === 0 ) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
@@ -79,10 +84,9 @@ const getAllUser =  async (req, res) => {
   }
 };
 
-const getUser = async(req,res) => {
-  const {gmail} = req.body
+const getUser = async(req, res) => {
   try{
-    const user = await User.findOne({gmail});
+    const user = await User.findById(req.userId);
     if(!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.INVALID })
     } else {
@@ -114,6 +118,7 @@ const getUser = async(req,res) => {
           }
         }
       ])
+
       if (!usersWithRoles || usersWithRoles.length === 0) {
         return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
       }
@@ -125,9 +130,9 @@ const getUser = async(req,res) => {
   }
 };
 
-const deleteUser = async(req,res) => {
+const deleteUser = async(req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.body.idUser;
     const user = await User.findById(userId).exec();
     if(!user){
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
@@ -139,9 +144,9 @@ const deleteUser = async(req,res) => {
   }
 };
 
-const updateUser = async(req,res) => {
+const updateUser = async(req, res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.body._id;
     const user = await User.findById(userId).exec();
     if(!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
@@ -155,14 +160,14 @@ const updateUser = async(req,res) => {
     user.password = req.body.password
 
     await user.save();
-    res.status(status.OK).json({ message: message.OK })
+    res.status(status.OK).json({ message: message.OK, user })
   } catch(err){
     console.error(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
 
-const changePassword = async(req,res) => {
+const changePassword = async(req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId).exec();
@@ -179,7 +184,7 @@ const changePassword = async(req,res) => {
   }
 };
 
-const login = async(req,res) => {
+const login = async(req, res) => {
   const {gmail, password} = req.body;
 
   try {
@@ -197,7 +202,7 @@ const login = async(req,res) => {
       });
       try {
         await newToken.save();
-        return res.status(status.OK).json(newToken.token );
+        return res.status(status.OK).json({ userId: user._id, token: newToken.token });
       } catch (err) {
         return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
       }

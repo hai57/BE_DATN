@@ -1,8 +1,8 @@
 import { authenticateToken, generateToken}  from './authenticateToken.js'
-import {taskContentMiddleware} from './taskContentMiddleware.js'
+import { activityDescriptionMiddleware } from './activityContentMiddleware.js'
 
 export {
   generateToken,
   authenticateToken,
-  taskContentMiddleware
+  activityDescriptionMiddleware
 }

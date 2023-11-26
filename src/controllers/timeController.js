@@ -23,7 +23,7 @@ const createTime = async (req, res) => {
   }
 };
 
-const getTime = async(req,res) => {
+const getTime = async(req, res) => {
   try {
     //Sử dụng sort lấy dữ liệu sx tăng dần
     const time = await Time.find().sort({_id:1})
@@ -33,7 +33,7 @@ const getTime = async(req,res) => {
   }
 };
 
-const updateTime = async(req,res) => {
+const updateTime = async(req, res) => {
   try{
     const idTimes = await Time.findById(req.body.idTimes).exec()
     if(!idTimes) {
@@ -48,7 +48,7 @@ const updateTime = async(req,res) => {
   }
 };
 
-const deleteTime = async(req,res) => {
+const deleteTime = async(req, res) => {
   try {
     const idTimes = await Time.findById(req.body.idTimes).exec()
     if(!idTimes) {

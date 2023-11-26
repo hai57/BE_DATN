@@ -6,9 +6,9 @@ const scheduleSchema = new mongoose.Schema({
     ref:"times",
     required: true
   },
-  task: {
+  activity: {
     type:mongoose.Schema.Types.ObjectId,
-    ref:'tasks',
+    ref:'activitiess',
     required: true
   },
   nameSchedule: {

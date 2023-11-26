@@ -12,7 +12,7 @@ const createSchedule = async (req, res) => {
     const newschedule = new Schedule(req.body);
     if (!req.body.time) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
-    } else if(!req.body.task ) {
+    } else if(!req.body.activity ) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     } else if(!req.body.nameSchedule ) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
@@ -26,7 +26,7 @@ const createSchedule = async (req, res) => {
   }
 };
 
-const getSchedule = async (req,res) => {
+const getSchedule = async (req, res) => {
   try {
     const schedule = await Schedule.aggregate([
       {
@@ -39,15 +39,15 @@ const getSchedule = async (req,res) => {
       },
       {
          $lookup: {
-          from: 'tasks',
-          localField: 'task',
+          from: 'activities',
+          localField: 'activity',
           foreignField: '_id',
-          as: 'tasks',
+          as: 'activities',
         },
       },
       {
         $addFields: {
-          nameType: { $arrayElemAt: ['$tasks.nameTask', 0] },
+          nameType: { $arrayElemAt: ['$activities.name', 0] },
           hour: { $addFields: ['$times.hour',0] },
           minutes: { $addFields: ['$times.minutes', 0] }
         }
@@ -71,7 +71,7 @@ const getSchedule = async (req,res) => {
   }
 };
 
-const updateSchedule = async(req,res) => {
+const updateSchedule = async(req, res) => {
   try {
     const scheduleId = req.body.scheduleId;
     const schedule = await Schedule.findById(scheduleId).exec();
@@ -79,13 +79,13 @@ const updateSchedule = async(req,res) => {
     const existingTime = await Time.findById(timeId).exec();
     if(!schedule) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if (!req.body.time || !req.body.task || !req.body.nameSchedule) {
+    } else if (!req.body.time || !req.body.activity || !req.body.nameSchedule) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     } else if (!existingTime) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
     schedule.time = timeId;
-    schedule.task = req.body.task;
+    schedule.activity = req.body.activity;
     schedule.nameSchedule = req.body.nameSchedule;
     await schedule.save();
     res.status(status.OK).json({ message: message.OK, schedule})
@@ -95,14 +95,14 @@ const updateSchedule = async(req,res) => {
   }
 };
 
-const deleteSchedule = async(req,res) => {
+const deleteSchedule = async(req, res) => {
   try {
     const scheduleId = await Schedule.findById(req.body.scheduleId).exec()
     if(!scheduleId) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
-    await scheduleId.deleteOne()
-    return res.status(204).send()
+    await scheduleId.findByIdAndRemove(scheduleId)
+    return res.status(status.OK).json({ message: message.OK });
   } catch(err){
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
@@ -111,7 +111,7 @@ const deleteSchedule = async(req,res) => {
 
 //ScheduleUser
 
-const createScheduleUser = async(req,res)=> {
+const createScheduleUser = async(req, res)=> {
   try{
     const currentDate = new Date();
     const newScheduleUser = new ScheduleUser({
@@ -135,7 +135,7 @@ const createScheduleUser = async(req,res)=> {
   }
 };
 
-const getscheduleUser = async(req,res) => {
+const getscheduleUser = async(req, res) => {
   try{
     const scheduleUser = await ScheduleUser.aggregate([
       {
@@ -199,7 +199,7 @@ const getscheduleUser = async(req,res) => {
   }
 };
 
-const updateScheduleUser = async(req,res) => {
+const updateScheduleUser = async(req, res) => {
   try {
     const scheduleUserId = await ScheduleUser.findById(req.body.scheduleUserId).exec();
     const existingUser = await User.findById(req.userId).exec();
@@ -222,14 +222,14 @@ const updateScheduleUser = async(req,res) => {
   }
 };
 
-const deleteScheduleUser = async(req,res) => {
+const deleteScheduleUser = async(req, res) => {
   try {
     const scheduleUserId = await Schedule.findById(req.body.scheduleUserId).exec()
     if(!scheduleUserId) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
     await scheduleUserId.deleteOne()
-    return res.status(204).send()
+    return res.status(status.NO_CONTENT).send()
   } catch(err){
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })

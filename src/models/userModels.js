@@ -3,37 +3,29 @@ import mongoose from 'mongoose';
 const userSchema = new mongoose.Schema({
   role: {
     type: mongoose.Schema.Types.ObjectId,
-    ref:'roles',
-    required:true
+    ref:'roles'
   },
   name: {
-    type: String,
-    required: true
+    type: String
   },
   age: {
-    type: String,
-    required: true
+    type: String
   },
   gmail: {
     type: String,
-    required: true,
     unique:true
   },
   address: {
-    type: String,
-    required: true
+    type: String
   },
   password: {
-    type: String,
-    required: true
+    type: String
   },
   // weight: {
-  //   type: String,
-  //   required: true
+  //   type: String
   // },
   // height: {
-  //   type: String,
-  //   required: true
+  //   type: String
   // }
 })
 
