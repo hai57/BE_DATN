@@ -74,7 +74,7 @@ const getAllActivities = async (req, res)=> {
       },
       {
         $addFields: {
-          nameType : { $arrayElemAt: ['$typeActivities.nameType', 0] }
+          nameType : { $arrayElemAt: ['$typeActivities.nameType', 0] },
         }
       },
       {
@@ -82,7 +82,8 @@ const getAllActivities = async (req, res)=> {
           name: 1,
           description: 1,
           isParent: 1,
-          nameType: 1,
+          isParentType: 1,
+          nameType: 1
         },
       },
 
@@ -90,7 +91,7 @@ const getAllActivities = async (req, res)=> {
     .skip(parseInt(offset))
     .limit(parseInt(limit));
 
-    if(!activities || activities.length === 0 ) {
+    if(!activities ) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
 
@@ -104,8 +105,7 @@ const createActivities = async(req,res) => {
   try {
     //fix cung truoc thang type
     const defaultType = "650a77bcaed54943b3b370ba"
-    const defaultIsParent = true
-    const newActivites = new Activities(req.body);
+    const newActivities = new Activities(req.body);
     if (!req.body.user) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     } else if(!req.body.description ) {
@@ -113,10 +113,9 @@ const createActivities = async(req,res) => {
     } else if(!req.body.name ) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    newActivites.typeActivities = defaultType
-    newActivites.isParent = defaultIsParent
-    await newActivites.save();
-    res.status(status.CREATED).json({ message: message.CREATED, newActivites });
+    newActivities.typeActivities = defaultType
+    await newActivities.save();
+    res.status(status.CREATED).json({ message: message.CREATED, newActivities });
   } catch (err) {
     res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
@@ -124,15 +123,18 @@ const createActivities = async(req,res) => {
 
 const updateActivities = async(req, res) => {
   try{
-    const idActivities = await Activities.findById(req.body.idActivities).exec()
-    if(!idActivities) {
+    const activities = await Activities.findById(req.body.idActivities)
+    const type = await Type.findById("650a77bcaed54943b3b370ba")
+    if(!activities) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
-    idActivities.type = req.body.type;
-    idActivities.name = req.body.name;
-    idActivities.description = req.body.description;
-    await idActivities.save()
-    return res.status(status.OK).json({ message: message.OK, idActivities })
+    activities.type = type;
+    activities.name = req.body.name;
+    activities.description = req.body.description;
+    activities.isParent = req.body.isParent;
+    activities.isParentType = req.body.isParentType;
+    await activities.save()
+    return res.status(status.OK).json({ message: message.OK, activities })
   } catch(err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
@@ -143,8 +145,6 @@ const deleteActivities = async(req,res) => {
     const activitiesId = req.body.idActivities
     const activity = await Activities.findById(activitiesId).exec()
     if(!activity) {
-      console.log(activitiesId)
-      console.log(activity)
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
     await Activities.findByIdAndRemove(activitiesId);

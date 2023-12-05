@@ -6,14 +6,10 @@ const subActivitiesSchema = new mongoose.Schema({
     ref: 'activities',
     required: true
   },
-  name: {
-    type: String,
-    required: true
-  },
   content: {
     type: String,
     required: true
-  },  
+  },
   amount: {
     type: Number
   },

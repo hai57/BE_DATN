@@ -75,7 +75,7 @@ const getAllUser =  async (req, res) => {
     ])
     .skip(parseInt(offset))
     .limit(parseInt(limit));
-    if (!usersWithRoles || usersWithRoles.length === 0 ) {
+    if (!usersWithRoles ) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
     res.status(status.OK).json({ message: message.OK, usersWithRoles });

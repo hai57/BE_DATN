@@ -9,7 +9,7 @@ const router = express.Router()
 router.get('/getAllUser', authenticateToken.verifyToken, getAllUser)
 router.get('/getUser',authenticateToken.verifyToken, getUser)
 router.post('/createUser', createUser)
-router.delete('/deleteUser/:id', authenticateToken.verifyToken, deleteUser)
+router.delete('/deleteUser', authenticateToken.verifyToken, deleteUser)
 router.put('/updateUser', authenticateToken.verifyToken, updateUser)
 router.get('/getToken', getToken)
 

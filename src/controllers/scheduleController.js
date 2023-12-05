@@ -170,10 +170,10 @@ const getscheduleUser = async(req, res) => {
         $addFields: [
           {
             gmail: { $arrayElemAt: ['$userDetails.gmail', 0] },
-            scheduleID: { $addFields: ['$scheduleDetails._id',0] },
-            timeID: { $addFields: ['$timeDetails._id', 0] },
-            hour: { $addFields: ['$timeDetails.hour', 0] },
-            minutes: { $addFields: ['$timeDetails.minutes', 0] }
+            scheduleID: { $arrayElemAt: ['$scheduleDetails._id',0] },
+            timeID: { $arrayElemAt: ['$timeDetails._id', 0] },
+            hour: { $arrayElemAt: ['$timeDetails.hour', 0] },
+            minutes: { $arrayElemAt: ['$timeDetails.minutes', 0] }
           }
         ]
       },

@@ -3,10 +3,42 @@ import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
 
 const getSubActivities = async(req, res) =>{
+  const offset = req.query.offset || 0
+  const limit = req.query.limit || 10
   try {
-    const subActivities = await SubActivities.find()
+    const subActivities = await SubActivities.aggregate([
+      {
+        $lookup: {
+          from: 'activities',
+          localField: 'activity',
+          foreignField: '_id',
+          as: 'activities'
+        }
+      },
+      {
+        $addFields: {
+          nameActivities : { $arrayElemAt: ['$activities.name', 0] },
+          idActivities : { $arrayElemAt: ['$activities._id', 0] },
+        }
+      },
+      {
+        $project: {
+          content: 1,
+          nameActivities: 1,
+          idActivities: 1
+        },
+      },
+
+    ])
+    .skip(parseInt(offset))
+    .limit(parseInt(limit));
+
+    if(!subActivities) {
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
+    }
+
     res.status(status.OK).json({ message: message.OK, subActivities });
-  } catch (err) {
+  } catch(err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
@@ -19,11 +51,12 @@ const createSubActivities = async(req, res) => {
   } catch (err) {
     return res.status(status.ERROR).json({ message : message.ERROR.SERVER });
   }
+
 };
 
 const updateSubActivities = async(req, res) => {
   try {
-    const checkSubactivitiesId = await SubActivities.findById(req.body.subsactivitiesID).exec()
+    const checkSubactivitiesId = await SubActivities.findById(req.body.subActivitiesID).exec()
     if(!checkSubactivitiesId) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     } else if (!req.body.content) {
@@ -32,20 +65,21 @@ const updateSubActivities = async(req, res) => {
     checkSubactivitiesId.content = req.body.content;
     checkSubactivitiesId.time = req.body.time;
     checkSubactivitiesId.amount = req.body.amount
-    await checkRoleID.save()
-    res.status(status.OK).json({ message: message.OK, checkRoleID})
+    await checkSubactivitiesId.save()
+    res.status(status.OK).json({ message: message.OK, checkSubactivitiesId})
   } catch(err) {
+    console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER})
   }
 };
 
 const deleteSubActivities = async(req, res) => {
   try{
-    const checkSubactivitiesId = await SubActivities.findById(req.body.subsactivitiesID).exec()
-    if(!checkRoleID) {
+    const checkSubActivitiesId = await SubActivities.findById(req.body.subActivitiesID).exec()
+    if(!checkSubActivitiesId) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND})
     }
-    await checkSubactivitiesId.findByIdAndRemove(checkSubactivitiesId)
+    await SubActivities.findByIdAndRemove(checkSubActivitiesId)
     res.status(status.OK).json({ message: message.OK });
   } catch(err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER})

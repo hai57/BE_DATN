@@ -20,6 +20,11 @@ const activitiesSchema = new mongoose.Schema({
   isParent: {
     type: Boolean,
     required: true
+  },
+  isParentType: {
+    type: String,
+    enum: ['Exercise', 'Food', ''],
+    default: ''
   }
 })
 
