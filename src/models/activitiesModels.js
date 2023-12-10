@@ -1,30 +1,22 @@
 import mongoose from 'mongoose';
 
 const activitiesSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'users'
-  },
   typeActivities: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'types'
   },
   name: {
-    type: String,
-    required: true
+    type: String
   },
   description: {
-    type: String,
-    required: true
+    type: String
+  },
+  time: {
+    type: String
   },
   isParent: {
     type: Boolean,
     required: true
-  },
-  isParentType: {
-    type: String,
-    enum: ['Exercise', 'Food', ''],
-    default: ''
   }
 })
 

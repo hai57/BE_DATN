@@ -17,13 +17,13 @@ const getSubActivities = async(req, res) =>{
       },
       {
         $addFields: {
-          nameActivities : { $arrayElemAt: ['$activities.name', 0] },
+          nameActivities : { $arrayElemAt: ['$activities.description', 0] },
           idActivities : { $arrayElemAt: ['$activities._id', 0] },
         }
       },
       {
         $project: {
-          content: 1,
+          amount: 1,
           nameActivities: 1,
           idActivities: 1
         },
@@ -43,27 +43,32 @@ const getSubActivities = async(req, res) =>{
   }
 };
 
-const createSubActivities = async(req, res) => {
+const createSubActivities = async (req, res) => {
   try {
-    const newSubActivities = new SubActivities(req.body)
-    await newSubActivities.save()
-    res.status(status.CREATED).json({ message: message.CREATED, newSubActivities })
-  } catch (err) {
-    return res.status(status.ERROR).json({ message : message.ERROR.SERVER });
-  }
 
+    // Tạo một thời gian mới
+    const newSubActivities = new SubActivities({
+      _id: req.body.idSubActivity,
+      activity: req.body.idActivities,
+      amount: req.body.amount
+    });
+
+    await newSubActivities.save();
+    return res.status(status.CREATED).json(newSubActivities);
+  } catch (err) {
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+  }
 };
+
 
 const updateSubActivities = async(req, res) => {
   try {
     const checkSubactivitiesId = await SubActivities.findById(req.body.subActivitiesID).exec()
     if(!checkSubactivitiesId) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if (!req.body.content) {
+    } else if (!req.body.amount) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    checkSubactivitiesId.content = req.body.content;
-    checkSubactivitiesId.time = req.body.time;
     checkSubactivitiesId.amount = req.body.amount
     await checkSubactivitiesId.save()
     res.status(status.OK).json({ message: message.OK, checkSubactivitiesId})

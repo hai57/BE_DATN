@@ -82,7 +82,7 @@ const getAllActivities = async (req, res)=> {
           name: 1,
           description: 1,
           isParent: 1,
-          isParentType: 1,
+          time: 1,
           nameType: 1
         },
       },
@@ -106,11 +106,9 @@ const createActivities = async(req,res) => {
     //fix cung truoc thang type
     const defaultType = "650a77bcaed54943b3b370ba"
     const newActivities = new Activities(req.body);
-    if (!req.body.user) {
+    if(!req.body.name ) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
-    } else if(!req.body.description ) {
-      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
-    } else if(!req.body.name ) {
+    }else if(!req.body.description ) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     newActivities.typeActivities = defaultType
@@ -132,7 +130,7 @@ const updateActivities = async(req, res) => {
     activities.name = req.body.name;
     activities.description = req.body.description;
     activities.isParent = req.body.isParent;
-    activities.isParentType = req.body.isParentType;
+    activities.time = req.body.time;
     await activities.save()
     return res.status(status.OK).json({ message: message.OK, activities })
   } catch(err) {
