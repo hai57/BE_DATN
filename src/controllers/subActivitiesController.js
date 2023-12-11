@@ -55,7 +55,7 @@ const createSubActivities = async (req, res) => {
     });
 
     await newSubActivities.save();
-    return res.status(status.CREATED).json(newSubActivities);
+    return res.status(status.CREATED).json({ message: message.CREATED, newSubActivities });
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });

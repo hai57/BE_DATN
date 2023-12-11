@@ -66,5 +66,23 @@ const authenticateToken = {
     verifyToken,
     isAdmin,
 };
+const checkTokenValidity = async (req, res) => {
+  try {
+    // Sử dụng middleware để kiểm tra token
+    verifyToken(req, res, async () => {
+      // Nếu token hợp lệ, trả về thông báo thành công
+      const user = await User.findById(req.userId);
+      if (!user) {
+        return res.status(status.NOT_FOUND).json({ message: message.ERROR.USER_NOT_FOUND });
+      }
 
-export {generateToken, authenticateToken}
+      const { name, age , gmail, address } = user;
+      return res.status(status.OK).json({ message: 'Token is valid', user: { name, age, gmail, address} });
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+  }
+};
+
+export {generateToken, authenticateToken, checkTokenValidity}

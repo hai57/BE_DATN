@@ -167,6 +167,11 @@ const updateUser = async(req, res) => {
   }
 };
 
+const checkToken = (req, res) => {
+  // Trả về thông tin user từ token
+  return res.json({ user: req.user });
+};
+
 const changePassword = async(req, res) => {
   try {
     const userId = req.userId;
@@ -250,4 +255,4 @@ const getToken = async (req, res) => {
   }
 };
 
-export { createUser, getAllUser, getUser, updateUser, login, deleteUser, changePassword, getToken }
+export { createUser, getAllUser, getUser, updateUser, login, deleteUser, changePassword, getToken, checkToken }
