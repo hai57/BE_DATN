@@ -1,13 +1,12 @@
 import mongoose from 'mongoose';
 
 const subActivitiesSchema = new mongoose.Schema({
-  _id: {
-    type: Number,
-    required: true
-  },
   activity : {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'activities'
+  },
+  name: {
+    type: String
   },
   amount: {
     type: Number

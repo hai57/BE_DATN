@@ -23,6 +23,7 @@ const getSubActivities = async(req, res) =>{
       },
       {
         $project: {
+          name: 1,
           amount: 1,
           nameActivities: 1,
           idActivities: 1
@@ -48,18 +49,18 @@ const createSubActivities = async (req, res) => {
 
     // Tạo một thời gian mới
     const newSubActivities = new SubActivities({
-      _id: req.body.idSubActivity,
       activity: req.body.idActivities,
+      name: req.body.nameSubActivities,
       amount: req.body.amount
     });
 
     await newSubActivities.save();
     return res.status(status.CREATED).json(newSubActivities);
   } catch (err) {
+    console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
-
 
 const updateSubActivities = async(req, res) => {
   try {
@@ -69,6 +70,7 @@ const updateSubActivities = async(req, res) => {
     } else if (!req.body.amount) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
+    checkSubactivitiesId.name = req.body.nameSubActivities
     checkSubactivitiesId.amount = req.body.amount
     await checkSubactivitiesId.save()
     res.status(status.OK).json({ message: message.OK, checkSubactivitiesId})

@@ -8,9 +8,6 @@ const activitiesSchema = new mongoose.Schema({
   name: {
     type: String
   },
-  description: {
-    type: String
-  },
   time: {
     type: String
   },

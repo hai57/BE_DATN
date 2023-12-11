@@ -80,7 +80,6 @@ const getAllActivities = async (req, res)=> {
       {
         $project: {
           name: 1,
-          description: 1,
           isParent: 1,
           time: 1,
           nameType: 1
@@ -108,8 +107,6 @@ const createActivities = async(req,res) => {
     const newActivities = new Activities(req.body);
     if(!req.body.name ) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
-    }else if(!req.body.description ) {
-      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     newActivities.typeActivities = defaultType
     await newActivities.save();
@@ -128,7 +125,6 @@ const updateActivities = async(req, res) => {
     }
     activities.type = type;
     activities.name = req.body.name;
-    activities.description = req.body.description;
     activities.isParent = req.body.isParent;
     activities.time = req.body.time;
     await activities.save()
