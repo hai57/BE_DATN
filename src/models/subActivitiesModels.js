@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const subActivitiesSchema = new mongoose.Schema({
-  activity : {
+  activity: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'activities'
   },
@@ -10,6 +10,10 @@ const subActivitiesSchema = new mongoose.Schema({
   },
   amount: {
     type: Number
+  },
+  unit: {
+    type: String,
+    enum: ['kg', 's']
   }
 })
 

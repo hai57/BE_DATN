@@ -8,12 +8,11 @@ const activitiesSchema = new mongoose.Schema({
   name: {
     type: String
   },
-  time: {
+  desciption: {
     type: String
   },
   isParent: {
-    type: Boolean,
-    required: true
+    type: Boolean
   }
 })
 
