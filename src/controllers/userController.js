@@ -6,6 +6,7 @@ import { Token } from '@/models/tokenModels.js';
 import { generateToken } from '@/middlewares/index.js';
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
+import { selectFieldsMiddleware } from '@/middlewares/index.js'
 
 
 const createUser = async (req, res) => {
@@ -41,6 +42,7 @@ const createUser = async (req, res) => {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
+
 const register = async (req, res) => {
   try {
     const user = new User(req.body);
@@ -60,11 +62,14 @@ const register = async (req, res) => {
     const token = generateToken(user);
 
     await user.save();
-    res.status(status.CREATED).json({
-      status: 'Success',
-      message: message.CREATED,
-      user: user,
-      token: token
+    const selectedUserFields = ['_id', 'name', 'age', 'gmail', 'address'];
+    selectFieldsMiddleware(selectedUserFields)(req, res, () => {
+      return res.status(status.CREATED).json({
+        status: 'Success',
+        message: message.CREATED,
+        user: res.locals.data,
+        token: token
+      });
     });
   } catch (err) {
     console.log(err)

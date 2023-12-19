@@ -40,22 +40,22 @@ const createSchedule = async (req, res) => {
 const getSchedule = async (req, res) => {
   try {
     const schedule = await Schedule.aggregate([
-      // {
-      //   $lookup: {
-      //     from: 'items',
-      //     localField: 'daySchedule.itemSchedule',
-      //     foreignField: '_id',
-      //     as: 'items'
-      //   }
-      // },
-      // {
-      //   $lookup: {
-      //     from: 'typeSchedule',
-      //     localField: 'typeSchedule',
-      //     foreignField: '_id',
-      //     as: 'typeSchedule'
-      //   }
-      // },
+      {
+        $lookup: {
+          from: 'items',
+          localField: 'daySchedule.itemSchedule',
+          foreignField: '_id',
+          as: 'items'
+        }
+      },
+      {
+        $lookup: {
+          from: 'typeSchedule',
+          localField: 'typeSchedule',
+          foreignField: '_id',
+          as: 'typeSchedule'
+        }
+      },
       {
         $lookup: {
           from: 'users',
@@ -67,14 +67,15 @@ const getSchedule = async (req, res) => {
       {
         $addFields: {
           userName: { $arrayElemAt: ['$user.name', 0] },
+          typeSchedule: { $arrayElemAt: ['$typeSchedule.name', 0] }
         }
       },
       {
         $project: {
           nameSchedule: 1,
           userName: 1,
-          typeSchedule: 1,
-          items: 1
+          'typeSchedule': 1,
+          'items': 1
         }
       }
     ]);
