@@ -23,12 +23,18 @@ const createUser = async (req, res) => {
     user.role = defaultRole;
     //token
     const token = generateToken(user);
-
+    const selectedUserFields = {
+      _id: user._id,
+      name: user.name,
+      age: user.age,
+      gmail: user.gmail,
+      address: user.address,
+    };
     await user.save();
     res.status(status.CREATED).json({
       status: 'Success',
       message: message.CREATED,
-      user: user,
+      user: selectedUserFields,
       token: token
     });
   } catch (err) {
@@ -137,7 +143,6 @@ const getUser = async (req, res) => {
             age: 1,
             gmail: 1,
             address: 1,
-            password: 1,
             nameRole: 1
           }
         }
@@ -181,7 +186,6 @@ const updateUser = async (req, res) => {
     user.age = req.body.age;
     user.gmail = req.body.gmail;
     user.address = req.body.address
-    user.password = req.body.password
 
     await user.save();
     res.status(status.OK).json({ message: message.OK, user })
@@ -217,7 +221,7 @@ const login = async (req, res) => {
   const { gmail, password } = req.body;
 
   try {
-    const user = await User.findOne({ gmail });
+    const user = await User.findOne({ gmail }).select('-__v');;
     if (!user) {
       return res.status(status.UNAUTHORIZED).json({ message: message.ERROR.INVALID });
     }
@@ -231,7 +235,14 @@ const login = async (req, res) => {
       });
       try {
         await newToken.save();
-        return res.status(status.OK).json({ user: user, token: newToken.token });
+        const selectedUserFields = {
+          _id: user._id,
+          name: user.name,
+          age: user.age,
+          gmail: user.gmail,
+          address: user.address,
+        };
+        return res.status(status.OK).json({ user: selectedUserFields, token: newToken.token });
       } catch (err) {
         return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
       }
