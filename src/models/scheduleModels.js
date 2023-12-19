@@ -1,20 +1,31 @@
 import mongoose from 'mongoose';
 
 const scheduleSchema = new mongoose.Schema({
-  time : {
-    type : mongoose.Schema.Types.Number,
-    ref:"times",
-    required: true
-  },
-  activity: {
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'activitiess',
-    required: true
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'users'
   },
   nameSchedule: {
-    type: String,
-    required : true
-  }
+    type: String
+  },
+  typeSchedule: {
+    type: mongoose.Schema.Types.Number,
+    ref: 'typeSchedule'
+  },
+  daySchedule: [
+    {
+      order: {
+        type: Number
+      },
+      itemSchedule: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'items'
+        }
+      ]
+    }
+  ]
+
 })
 
 const Schedule = mongoose.model('schedules', scheduleSchema)

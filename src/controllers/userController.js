@@ -8,22 +8,16 @@ import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
 
 
-const createUser =  async (req, res) => {
+const createUser = async (req, res) => {
   try {
     const user = new User(req.body);
-    const defaultRole = '6503ee3bae3b2ccd6dae5fab'
+    const defaultRole = '6555877d0fa87df47f00aead'
     const role = await Role.findById(defaultRole);
     if (!role) {
-      return res.status(status.NOT_FOUND).json({ message: message.ERROR.MISS_FIELD });
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     } else if (!req.body.name) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
-    } else if(!req.body.age ) {
-      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
-    } else if(!req.body.gmail ) {
-      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
-    } else if(!req.body.address ) {
-      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
-    } else if(!req.body.password ) {
+    } else if (!req.body.gmail) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     user.role = defaultRole;
@@ -33,7 +27,7 @@ const createUser =  async (req, res) => {
     await user.save();
     res.status(status.CREATED).json({
       status: 'Success',
-      message: message.CREATED ,
+      message: message.CREATED,
       user: user,
       token: token
     });
@@ -41,18 +35,48 @@ const createUser =  async (req, res) => {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
+const register = async (req, res) => {
+  try {
+    const user = new User(req.body);
+    const defaultRole = '6503ee3bae3b2ccd6dae5fab'
+    const role = await Role.findById(defaultRole);
+    if (!role) {
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.MISS_FIELD });
+    } else if (!req.body.name) {
+      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
+    } else if (!req.body.gmail) {
+      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
+    } else if (!req.body.password) {
+      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
+    }
+    user.role = defaultRole;
+    //token
+    const token = generateToken(user);
 
-const getAllUser =  async (req, res) => {
-  const offset  =req.query.offset || 0 // Giá trị mặc định là 0 nếu không có tham số offset được cung cấp
+    await user.save();
+    res.status(status.CREATED).json({
+      status: 'Success',
+      message: message.CREATED,
+      user: user,
+      token: token
+    });
+  } catch (err) {
+    console.log(err)
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+  }
+};
+
+const getAllUser = async (req, res) => {
+  const offset = req.query.offset || 0 // Giá trị mặc định là 0 nếu không có tham số offset được cung cấp
   const limit = req.query.limit || 10 // Giá trị mặc định là 10 nếu không có tham số limit được cung cấp
   try {
     const usersWithRoles = await User.aggregate([
       {
         $lookup: {
-          from:'roles',
-          localField:'role',
-          foreignField:'_id',
-          as : 'roleDetails'
+          from: 'roles',
+          localField: 'role',
+          foreignField: '_id',
+          as: 'roleDetails'
         }
       },
       {
@@ -73,9 +97,9 @@ const getAllUser =  async (req, res) => {
         },
       }
     ])
-    .skip(parseInt(offset))
-    .limit(parseInt(limit));
-    if (!usersWithRoles ) {
+      .skip(parseInt(offset))
+      .limit(parseInt(limit));
+    if (!usersWithRoles) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
     res.status(status.OK).json({ message: message.OK, usersWithRoles });
@@ -84,15 +108,15 @@ const getAllUser =  async (req, res) => {
   }
 };
 
-const getUser = async(req, res) => {
-  try{
+const getUser = async (req, res) => {
+  try {
     const user = await User.findById(req.userId);
-    if(!user) {
+    if (!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.INVALID })
     } else {
       const usersWithRoles = await User.aggregate([
         {
-          $match: {gmail: gmail}
+          $match: { gmail: gmail }
         },
         {
           $lookup: {
@@ -103,7 +127,7 @@ const getUser = async(req, res) => {
           }
         },
         {
-          $addFields : {
+          $addFields: {
             nameRole: { $arrayElemAt: ['$roles.nameRole', 0] }
           }
         },
@@ -124,33 +148,33 @@ const getUser = async(req, res) => {
       }
 
       res.status(status.OK).json({ message: message.OK, usersWithRoles })
-  }
-  } catch(err) {
+    }
+  } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
 
-const deleteUser = async(req, res) => {
+const deleteUser = async (req, res) => {
   try {
     const userId = req.body.idUser;
     const user = await User.findById(userId).exec();
-    if(!user){
+    if (!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
     await User.findByIdAndRemove(userId);
     res.status(status.OK).json({ message: message.OK });
-  } catch(err) {
+  } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
 
-const updateUser = async(req, res) => {
+const updateUser = async (req, res) => {
   try {
     const userId = req.body._id;
     const user = await User.findById(userId).exec();
-    if(!user) {
+    if (!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if ( !req.body.name || !req.body.age || !req.body.gmail || !req.body.address || !req.body.password) {
+    } else if (!req.body.name || !req.body.age || !req.body.gmail || !req.body.address) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     user.name = req.body.name;
@@ -161,7 +185,7 @@ const updateUser = async(req, res) => {
 
     await user.save();
     res.status(status.OK).json({ message: message.OK, user })
-  } catch(err){
+  } catch (err) {
     console.error(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
@@ -172,11 +196,11 @@ const checkToken = (req, res) => {
   return res.json({ user: req.user });
 };
 
-const changePassword = async(req, res) => {
+const changePassword = async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId).exec();
-    if(!user) {
+    if (!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     } if (user.password !== req.body.oldPassword) {
       return res.status(status.UNAUTHORIZED).json({ message: message.ERROR.UNAUTHORIZED.OLD_PASS_INCORRECT });
@@ -184,30 +208,30 @@ const changePassword = async(req, res) => {
     user.password = req.body.newPassword;
     await user.save()
     res.status(status.OK).json({ message: message.OK })
-  } catch(err) {
+  } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
 
-const login = async(req, res) => {
-  const {gmail, password} = req.body;
+const login = async (req, res) => {
+  const { gmail, password } = req.body;
 
   try {
     const user = await User.findOne({ gmail });
-    if(!user) {
+    if (!user) {
       return res.status(status.UNAUTHORIZED).json({ message: message.ERROR.INVALID });
     }
-    if(user.password === password ){
+    if (user.password === password) {
       await Token.deleteMany({ user: user._id });
       const token = generateToken(user);
       const newToken = new Token({
-        user: user._id,
+        user: user,
         token,
         expiration: token.tokenExpiration
       });
       try {
         await newToken.save();
-        return res.status(status.OK).json({ userId: user._id, token: newToken.token });
+        return res.status(status.OK).json({ user: user, token: newToken.token });
       } catch (err) {
         return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
       }
@@ -250,9 +274,9 @@ const getToken = async (req, res) => {
     const token = await Token.find();
     res.status(status.OK).json({ message: message.OK, token })
   }
-  catch(err) {
+  catch (err) {
     res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
 
-export { createUser, getAllUser, getUser, updateUser, login, deleteUser, changePassword, getToken, checkToken }
+export { createUser, getAllUser, getUser, updateUser, login, deleteUser, changePassword, getToken, checkToken, register }

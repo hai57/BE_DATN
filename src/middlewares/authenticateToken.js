@@ -8,7 +8,7 @@ const secretKey = 'abc';
 
 const generateToken = (user) => {
   const tokenExpiration = Math.floor(Date.now() / 1000) + 4 * 30 * 24 * 60 * 60;
-  return jwt.sign({ userId: user._id, tokenExpiration  }, secretKey);
+  return jwt.sign({ userId: user._id, tokenExpiration }, secretKey);
 };
 
 const verifyToken = (req, res, next) => {
@@ -52,19 +52,19 @@ const isAdmin = async (req, res, next) => {
       }
     }
 
-    if (isAdmin ) {
+    if (isAdmin) {
       next();
     } else {
       return res.status(status.FORBIDDEN).json({ message: message.ERROR.MISSING_ADMIN });
     }
-  }  catch (error) {
+  } catch (error) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
 
 const authenticateToken = {
-    verifyToken,
-    isAdmin,
+  verifyToken,
+  isAdmin,
 };
 const checkTokenValidity = async (req, res) => {
   try {
@@ -76,8 +76,8 @@ const checkTokenValidity = async (req, res) => {
         return res.status(status.NOT_FOUND).json({ message: message.ERROR.USER_NOT_FOUND });
       }
 
-      const { name, age , gmail, address } = user;
-      return res.status(status.OK).json({ message: 'Token is valid', user: { name, age, gmail, address} });
+      const { _id, name, age, gmail, address, password } = user;
+      return res.status(status.OK).json({ message: 'Token is valid', user: { _id, name, age, gmail, address, password } });
     });
   } catch (err) {
     console.error(err);
@@ -85,4 +85,4 @@ const checkTokenValidity = async (req, res) => {
   }
 };
 
-export {generateToken, authenticateToken, checkTokenValidity}
+export { generateToken, authenticateToken, checkTokenValidity }

@@ -5,10 +5,10 @@ import { authenticateToken } from '@/middlewares/index.js';
 
 const router = express.Router()
 
-router.get('/getSchedule', getSchedule);
-router.post('/createSchedule', createSchedule);
-router.put('/updateSchedule', updateSchedule)
-router.delete('/deleteSchedule', deleteSchedule)
+router.get('/getSchedule', authenticateToken.verifyToken, getSchedule);
+router.post('/createSchedule', authenticateToken.verifyToken, createSchedule);
+router.put('/updateSchedule', authenticateToken.verifyToken, updateSchedule)
+router.delete('/deleteSchedule', authenticateToken.verifyToken, deleteSchedule)
 
 //schedule user
 router.post('/createScheduleUser', authenticateToken.verifyToken, createScheduleUser);

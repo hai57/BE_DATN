@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const userSchema = new mongoose.Schema({
   role: {
     type: mongoose.Schema.Types.ObjectId,
-    ref:'roles'
+    ref: 'roles'
   },
   name: {
     type: String
@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   },
   gmail: {
     type: String,
-    unique:true
+    unique: true
   },
   address: {
     type: String

@@ -1,13 +1,15 @@
 import express from 'express';
 
 import { createRole, getRole, updateRole, deleteRole } from '@/controllers/roleController.js';
-import { createUser, getAllUser,getUser, updateUser, deleteUser, getToken, login} from '@/controllers/userController.js';
+import { createUser, getAllUser, getUser, updateUser, deleteUser, getToken, login, register } from '@/controllers/userController.js';
 import { authenticateToken, checkTokenValidity } from '@/middlewares/index.js';
 
 const router = express.Router()
 
 router.get('/getAllUser', authenticateToken.verifyToken, getAllUser)
-router.get('/getUser',authenticateToken.verifyToken, getUser)
+router.get('/getUser', authenticateToken.verifyToken, getUser)
+register
+router.post('/register', register)
 router.post('/createUser', createUser)
 router.delete('/deleteUser', authenticateToken.verifyToken, deleteUser)
 router.put('/updateUser', authenticateToken.verifyToken, updateUser)

@@ -74,7 +74,7 @@ const getAllActivities = async (req, res) => {
       },
       {
         $addFields: {
-          nameType: { $arrayElemAt: ['$typeActivities.nameType', 0] },
+          idType: { $arrayElemAt: ['$typeActivities._id', 0] },
         }
       },
       {
@@ -82,7 +82,7 @@ const getAllActivities = async (req, res) => {
           name: 1,
           isParent: 1,
           desciption: 1,
-          nameType: 1
+          idType: 1
         },
       },
 
@@ -100,15 +100,28 @@ const getAllActivities = async (req, res) => {
   }
 };
 
+const getActivityById = async (req, res) => {
+  const activityId = req.params.activityId;
+
+  try {
+    const activity = await Activities.findById(activityId);
+
+    if (!activity) {
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
+    }
+
+    res.status(status.OK).json({ message: message.OK, activity });
+  } catch (err) {
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+  }
+};
+
 const createActivities = async (req, res) => {
   try {
-    //fix cung truoc thang type
-    const defaultType = "650a77bcaed54943b3b370ba"
     const newActivities = new Activities(req.body);
     if (!req.body.name) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    newActivities.typeActivities = defaultType
     await newActivities.save();
     res.status(status.CREATED).json({ message: message.CREATED, newActivities });
   } catch (err) {
@@ -122,7 +135,7 @@ const updateActivities = async (req, res) => {
     if (!activities) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
-    activities.type = req.body.type;
+    activities.typeActivities = req.body.typeActivities;
     activities.name = req.body.name;
     activities.desciption = req.body.desciption;
     await activities.save()
@@ -146,4 +159,4 @@ const deleteActivities = async (req, res) => {
   }
 };
 
-export { createActivities, getAllActivities, updateActivities, deleteActivities, createTypeActivities, getTypeActivities, updateTypeActivities, deleteTypeActivities }
+export { createActivities, getAllActivities, updateActivities, deleteActivities, getActivityById, createTypeActivities, getTypeActivities, updateTypeActivities, deleteTypeActivities }

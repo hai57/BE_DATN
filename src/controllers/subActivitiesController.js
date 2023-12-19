@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import { SubActivities } from '@/models/subActivitiesModels.js'
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
@@ -45,14 +47,38 @@ const getSubActivities = async (req, res) => {
   }
 };
 
+const getSubActivitiesByIdActivity = async (req, res) => {
+  const activityId = req.params.activityId;
+  const offset = req.query.offset || 0;
+  const limit = req.query.limit || 10;
+
+  try {
+    const subActivities = await SubActivities.find({
+      activity: mongoose.Types.ObjectId(activityId)
+    })
+      .skip(parseInt(offset))
+      .limit(parseInt(limit))
+
+    if (!subActivities) {
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
+    }
+
+    res.status(status.OK).json({ message: message.OK, subActivities });
+  } catch (err) {
+    console.log(err)
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+  }
+}
+
 const createSubActivities = async (req, res) => {
   try {
 
     // Tạo một thời gian mới
     const newSubActivities = new SubActivities({
       activity: req.body.idActivities,
-      name: req.body.nameSubActivities,
-      amount: req.body.amount
+      name: req.body.name,
+      amount: req.body.amount,
+      unit: req.body.unit
     });
 
     await newSubActivities.save();
@@ -71,7 +97,7 @@ const updateSubActivities = async (req, res) => {
     } else if (!req.body.amount) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    checkSubactivitiesId.name = req.body.nameSubActivities
+    checkSubactivitiesId.name = req.body.name
     checkSubactivitiesId.amount = req.body.amount
     await checkSubactivitiesId.save()
     res.status(status.OK).json({ message: message.OK, checkSubactivitiesId })
@@ -94,4 +120,4 @@ const deleteSubActivities = async (req, res) => {
   };
 };
 
-export { getSubActivities, createSubActivities, updateSubActivities, deleteSubActivities }
+export { getSubActivities, getSubActivitiesByIdActivity, createSubActivities, updateSubActivities, deleteSubActivities }
