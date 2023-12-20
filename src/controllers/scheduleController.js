@@ -17,7 +17,7 @@ const createSchedule = async (req, res) => {
     const newschedule = new Schedule({
       user: req.userId,
       nameSchedule: req.body.name,
-      typeSchedule: req.body.type,
+      type: req.body.type,
       daySchedule: req.body.daySchedule.map(day => {
         return {
           order: type.name === 'week' ? order++ : 1,
@@ -50,14 +50,6 @@ const getSchedule = async (req, res) => {
       },
       {
         $lookup: {
-          from: 'typeSchedule',
-          localField: 'typeSchedule',
-          foreignField: '_id',
-          as: 'typeSchedule'
-        }
-      },
-      {
-        $lookup: {
           from: 'users',
           localField: 'user',
           foreignField: '_id',
@@ -67,14 +59,13 @@ const getSchedule = async (req, res) => {
       {
         $addFields: {
           userName: { $arrayElemAt: ['$user.name', 0] },
-          typeSchedule: { $arrayElemAt: ['$typeSchedule.name', 0] }
         }
       },
       {
         $project: {
           nameSchedule: 1,
           userName: 1,
-          'typeSchedule': 1,
+          type: 1,
           'items': 1
         }
       }

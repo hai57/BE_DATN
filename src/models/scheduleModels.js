@@ -8,7 +8,7 @@ const scheduleSchema = new mongoose.Schema({
   nameSchedule: {
     type: String
   },
-  typeSchedule: {
+  type: {
     type: mongoose.Schema.Types.Number,
     ref: 'typeSchedule'
   },
