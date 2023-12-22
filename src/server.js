@@ -15,16 +15,16 @@ import { timeoutMiddleware } from './middlewares/index.js'
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 8001;
 
 mongoose.connect((process.env.MONGODB_URL), { useUnifiedTopology: true, useNewUrlParser: true })
   .then(() => {
     console.log('Mongo DB Connection successfull')
     app.listen(port, () => console.log(`Node JS server started in port ${port}`))
   }).catch((err) => {
-    console.log('Mongo DB Connection Error')
+    console.log('Mongo DB Connection Error', err)
   })
-app.use(timeoutMiddleware(5000));
+// app.use(timeoutMiddleware(6000));
 //Cấu hình Express để xử lý dữ liệu lớn, đa dạng
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
@@ -36,4 +36,3 @@ app.use('/v1/api/activities', activitiesRoute);
 app.use('/v1/api/noti', notiRoute);
 app.use('/v1/api/time', timeRoute);
 app.use('/v1/api/itemSchedule', itemScheduleRoute);
-

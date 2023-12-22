@@ -21,13 +21,13 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String
   },
-  // weight: {
-  //   type: String
-  // },
-  // height: {
-  //   type: String
-  // }
-})
+  weight: {
+    type: Number
+  },
+  height: {
+    type: Number
+  }
+}, { timestamps: false })
 
 const User = mongoose.model('users', userSchema)
 

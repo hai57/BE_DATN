@@ -1,4 +1,4 @@
-// import moment from 'moment';
+import moment from 'moment';
 
 import { User } from '@/models/userModels.js';
 import { Role } from '@/models/roleModels.js';
@@ -21,7 +21,11 @@ const createUser = async (req, res) => {
     } else if (!req.body.gmail) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    user.role = defaultRole;
+    // const dateFormat = moment(req.body.dateOfB, 'DD-MM-YYYY').utcOffset(7, true);
+    // user.dateOfB = dateFormat.isValid() ? dateFormat.toDate() : null;
+    // console.log(user.dateOfB);
+    // console.log(dateFormat);
+
     //token
     const token = generateToken(user);
     const selectedUserFields = {
@@ -30,6 +34,8 @@ const createUser = async (req, res) => {
       age: user.age,
       gmail: user.gmail,
       address: user.address,
+      weight: user.weight,
+      height: user.height
     };
     await user.save();
     res.status(status.CREATED).json({
@@ -39,6 +45,7 @@ const createUser = async (req, res) => {
       token: token
     });
   } catch (err) {
+    console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
@@ -100,6 +107,12 @@ const getAllUser = async (req, res) => {
       {
         $project: {
           name: 1, // 1 la duoc liet ke, 0 la khong bao gom
+          // dateOfB: {
+          //   $dateToString: {
+          //     format: '%d-%m-%Y',
+          //     date: '$dateOfB',
+          //   },
+          // },
           age: 1,
           gmail: 1,
           address: 1,
@@ -246,7 +259,10 @@ const login = async (req, res) => {
           age: user.age,
           gmail: user.gmail,
           address: user.address,
+          weight: user.weight,
+          height: user.height
         };
+
         return res.status(status.OK).json({ user: selectedUserFields, token: newToken.token });
       } catch (err) {
         return res.status(status.ERROR).json({ message: message.ERROR.SERVER })

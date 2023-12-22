@@ -1,25 +1,29 @@
-import { status } from "@/constant/status.js";
-
-function timeoutMiddleware(timeout) {
+const timeoutMiddleware = (timeout) => {
   return (req, res, next) => {
+    let timeoutReached = false;
+
     const timer = setTimeout(() => {
-      clearTimeout(timer);
+      timeoutReached = true;
 
       if (!res.headersSent) {
         res.status(500).send('Request Timeout');
       }
     }, timeout);
 
+    res.on('finish', () => {
+      clearTimeout(timer);
+    });
+
     try {
-      next();
+      if (!timeoutReached) {
+        next();
+      }
     } catch (error) {
       console.error('Error processing request:', error);
 
-      if (!res.headersSent) {
+      if (!timeoutReached && !res.headersSent) {
         res.status(500).send('Internal Server Error');
       }
-    } finally {
-      clearTimeout(timer);
     }
   };
 }

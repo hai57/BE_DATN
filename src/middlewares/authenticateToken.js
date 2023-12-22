@@ -66,6 +66,7 @@ const authenticateToken = {
   verifyToken,
   isAdmin,
 };
+
 const checkTokenValidity = async (req, res) => {
   try {
     // Sử dụng middleware để kiểm tra token
