@@ -5,25 +5,24 @@ import { ScheduleUser } from '@/models/scheduleUserModels.js';
 import { User } from '@/models/userModels.js';
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
-import { TypeSchedule } from '@/models/typeSchedule.js';
+import { SubActivities } from '@/models/subActivitiesModels.js';
 
 const createSchedule = async (req, res) => {
   try {
-
-    const type = await TypeSchedule.findById(req.body.type);
-
-    let order = 0;
-
     const newschedule = new Schedule({
-      user: req.userId,
+      userCreate: req.userId,
       nameSchedule: req.body.name,
       type: req.body.type,
-      daySchedule: req.body.daySchedule.map(day => {
-        return {
-          order: type.name === 'week' ? order++ : 1,
-          itemSchedule: day.itemSchedule
-        };
-      })
+      createAt: Date.now(),
+      timeLine: req.body.timeLine
+      // daySchedule: req.body.daySchedule.map(day => {
+      //   console.log(day.itemSchedule)
+
+      //   return {
+      //     order: req.body.type === 'week' ? order++ : 1,
+      //     itemSchedule: day.itemSchedule
+      //   };
+      // })
     });
     if (!req.body.name) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
@@ -38,46 +37,129 @@ const createSchedule = async (req, res) => {
 };
 
 const getSchedule = async (req, res) => {
+  const offset = req.params.offset || 0;
+  const limit = req.params.limit || 10;
+
   try {
-    const schedule = await Schedule.aggregate([
-      {
-        $lookup: {
-          from: 'items',
-          localField: 'daySchedule.itemSchedule',
-          foreignField: '_id',
-          as: 'items'
-        }
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'user',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      {
-        $addFields: {
-          userName: { $arrayElemAt: ['$user.name', 0] },
-        }
-      },
-      {
-        $project: {
-          nameSchedule: 1,
-          userName: 1,
-          type: 1,
-          'items': 1
-        }
-      }
-    ]);
+    // const schedule = await Schedule.aggregate([
+    //   {
+    //     $lookup: {
+    //       from: 'users',
+    //       localField: 'userCreate',
+    //       foreignField: '_id',
+    //       as: 'userCreate'
+    //     }
+    //   },
+    //   {
+    //     $unwind: {
+    //       path: '$timeLine',
+    //       preserveNullAndEmptyArrays: true
+    //     }
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: 'activities',
+    //       localField: 'timeLine.activity',
+    //       foreignField: '_id',
+    //       as: 'activity'
+    //     }
+    //   },
+    //   {
+    //     $unwind: {
+    //       path: '$activity',
+    //       preserveNullAndEmptyArrays: true
+    //     }
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: 'subActivities',
+    //       localField: 'timeLine.subActivities',
+    //       foreignField: '_id',
+    //       as: 'subActivities'
+    //     }
+    //   },
+    //   {
+    //     $unwind: {
+    //       path: '$subActivities',
+    //       preserveNullAndEmptyArrays: true
+    //     }
+    //   },
+    //   {
+    //     $group: {
+    //       _id: '$_id',
+    //       nameSchedule: { $first: '$nameSchedule' },
+    //       createAt: { $first: '$createAt' },
+    //       type: { $first: '$type' },
+    //       userCreate: { $first: '$userCreate.name' }, // Chỉ lấy trường 'name' từ 'userCreate'
+    //       timeLine: {
+    //         $push: {
+    //           startTime: '$timeLine.startTime',
+    //           endTime: '$timeLine.endTime',
+    //           activity: {
+    //             $mergeObjects: [
+    //               { _id: '$activity._id' },
+    //               { name: '$activity.name' }
+    //             ]
+    //           },
+    //           subActivities: {
+    //             $map: {
+    //               input: '$subActivities',
+    //               as: 'subAct',
+    //               in: {
+    //                 _id: '$$subAct._id',
+    //                 name: '$$subAct.name',
+    //                 amount: '$$subAct.amount', // Thêm các trường khác nếu cần
+    //                 unit: '$$subAct.unit'     // Thêm các trường khác nếu cần
+    //               }
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   },
+    //   {
+    //     $addFields: {
+    //       subActivitiesCheck: { $ifNull: ['$subActivities', 'SubActivities is null'] }
+    //     }
+    //   },
+    //   {
+    //     $project: {
+    //       _id: 1,
+    //       nameSchedule: 1,
+    //       createAt: 1,
+    //       type: 1,
+    //       userCreate: 1,
+    //       // timeLine: {
+    //       //   $map: {
+    //       //     input: '$timeLine',
+    //       //     as: 'tl',
+    //       //     in: {
+    //       //       startTime: '$$tl.startTime',
+    //       //       endTime: '$$tl.endTime',
+    //       //       activity: '$$tl.activity',
+    //       //       subActivities: '$$tl.subActivities'
+    //       //     }
+    //       //   }
+    //       // }
+    //       timeLine: 1
+    //     }
+    //   }
+    // ]).skip(parseInt(offset)).limit(parseInt(limit));
+    const schedule = await Schedule.find()
+      .populate('userCreate', 'name')
+      .populate('timeLine.activity', 'name')
+      .populate('timeLine.subActivities', 'name')
+      .skip(parseInt(offset))
+      .limit(parseInt(limit));
 
     if (!schedule || schedule.length === 0) {
-      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
+
     res.status(status.OK).json({ message: message.OK, schedule });
   } catch (err) {
-    console.error(err)
-    return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
+    console.error(err);
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
 

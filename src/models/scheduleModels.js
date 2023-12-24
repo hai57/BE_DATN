@@ -1,31 +1,43 @@
 import mongoose from 'mongoose';
 
 const scheduleSchema = new mongoose.Schema({
-  user: {
+  userCreate: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users'
   },
   nameSchedule: {
     type: String
   },
-  type: {
-    type: mongoose.Schema.Types.Number,
-    ref: 'typeSchedule'
+  createAt: {
+    type: Date
   },
-  daySchedule: [
+  type: {
+    type: String,
+    enum: ['day', 'week']
+  },
+  timeLine: [
     {
-      order: {
-        type: Number
+      startTime: {
+        type: String
       },
-      itemSchedule: [
+      endTime: {
+        type: String
+      },
+      activity: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'activities'
+      },
+      subActivities: [
         {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'items'
+          ref: 'subActivities'
         }
       ]
     }
   ]
 
+}, {
+  versionKey: false,
 })
 
 const Schedule = mongoose.model('schedules', scheduleSchema)

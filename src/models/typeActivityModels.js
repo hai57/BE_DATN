@@ -5,6 +5,8 @@ const typeActivities = new mongoose.Schema({
     type: String,
     required: true
   },
+}, {
+  versionKey: false,
 })
 
 const Type = mongoose.model('types', typeActivities)

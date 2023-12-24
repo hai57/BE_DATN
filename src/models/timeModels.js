@@ -17,8 +17,10 @@ const timeSchema = new mongoose.Schema({
     max: 59,
     default: 0
   },
+}, {
+  versionKey: false,
 });
 
 const Time = mongoose.model('times', timeSchema);
 
-export {Time};
+export { Time };

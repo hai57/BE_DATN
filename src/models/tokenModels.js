@@ -1,7 +1,7 @@
-import  mongoose from 'mongoose'
+import mongoose from 'mongoose'
 
 const tokenSchema = new mongoose.Schema({
-  user : {
+  user: {
     type: mongoose.Schema.Types.ObjectId, ref: 'users',
     required: true
   },
@@ -12,8 +12,10 @@ const tokenSchema = new mongoose.Schema({
     type: Date
   },
 
+}, {
+  versionKey: false,
 })
 
 const Token = mongoose.model('tokens', tokenSchema)
 
-export {Token}
+export { Token }

@@ -20,8 +20,8 @@ const createTypeSchedule = async (req, res) => {
 
 const getTypeSchedule = async (req, res) => {
   try {
-    const typeSchedule = await TypeSchedule.find()
-    return res.status(status.OK).json({ message: message.Ok, typeSchedule })
+    const typeSchedule = await TypeSchedule.find().select('-__v');
+    return res.status(status.OK).json({ message: message.OK, typeSchedule })
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR })
@@ -106,8 +106,7 @@ const getAllItem = async (req, res) => {
         },
       },
 
-    ])
-      .skip(parseInt(offset))
+    ]).skip(parseInt(offset))
       .limit(parseInt(limit));
 
     if (!items) {

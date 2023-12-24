@@ -21,8 +21,10 @@ const scheduleUserSchema = new mongoose.Schema({
     required: true
   },
 
+}, {
+  versionKey: false,
 });
 
 const ScheduleUser = mongoose.model('scheduleUsers', scheduleUserSchema);
 
-export {ScheduleUser}
+export { ScheduleUser }

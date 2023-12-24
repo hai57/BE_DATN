@@ -27,6 +27,7 @@ const getSubActivities = async (req, res) => {
         $project: {
           name: 1,
           amount: 1,
+          iconCode: 1,
           enum: 1,
           nameActivities: 1,
           idActivities: 1

@@ -5,10 +5,10 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'roles'
   },
-  name: {
+  username: {
     type: String
   },
-  age: {
+  birthday: {
     type: String
   },
   gmail: {
@@ -27,7 +27,9 @@ const userSchema = new mongoose.Schema({
   height: {
     type: Number
   }
-}, { timestamps: false })
+}, {
+  versionKey: false,
+})
 
 const User = mongoose.model('users', userSchema)
 

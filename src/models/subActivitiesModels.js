@@ -5,6 +5,9 @@ const subActivitiesSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'activities'
   },
+  iconCode: {
+    type: String
+  },
   name: {
     type: String
   },
@@ -15,6 +18,8 @@ const subActivitiesSchema = new mongoose.Schema({
     type: String,
     enum: ['kg', 's']
   }
+}, {
+  versionKey: false,
 })
 
 const SubActivities = mongoose.model('subActivities', subActivitiesSchema);

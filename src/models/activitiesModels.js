@@ -13,7 +13,12 @@ const activitiesSchema = new mongoose.Schema({
   },
   isParent: {
     type: Boolean
+  },
+  iconCode: {
+    type: String
   }
+}, {
+  versionKey: false,
 })
 
 const Activities = mongoose.model('activities', activitiesSchema);

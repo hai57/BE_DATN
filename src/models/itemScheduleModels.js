@@ -11,6 +11,8 @@ const itemSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'activities'
   }
+}, {
+  versionKey: false,
 });
 
 const Item = mongoose.model('items', itemSchema);

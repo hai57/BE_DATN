@@ -8,6 +8,17 @@ import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
 import { selectFieldsMiddleware } from '@/middlewares/index.js'
 
+const getSelectedUserFields = (user) => {
+  return {
+    id: user._id,
+    name: user.username,
+    birthday: user.birthday,
+    gmail: user.gmail,
+    address: user.address,
+    weight: user.weight,
+    height: user.height
+  };
+};
 
 const createUser = async (req, res) => {
   try {
@@ -16,27 +27,22 @@ const createUser = async (req, res) => {
     const role = await Role.findById(defaultRole);
     if (!role) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
-    } else if (!req.body.name) {
+    } else if (!req.body.username) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     } else if (!req.body.gmail) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    // const dateFormat = moment(req.body.dateOfB, 'DD-MM-YYYY').utcOffset(7, true);
-    // user.dateOfB = dateFormat.isValid() ? dateFormat.toDate() : null;
-    // console.log(user.dateOfB);
-    // console.log(dateFormat);
-
+    if (req.body.birthday) {
+      const dateOfBirth = moment(req.body.birthday, 'DD-MM-YYYY').toDate();
+      if (Object.prototype.toString.call(dateOfBirth) === '[object Date]' && !isNaN(dateOfBirth)) {
+        user.birthday = moment(dateOfBirth).format('YYYY-MM-DD');
+      } else {
+        return res.status(status.BAD_REQUEST).json({ message: message.ERROR.SERVER });
+      }
+    }
     //token
     const token = generateToken(user);
-    const selectedUserFields = {
-      _id: user._id,
-      name: user.name,
-      age: user.age,
-      gmail: user.gmail,
-      address: user.address,
-      weight: user.weight,
-      height: user.height
-    };
+    const selectedUserFields = getSelectedUserFields(user)
     await user.save();
     res.status(status.CREATED).json({
       status: 'Success',
@@ -49,6 +55,8 @@ const createUser = async (req, res) => {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
+
+
 
 const register = async (req, res) => {
   try {
@@ -106,14 +114,14 @@ const getAllUser = async (req, res) => {
       },
       {
         $project: {
-          name: 1, // 1 la duoc liet ke, 0 la khong bao gom
+          name: 1,
           // dateOfB: {
           //   $dateToString: {
           //     format: '%d-%m-%Y',
           //     date: '$dateOfB',
           //   },
           // },
-          age: 1,
+          dateOfB: 1,
           gmail: 1,
           address: 1,
           password: 1,
@@ -193,15 +201,23 @@ const deleteUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const userId = req.body._id;
+    const userId = req.userId;
     const user = await User.findById(userId).exec();
     if (!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if (!req.body.name || !req.body.age || !req.body.gmail || !req.body.address) {
+    } else if (!req.body.username || !req.body.dateOfB || !req.body.gmail || !req.body.address) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    user.name = req.body.name;
-    user.age = req.body.age;
+    if (req.body.birthday) {
+      const dateOfBirth = moment(req.body.birthday, 'DD-MM-YYYY').toDate();
+      if (Object.prototype.toString.call(dateOfBirth) === '[object Date]' && !isNaN(dateOfBirth)) {
+        user.birthday = moment(dateOfBirth).format('YYYY-MM-DD');
+      } else {
+        return res.status(status.BAD_REQUEST).json({ message: message.ERROR.SERVER });
+      }
+    }
+
+    user.username = req.body.username;
     user.gmail = req.body.gmail;
     user.address = req.body.address
 
@@ -239,7 +255,7 @@ const login = async (req, res) => {
   const { gmail, password } = req.body;
 
   try {
-    const user = await User.findOne({ gmail }).select('-__v');;
+    const user = await User.findOne({ gmail })
     if (!user) {
       return res.status(status.UNAUTHORIZED).json({ message: message.ERROR.INVALID });
     }
@@ -253,15 +269,7 @@ const login = async (req, res) => {
       });
       try {
         await newToken.save();
-        const selectedUserFields = {
-          _id: user._id,
-          name: user.name,
-          age: user.age,
-          gmail: user.gmail,
-          address: user.address,
-          weight: user.weight,
-          height: user.height
-        };
+        const selectedUserFields = getSelectedUserFields(user);
 
         return res.status(status.OK).json({ user: selectedUserFields, token: newToken.token });
       } catch (err) {
@@ -303,7 +311,7 @@ const login = async (req, res) => {
 
 const getToken = async (req, res) => {
   try {
-    const token = await Token.find();
+    const token = await Token.find().select('-__v');
     res.status(status.OK).json({ message: message.OK, token })
   }
   catch (err) {

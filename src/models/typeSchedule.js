@@ -9,6 +9,8 @@ const typeScheduleSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+}, {
+  versionKey: false,
 })
 
 const TypeSchedule = mongoose.model('typeSchedule', typeScheduleSchema)
