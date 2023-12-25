@@ -10,12 +10,12 @@ import { selectFieldsMiddleware } from '@/middlewares/index.js'
 
 const getSelectedUserFields = (user) => {
   return {
-    name: user.username,
-    birthday: user.birthday,
-    gmail: user.gmail,
-    address: user.address,
-    weight: user.weight,
-    height: user.height
+    name: user.username || '',
+    birthday: user.birthday || '',
+    gmail: user.gmail || '',
+    address: user.address || '',
+    weight: user.weight || '',
+    height: user.height || ''
   };
 };
 
@@ -100,8 +100,8 @@ const register = async (req, res) => {
 };
 
 const getAllUser = async (req, res) => {
-  const offset = req.query.offset || 0 // Giá trị mặc định là 0 nếu không có tham số offset được cung cấp
-  const limit = req.query.limit || 10 // Giá trị mặc định là 10 nếu không có tham số limit được cung cấp
+  const offset = req.query.offset || 0
+  const limit = req.query.limit || 10
   try {
     const usersWithRoles = await User.aggregate([
       {
@@ -122,18 +122,18 @@ const getAllUser = async (req, res) => {
         $project: {
           _id: 0,
           id: 1,
-          name: 1,
+          username: { $ifNull: ['$username', ''] },
           // dateOfB: {
           //   $dateToString: {
           //     format: '%d-%m-%Y',
           //     date: '$dateOfB',
           //   },
           // },
-          dateOfB: 1,
-          gmail: 1,
-          address: 1,
-          password: 1,
-          nameRole: 1
+          birthday: { $ifNull: ['$birthday', ''] },
+          gmail: { $ifNull: ['$gmail', ''] },
+          address: { $ifNull: ['$address', ''] },
+          password: { $ifNull: ['$password', ''] },
+          nameRole: { $ifNull: ['$nameRole', ''] }
         },
       }
     ])
@@ -271,7 +271,7 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ gmail })
     if (!user) {
-      return res.status(status.UNAUTHORIZED).json({ message: message.ERROR.INVALID });
+      return res.status(status.NOT_FOUND).json({ user: "", token: "" });
     }
     if (user.password === password) {
       await Token.deleteMany({ user: user._id });

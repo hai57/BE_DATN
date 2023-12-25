@@ -218,6 +218,12 @@ const getSchedule = async (req, res) => {
       },
       {
         $unwind: {
+          path: '$subActivities',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $unwind: {
           path: '$timeLine.subActivities',
           preserveNullAndEmptyArrays: true
         }
