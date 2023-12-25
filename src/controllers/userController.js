@@ -10,10 +10,11 @@ import { selectFieldsMiddleware } from '@/middlewares/index.js'
 
 const getSelectedUserFields = (user) => {
   return {
+    id: user._id,
     username: user.username || '',
     birthday: user.birthday || '',
     gmail: user.gmail || '',
-    address: user.address || '',
+    gender: user.gender || '',
     weight: user.weight || '',
     height: user.height || ''
   };
@@ -131,7 +132,7 @@ const getAllUser = async (req, res) => {
           // },
           birthday: { $ifNull: ['$birthday', ''] },
           gmail: { $ifNull: ['$gmail', ''] },
-          address: { $ifNull: ['$address', ''] },
+          gender: { $ifNull: ['$gender', ''] },
           password: { $ifNull: ['$password', ''] },
           nameRole: { $ifNull: ['$nameRole', ''] }
         },
@@ -181,7 +182,7 @@ const getUser = async (req, res) => {
             name: 1,
             age: 1,
             gmail: 1,
-            address: 1,
+            gender: 1,
             nameRole: 1
           }
         }
@@ -218,7 +219,7 @@ const updateUser = async (req, res) => {
     const user = await User.findById(userId).exec();
     if (!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if (!req.body.username || !req.body.dateOfB || !req.body.gmail || !req.body.address) {
+    } else if (!req.body.username || !req.body.birthday || !req.body.gmail || !req.body.gender) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     if (req.body.birthday) {
@@ -232,7 +233,9 @@ const updateUser = async (req, res) => {
 
     user.username = req.body.username;
     user.gmail = req.body.gmail;
-    user.address = req.body.address
+    user.weight = req.body.weight;
+    user.height = req.body.height;
+    user.gender = req.body.gender;
 
     await user.save();
     const selectedUserFields = getSelectedUserFields(user)
