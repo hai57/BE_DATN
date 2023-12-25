@@ -10,7 +10,7 @@ import { selectFieldsMiddleware } from '@/middlewares/index.js'
 
 const getSelectedUserFields = (user) => {
   return {
-    name: user.username || '',
+    username: user.username || '',
     birthday: user.birthday || '',
     gmail: user.gmail || '',
     address: user.address || '',
