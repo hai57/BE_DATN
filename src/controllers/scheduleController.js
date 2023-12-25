@@ -7,6 +7,17 @@ import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
 import { SubActivities } from '@/models/subActivitiesModels.js';
 
+const getSelectedScheduleFields = (schedule) => {
+  return {
+    id: schedule._id,
+    userCreate: schedule.userCreate,
+    nameSchedule: schedule.nameSchedule,
+    type: schedule.type,
+    createAt: schedule.createAt,
+    timeLine: schedule.timeLine,
+  };
+};
+
 const createSchedule = async (req, res) => {
   try {
     const newschedule = new Schedule({
@@ -29,128 +40,246 @@ const createSchedule = async (req, res) => {
     }
 
     await newschedule.save();
-    res.status(status.OK).json({ message: message.OK, newschedule });
+    const selectSchedule = getSelectedScheduleFields(newschedule)
+    res.status(status.OK).json({ message: message.OK, selectSchedule });
   } catch (err) {
     console.error(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
 
+// const getSchedule = async (req, res) => {
+//   const offset = req.params.offset || 0;
+//   const limit = req.params.limit || 10;
+
+//   try {
+//     // const schedule = await Schedule.aggregate([
+//     //   {
+//     //     $lookup: {
+//     //       from: 'users',
+//     //       localField: 'userCreate',
+//     //       foreignField: '_id',
+//     //       as: 'userCreate'
+//     //     }
+//     //   },
+//     //   {
+//     //     $unwind: {
+//     //       path: '$timeLine',
+//     //       preserveNullAndEmptyArrays: true
+//     //     }
+//     //   },
+//     //   {
+//     //     $lookup: {
+//     //       from: 'activities',
+//     //       localField: 'timeLine.activity',
+//     //       foreignField: '_id',
+//     //       as: 'activity'
+//     //     }
+//     //   },
+//     //   {
+//     //     $unwind: {
+//     //       path: '$activity',
+//     //       preserveNullAndEmptyArrays: true
+//     //     }
+//     //   },
+//     //   {
+//     //     $lookup: {
+//     //       from: 'subActivities',
+//     //       localField: 'timeLine.subActivities',
+//     //       foreignField: '_id',
+//     //       as: 'subActivities'
+//     //     }
+//     //   },
+//     //   {
+//     //     $unwind: {
+//     //       path: '$subActivities',
+//     //       preserveNullAndEmptyArrays: true
+//     //     }
+//     //   },
+//     //   {
+//     //     $group: {
+//     //       _id: '$_id',
+//     //       nameSchedule: { $first: '$nameSchedule' },
+//     //       createAt: { $first: '$createAt' },
+//     //       type: { $first: '$type' },
+//     //       userCreate: { $first: '$userCreate.name' }, // Chỉ lấy trường 'name' từ 'userCreate'
+//     //       timeLine: {
+//     //         $push: {
+//     //           startTime: '$timeLine.startTime',
+//     //           endTime: '$timeLine.endTime',
+//     //           activity: {
+//     //             $mergeObjects: [
+//     //               { _id: '$activity._id' },
+//     //               { name: '$activity.name' }
+//     //             ]
+//     //           },
+//     //           subActivities: {
+//     //             $map: {
+//     //               input: '$subActivities',
+//     //               as: 'subAct',
+//     //               in: {
+//     //                 _id: '$$subAct._id',
+//     //                 name: '$$subAct.name',
+//     //                 amount: '$$subAct.amount', // Thêm các trường khác nếu cần
+//     //                 unit: '$$subAct.unit'     // Thêm các trường khác nếu cần
+//     //               }
+//     //             }
+//     //           }
+//     //         }
+//     //       }
+//     //     }
+//     //   },
+//     //   {
+//     //     $addFields: {
+//     //       subActivitiesCheck: { $ifNull: ['$subActivities', 'SubActivities is null'] }
+//     //     }
+//     //   },
+//     //   {
+//     //     $project: {
+//     //       _id: 1,
+//     //       nameSchedule: 1,
+//     //       createAt: 1,
+//     //       type: 1,
+//     //       userCreate: 1,
+//     //       // timeLine: {
+//     //       //   $map: {
+//     //       //     input: '$timeLine',
+//     //       //     as: 'tl',
+//     //       //     in: {
+//     //       //       startTime: '$$tl.startTime',
+//     //       //       endTime: '$$tl.endTime',
+//     //       //       activity: '$$tl.activity',
+//     //       //       subActivities: '$$tl.subActivities'
+//     //       //     }
+//     //       //   }
+//     //       // }
+//     //       timeLine: 1
+//     //     }
+//     //   }
+//     // ]).skip(parseInt(offset)).limit(parseInt(limit));
+//     const schedule = await Schedule.find()
+//       .populate('userCreate', 'name')
+//       .populate('timeLine.activity', 'name')
+//       .populate('timeLine.subActivities', 'name')
+//       .skip(parseInt(offset))
+//       .limit(parseInt(limit));
+
+//     if (!schedule || schedule.length === 0) {
+//       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
+//     }
+
+//     res.status(status.OK).json({ message: message.OK, schedule });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+//   }
+// };
 const getSchedule = async (req, res) => {
-  const offset = req.params.offset || 0;
-  const limit = req.params.limit || 10;
+  const offset = req.params.offset ? parseInt(req.params.offset) : 0;
+  const limit = req.params.limit ? parseInt(req.params.limit) : 10;
 
   try {
-    // const schedule = await Schedule.aggregate([
-    //   {
-    //     $lookup: {
-    //       from: 'users',
-    //       localField: 'userCreate',
-    //       foreignField: '_id',
-    //       as: 'userCreate'
-    //     }
-    //   },
-    //   {
-    //     $unwind: {
-    //       path: '$timeLine',
-    //       preserveNullAndEmptyArrays: true
-    //     }
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: 'activities',
-    //       localField: 'timeLine.activity',
-    //       foreignField: '_id',
-    //       as: 'activity'
-    //     }
-    //   },
-    //   {
-    //     $unwind: {
-    //       path: '$activity',
-    //       preserveNullAndEmptyArrays: true
-    //     }
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: 'subActivities',
-    //       localField: 'timeLine.subActivities',
-    //       foreignField: '_id',
-    //       as: 'subActivities'
-    //     }
-    //   },
-    //   {
-    //     $unwind: {
-    //       path: '$subActivities',
-    //       preserveNullAndEmptyArrays: true
-    //     }
-    //   },
-    //   {
-    //     $group: {
-    //       _id: '$_id',
-    //       nameSchedule: { $first: '$nameSchedule' },
-    //       createAt: { $first: '$createAt' },
-    //       type: { $first: '$type' },
-    //       userCreate: { $first: '$userCreate.name' }, // Chỉ lấy trường 'name' từ 'userCreate'
-    //       timeLine: {
-    //         $push: {
-    //           startTime: '$timeLine.startTime',
-    //           endTime: '$timeLine.endTime',
-    //           activity: {
-    //             $mergeObjects: [
-    //               { _id: '$activity._id' },
-    //               { name: '$activity.name' }
-    //             ]
-    //           },
-    //           subActivities: {
-    //             $map: {
-    //               input: '$subActivities',
-    //               as: 'subAct',
-    //               in: {
-    //                 _id: '$$subAct._id',
-    //                 name: '$$subAct.name',
-    //                 amount: '$$subAct.amount', // Thêm các trường khác nếu cần
-    //                 unit: '$$subAct.unit'     // Thêm các trường khác nếu cần
-    //               }
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   },
-    //   {
-    //     $addFields: {
-    //       subActivitiesCheck: { $ifNull: ['$subActivities', 'SubActivities is null'] }
-    //     }
-    //   },
-    //   {
-    //     $project: {
-    //       _id: 1,
-    //       nameSchedule: 1,
-    //       createAt: 1,
-    //       type: 1,
-    //       userCreate: 1,
-    //       // timeLine: {
-    //       //   $map: {
-    //       //     input: '$timeLine',
-    //       //     as: 'tl',
-    //       //     in: {
-    //       //       startTime: '$$tl.startTime',
-    //       //       endTime: '$$tl.endTime',
-    //       //       activity: '$$tl.activity',
-    //       //       subActivities: '$$tl.subActivities'
-    //       //     }
-    //       //   }
-    //       // }
-    //       timeLine: 1
-    //     }
-    //   }
-    // ]).skip(parseInt(offset)).limit(parseInt(limit));
-    const schedule = await Schedule.find()
-      .populate('userCreate', 'name')
-      .populate('timeLine.activity', 'name')
-      .populate('timeLine.subActivities', 'name')
-      .skip(parseInt(offset))
-      .limit(parseInt(limit));
+    const schedule = await Schedule.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userCreate',
+          foreignField: '_id',
+          as: 'userCreate'
+        }
+      },
+      {
+        $unwind: {
+          path: '$timeLine',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: 'activities',
+          localField: 'timeLine.activity',
+          foreignField: '_id',
+          as: 'activity'
+        }
+      },
+      {
+        $unwind: {
+          path: '$activity',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: 'subActivities',
+          localField: 'timeLine.subActivities',
+          foreignField: '_id',
+          as: 'subActivities'
+        }
+      },
+      {
+        $unwind: {
+          path: '$timeLine.subActivities',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $group: {
+          _id: {
+            _id: '$_id',
+            nameSchedule: '$nameSchedule',
+            createAt: '$createAt',
+            type: '$type',
+            userCreate: '$userCreate.name',
+            timeLine: {
+              startTime: '$timeLine.startTime',
+              endTime: '$timeLine.endTime',
+              activity: {
+                _id: '$activity._id',
+                name: '$activity.name'
+              }
+            }
+          },
+          subActivities: { $push: '$timeLine.subActivities' }
+        }
+      },
+      {
+        $group: {
+          _id: '$_id._id',
+          nameSchedule: { $first: '$_id.nameSchedule' },
+          createAt: { $first: '$_id.createAt' },
+          type: { $first: '$_id.type' },
+          userCreate: { $first: '$_id.userCreate' },
+          timeLine: {
+            $push: {
+              startTime: '$_id.timeLine.startTime',
+              endTime: '$_id.timeLine.endTime',
+              activity: {
+                _id: '$_id.timeLine.activity._id',
+                name: '$_id.timeLine.activity.name'
+              },
+              subActivities: '$subActivities'
+            }
+          }
+        }
+      },
+
+      {
+        $project: {
+          _id: 1,
+          nameSchedule: 1,
+          createAt: 1,
+          type: 1,
+          userCreate: 1,
+          timeLine: 1
+        }
+      },
+      {
+        $skip: offset
+      },
+      {
+        $limit: limit
+      }
+    ]);
 
     if (!schedule || schedule.length === 0) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
@@ -162,7 +291,6 @@ const getSchedule = async (req, res) => {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
-
 const updateSchedule = async (req, res) => {
   try {
     const scheduleId = req.body.scheduleId;
