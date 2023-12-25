@@ -1,7 +1,8 @@
 export const message = {
   CREATED: 'Created Success',
   OK: 'Request Accepted',
-  ERROR : {
+  UPDATED: 'Updated success',
+  ERROR: {
     MISS_FIELD: 'Missing Field.',
     NOT_FOUND: 'Not Found Data.',
     SERVER: 'Sever Error',

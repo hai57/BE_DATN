@@ -61,28 +61,36 @@ const createUser = async (req, res) => {
 const register = async (req, res) => {
   try {
     const user = new User(req.body);
-    const defaultRole = '6503ee3bae3b2ccd6dae5fab'
+    const defaultRole = '6555877d0fa87df47f00aead'
     const role = await Role.findById(defaultRole);
     if (!role) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.MISS_FIELD });
-    } else if (!req.body.name) {
+    } else if (!req.body.username) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     } else if (!req.body.gmail) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     } else if (!req.body.password) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
+    if (req.body.birthday) {
+      const dateOfBirth = moment(req.body.birthday, 'DD-MM-YYYY').toDate();
+      if (Object.prototype.toString.call(dateOfBirth) === '[object Date]' && !isNaN(dateOfBirth)) {
+        user.birthday = moment(dateOfBirth).format('YYYY-MM-DD');
+      } else {
+        return res.status(status.BAD_REQUEST).json({ message: message.ERROR.SERVER });
+      }
+    }
     user.role = defaultRole;
     //token
     const token = generateToken(user);
 
     await user.save();
-    const selectedUserFields = ['_id', 'name', 'age', 'gmail', 'address'];
+    const selectedUserFields = getSelectedUserFields(user);
     selectFieldsMiddleware(selectedUserFields)(req, res, () => {
       return res.status(status.CREATED).json({
         status: 'Success',
         message: message.CREATED,
-        user: res.locals.data,
+        user: selectedUserFields,
         token: token
       });
     });
@@ -107,13 +115,14 @@ const getAllUser = async (req, res) => {
       },
       {
         $addFields: {
-          nameRole: { $arrayElemAt: ['$roleDetails.nameRole', 0] }
-          //$roleDetails.nameRole là một mảng các giá trị nameRole lấy từ việc thực hiện $lookup.
-          //0 chỉ đến phần tử đầu tiên của mảng nameRole.
+          nameRole: { $arrayElemAt: ['$roleDetails.nameRole', 0] },
+          id: '$_id'
         }
       },
       {
         $project: {
+          _id: 0,
+          id: 1,
           name: 1,
           // dateOfB: {
           //   $dateToString: {
@@ -136,6 +145,7 @@ const getAllUser = async (req, res) => {
     }
     res.status(status.OK).json({ message: message.OK, usersWithRoles });
   } catch (err) {
+    console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
@@ -160,11 +170,15 @@ const getUser = async (req, res) => {
         },
         {
           $addFields: {
-            nameRole: { $arrayElemAt: ['$roles.nameRole', 0] }
+            nameRole: { $arrayElemAt: ['$roles.nameRole', 0] },
+            id: '$_id'
+
           }
         },
         {
           $project: {
+            _id: 0,
+            id: 1,
             name: 1,
             age: 1,
             gmail: 1,
@@ -222,7 +236,8 @@ const updateUser = async (req, res) => {
     user.address = req.body.address
 
     await user.save();
-    res.status(status.OK).json({ message: message.OK, user })
+    const selectedUserFields = getSelectedUserFields(user)
+    res.status(status.OK).json({ message: message.UPDATED, selectedUserFields })
   } catch (err) {
     console.error(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
