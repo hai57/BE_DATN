@@ -6,7 +6,6 @@ import { Token } from '@/models/tokenModels.js';
 import { generateToken } from '@/middlewares/index.js';
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
-import { selectFieldsMiddleware } from '@/middlewares/index.js'
 
 const getSelectedUserFields = (user) => {
   return {
@@ -217,7 +216,7 @@ const updateUser = async (req, res) => {
     const user = await User.findById(userId).exec();
     if (!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if (!req.body.username || !req.body.birthday || !req.body.gmail || !req.body.gender) {
+    } else if (!req.body.username || !req.body.birthday || !req.body.gender) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     if (req.body.birthday) {
@@ -230,7 +229,6 @@ const updateUser = async (req, res) => {
     }
 
     user.username = req.body.username;
-    user.gmail = req.body.gmail;
     user.weight = req.body.weight;
     user.height = req.body.height;
     user.gender = req.body.gender;

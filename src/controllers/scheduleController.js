@@ -174,10 +174,133 @@ const createSchedule = async (req, res) => {
 //     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
 //   }
 // };
-const getSchedule = async (req, res) => {
-  const offset = req.params.offset ? parseInt(req.params.offset) : 0;
-  const limit = req.params.limit ? parseInt(req.params.limit) : 10;
 
+// const getSchedule = async (req, res) => {
+//   const offset = req.params.offset ? parseInt(req.params.offset) : 0;
+//   const limit = req.params.limit ? parseInt(req.params.limit) : 10;
+
+//   try {
+//     const schedule = await Schedule.aggregate([
+//       {
+//         $lookup: {
+//           from: 'users',
+//           localField: 'userCreate',
+//           foreignField: '_id',
+//           as: 'userCreate'
+//         }
+//       },
+//       {
+//         $unwind: {
+//           path: '$timeLine',
+//           preserveNullAndEmptyArrays: true
+//         }
+//       },
+//       {
+//         $lookup: {
+//           from: 'activities',
+//           localField: 'timeLine.activity',
+//           foreignField: '_id',
+//           as: 'activity'
+//         }
+//       },
+//       {
+//         $unwind: {
+//           path: '$activity',
+//           preserveNullAndEmptyArrays: true
+//         }
+//       },
+//       {
+//         $lookup: {
+//           from: 'subActivities',
+//           localField: 'timeLine.subActivities',
+//           foreignField: '_id',
+//           as: 'subActivities'
+//         }
+//       },
+//       {
+//         $unwind: {
+//           path: '$subActivities',
+//           preserveNullAndEmptyArrays: true
+//         }
+//       },
+//       {
+//         $unwind: {
+//           path: '$timeLine.subActivities',
+//           preserveNullAndEmptyArrays: true
+//         }
+//       },
+//       {
+//         $group: {
+//           _id: {
+//             _id: '$_id',
+//             nameSchedule: '$nameSchedule',
+//             createAt: '$createAt',
+//             type: '$type',
+//             userCreate: '$userCreate.name',
+//             timeLine: {
+//               startTime: '$timeLine.startTime',
+//               endTime: '$timeLine.endTime',
+//               activity: {
+//                 _id: '$activity._id',
+//                 name: '$activity.name'
+//               }
+//             }
+//           },
+//           subActivities: {
+//             $push:
+//               '$timeLine.subActivities'
+//           }
+//         }
+//       },
+//       {
+//         $group: {
+//           _id: '$_id._id',
+//           nameSchedule: { $first: '$_id.nameSchedule' },
+//           createAt: { $first: '$_id.createAt' },
+//           type: { $first: '$_id.type' },
+//           userCreate: { $first: '$_id.userCreate' },
+//           timeLine: {
+//             $push: {
+//               startTime: '$_id.timeLine.startTime',
+//               endTime: '$_id.timeLine.endTime',
+//               activity: {
+//                 _id: '$_id.timeLine.activity._id',
+//                 name: '$_id.timeLine.activity.name'
+//               },
+//               subActivities: '$subActivities'
+//             }
+//           }
+//         }
+//       },
+//       {
+//         $project: {
+//           _id: 1,
+//           nameSchedule: 1,
+//           createAt: 1,
+//           type: 1,
+//           userCreate: 1,
+//           timeLine: 1
+//         }
+//       },
+//       {
+//         $skip: offset
+//       },
+//       {
+//         $limit: limit
+//       }
+//     ]);
+//     if (!schedule || schedule.length === 0) {
+//       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
+//     }
+
+//     res.status(status.OK).json({ message: message.OK, schedule });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+//   }
+// };
+
+const getSchedule = async (req, res) => {
   try {
     const schedule = await Schedule.aggregate([
       {
@@ -223,83 +346,60 @@ const getSchedule = async (req, res) => {
         }
       },
       {
-        $unwind: {
-          path: '$timeLine.subActivities',
-          preserveNullAndEmptyArrays: true
-        }
-      },
-      {
-        $group: {
-          _id: {
-            _id: '$_id',
-            nameSchedule: '$nameSchedule',
-            createAt: '$createAt',
-            type: '$type',
-            userCreate: '$userCreate.name',
-            timeLine: {
-              startTime: '$timeLine.startTime',
-              endTime: '$timeLine.endTime',
-              activity: {
-                _id: '$activity._id',
-                name: '$activity.name'
-              }
-            }
-          },
-          subActivities: {
-            $push: {
-              id: '$timeLine.subActivities'
-            }
-          }
-        }
-      },
-      {
-        $group: {
-          _id: '$_id._id',
-          nameSchedule: { $first: '$_id.nameSchedule' },
-          createAt: { $first: '$_id.createAt' },
-          type: { $first: '$_id.type' },
-          userCreate: { $first: '$_id.userCreate' },
-          timeLine: {
-            $push: {
-              startTime: '$_id.timeLine.startTime',
-              endTime: '$_id.timeLine.endTime',
-              activity: {
-                _id: '$_id.timeLine.activity._id',
-                name: '$_id.timeLine.activity.name'
-              },
-              subActivities: '$subActivities'
-            }
-          }
-        }
-      },
-      {
         $project: {
           _id: 1,
           nameSchedule: 1,
           createAt: 1,
           type: 1,
           userCreate: 1,
-          timeLine: 1
+          timeLine: {
+            startTime: '$timeLine.startTime',
+            endTime: '$timeLine.endTime',
+            subActivities: '$subActivities'  // Chỉ lấy thông tin của subActivities
+          }
+        }
+      }
+    ]);
+    const result = await Schedule.aggregate([
+      {
+        $unwind: '$timeLine'
+      },
+      {
+        $lookup: {
+          from: 'activities',
+          localField: 'timeLine.activity',
+          foreignField: '_id',
+          as: 'activitiesDetails'
         }
       },
       {
-        $skip: offset
+        $unwind: {
+          path: '$timeLine.subActivities',
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
-        $limit: limit
+        $lookup: {
+          from: 'subActivities',
+          localField: 'timeLine.subActivities',
+          foreignField: '_id',
+          as: 'subActivitiesDetails'
+        }
       }
     ]);
-    console.log('SubActivities:', schedule[0].timeLine[0].subActivities);
+
+    console.log(result);
     if (!schedule || schedule.length === 0) {
-      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
+      return res.status(404).json({ message: 'Schedule not found' });
     }
 
-    res.status(status.OK).json({ message: message.OK, schedule });
+    res.status(200).json({ message: 'Schedule retrieved successfully', schedule });
   } catch (err) {
     console.error(err);
-    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 const updateSchedule = async (req, res) => {
   try {
     const scheduleId = req.body.scheduleId;

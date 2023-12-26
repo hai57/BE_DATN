@@ -77,8 +77,17 @@ const checkTokenValidity = async (req, res) => {
         return res.status(status.NOT_FOUND).json({ message: message.ERROR.USER_NOT_FOUND });
       }
 
-      const { _id, name, age, gmail, address } = user;
-      return res.status(status.OK).json({ message: 'Token is valid', user: { _id, name, age, gmail, address } });
+      const selectUser = {
+        id: user._id,
+        username: user.username || '',
+        birthday: user.birthday || '',
+        gmail: user.gmail || '',
+        gender: user.gender || '',
+        weight: user.weight || '',
+        height: user.height || ''
+      }
+
+      return res.status(status.OK).json({ message: 'Token is valid', user: selectUser });
     });
   } catch (err) {
     console.error(err);
