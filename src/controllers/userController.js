@@ -10,6 +10,7 @@ import { selectFieldsMiddleware } from '@/middlewares/index.js'
 
 const getSelectedUserFields = (user) => {
   return {
+    id: user._id,
     username: user.username || '',
     birthday: user.birthday || '',
     gmail: user.gmail || '',
@@ -85,13 +86,11 @@ const register = async (req, res) => {
 
     await user.save();
     const selectedUserFields = getSelectedUserFields(user);
-    selectFieldsMiddleware(selectedUserFields)(req, res, () => {
-      return res.status(status.CREATED).json({
-        status: 'Success',
-        message: message.CREATED,
-        user: selectedUserFields,
-        token: token
-      });
+    return res.status(status.CREATED).json({
+      status: 'Success',
+      message: message.CREATED,
+      user: selectedUserFields,
+      token: token
     });
   } catch (err) {
     console.log(err)
@@ -238,7 +237,7 @@ const updateUser = async (req, res) => {
 
     await user.save();
     const selectedUserFields = getSelectedUserFields(user)
-    res.status(status.OK).json({ message: message.UPDATED, selectedUserFields })
+    res.status(status.OK).json({ message: message.UPDATED, user: selectedUserFields })
   } catch (err) {
     console.error(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })

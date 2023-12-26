@@ -246,8 +246,9 @@ const getSchedule = async (req, res) => {
             }
           },
           subActivities: {
-            $push:
-              '$timeLine.subActivities'
+            $push: {
+              id: '$timeLine.subActivities'
+            }
           }
         }
       },
@@ -288,24 +289,7 @@ const getSchedule = async (req, res) => {
         $limit: limit
       }
     ]);
-    const result = await Schedule.aggregate([
-      {
-        $addFields: {
-          debug_subActivities: '$timeLine.subActivities'
-        }
-      },
-      {
-        $lookup: {
-          from: 'subActivities',
-          localField: 'timeLine.subActivities',
-          foreignField: '_id',
-          as: 'subActivitiesDetails'
-        }
-      }
-    ]);
-    db.Schedule.find({ "timeLine.subActivities": { $exists: true } })
-
-    // console.log('SubActivities:', schedule[0].timeLine[0].subActivities);
+    console.log('SubActivities:', schedule[0].timeLine[0].subActivities);
     if (!schedule || schedule.length === 0) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }

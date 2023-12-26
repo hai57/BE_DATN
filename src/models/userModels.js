@@ -22,10 +22,10 @@ const userSchema = new mongoose.Schema({
     type: String
   },
   weight: {
-    type: Number
+    type: String
   },
   height: {
-    type: Number
+    type: String
   }
 }, {
   versionKey: false,
