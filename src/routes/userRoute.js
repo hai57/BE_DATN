@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { createRole, getRole, updateRole, deleteRole } from '@/controllers/roleController.js';
-import { createUser, getAllUser, getUser, updateUser, deleteUser, getToken, login, register } from '@/controllers/userController.js';
+import { createUser, getAllUser, getUser, updateUser, updateUserWithId, deleteUser, getToken, login, register } from '@/controllers/userController.js';
 import { authenticateToken, checkTokenValidity } from '@/middlewares/index.js';
 
 const router = express.Router()
@@ -13,6 +13,7 @@ router.post('/register', register)
 router.post('/createUser', createUser)
 router.delete('/deleteUser', authenticateToken.verifyToken, deleteUser)
 router.put('/updateUser', authenticateToken.verifyToken, updateUser)
+router.put('/updateUserWithId', authenticateToken.verifyToken, updateUserWithId)
 router.get('/getToken', getToken)
 router.get('/checkToken', checkTokenValidity)
 

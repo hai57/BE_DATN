@@ -9,7 +9,6 @@ router.get('/getSchedule', authenticateToken.verifyToken, getSchedule);
 router.post('/createSchedule', authenticateToken.verifyToken, createSchedule);
 router.put('/updateSchedule', authenticateToken.verifyToken, updateSchedule)
 router.delete('/deleteSchedule', authenticateToken.verifyToken, deleteSchedule)
-
 //schedule user
 router.post('/createScheduleUser', authenticateToken.verifyToken, createScheduleUser);
 router.get('/getscheduleUser', authenticateToken.verifyToken, getscheduleUser);

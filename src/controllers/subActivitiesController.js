@@ -77,6 +77,7 @@ const createSubActivities = async (req, res) => {
     // Tạo một thời gian mới
     const newSubActivities = new SubActivities({
       activity: req.body.idActivities,
+      iconCode: req.body.iconCode,
       name: req.body.name,
       amount: req.body.amount,
       unit: req.body.unit

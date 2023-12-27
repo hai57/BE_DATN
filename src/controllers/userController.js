@@ -130,12 +130,12 @@ const getAllUser = async (req, res) => {
           birthday: { $ifNull: ['$birthday', ''] },
           gmail: { $ifNull: ['$gmail', ''] },
           gender: { $ifNull: ['$gender', ''] },
-          password: { $ifNull: ['$password', ''] },
+          weight: { $ifNull: ['$weight', ''] },
+          height: { $ifNull: ['$height', ''] },
           nameRole: { $ifNull: ['$nameRole', ''] }
         },
       }
-    ])
-      .skip(parseInt(offset))
+    ]).skip(parseInt(offset))
       .limit(parseInt(limit));
     if (!usersWithRoles) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
@@ -216,7 +216,7 @@ const updateUser = async (req, res) => {
     const user = await User.findById(userId).exec();
     if (!user) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if (!req.body.username || !req.body.birthday || !req.body.gender) {
+    } else if (!req.body.username || !req.body.birthday || !req.body.gender || !req.body.weight || !req.body.height) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     if (req.body.birthday) {
@@ -241,6 +241,39 @@ const updateUser = async (req, res) => {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
+
+const updateUserWithId = async (req, res) => {
+  try {
+    const userId = req.body.id;
+    const user = await User.findById(userId).exec();
+    if (!user) {
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
+    } else if (!req.body.username || !req.body.birthday || !req.body.gender || !req.body.weight || !req.body.height) {
+      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
+    }
+    if (req.body.birthday) {
+      const dateOfBirth = moment(req.body.birthday, 'DD-MM-YYYY').toDate();
+      if (Object.prototype.toString.call(dateOfBirth) === '[object Date]' && !isNaN(dateOfBirth)) {
+        user.birthday = moment(dateOfBirth).format('YYYY-MM-DD');
+      } else {
+        return res.status(status.BAD_REQUEST).json({ message: message.ERROR.SERVER });
+      }
+    }
+
+    user.username = req.body.username;
+    user.weight = req.body.weight;
+    user.height = req.body.height;
+    user.gender = req.body.gender;
+
+    await user.save();
+    const selectedUserFields = getSelectedUserFields(user)
+    res.status(status.OK).json({ message: message.UPDATED, user: selectedUserFields })
+  } catch (err) {
+    console.error(err)
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
+  }
+};
+
 
 const changePassword = async (req, res) => {
   try {
@@ -327,4 +360,4 @@ const getToken = async (req, res) => {
   }
 };
 
-export { createUser, getAllUser, getUser, updateUser, login, deleteUser, changePassword, getToken, register }
+export { createUser, getAllUser, getUser, updateUser, updateUserWithId, login, deleteUser, changePassword, getToken, register }

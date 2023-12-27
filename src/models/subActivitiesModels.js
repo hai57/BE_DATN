@@ -22,6 +22,6 @@ const subActivitiesSchema = new mongoose.Schema({
   versionKey: false,
 })
 
-const SubActivities = mongoose.model('subActivities', subActivitiesSchema);
+const SubActivities = mongoose.model('subactivities', subActivitiesSchema);
 
 export { SubActivities }
