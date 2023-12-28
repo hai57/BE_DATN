@@ -134,7 +134,12 @@ const getSchedule = async (req, res) => {
         $project: {
           _id: 1,
           nameSchedule: 1,
-          createAt: 1,
+          createAt: {
+            $dateToString: {
+              format: "%d-%m-%Y",
+              date: "$createAt"
+            }
+          },
           type: 1,
           userCreate: 1,
           timeLine: 1
@@ -160,12 +165,12 @@ const updateSchedule = async (req, res) => {
     const schedule = await Schedule.findById(scheduleId).exec();
     if (!schedule) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
-    } else if (!req.body.nameSchedule || !req.body.type || !req.body.timeLine) {
+    } else if (!req.body.name || !req.body.type || !req.body.timeLine) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
 
     schedule.user = req.userId;
-    schedule.nameSchedule = req.body.nameSchedule;
+    schedule.nameSchedule = req.body.name;
     schedule.type = req.body.type;
     schedule.timeLine = req.body.timeLine
 
