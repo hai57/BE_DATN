@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken'
+import moment from 'moment';
+
 import { Role } from '@/models/roleModels.js'
 import { User } from '@/models/userModels.js'
 import { status } from '@/constant/status.js';
@@ -76,11 +78,11 @@ const checkTokenValidity = async (req, res) => {
       if (!user) {
         return res.status(status.NOT_FOUND).json({ message: message.ERROR.USER_NOT_FOUND });
       }
-
+      const formattedBirthday = moment(user.birthday).format('DD-MM-YYYY');
       const selectUser = {
         id: user._id,
         username: user.username || '',
-        birthday: user.birthday || '',
+        birthday: formattedBirthday || '',
         gmail: user.gmail || '',
         gender: user.gender || '',
         weight: user.weight || '',

@@ -121,26 +121,31 @@ const getAllUser = async (req, res) => {
           _id: 0,
           id: 1,
           username: { $ifNull: ['$username', ''] },
-          // dateOfB: {
-          //   $dateToString: {
-          //     format: '%d-%m-%Y',
-          //     date: '$dateOfB',
-          //   },
-          // },
-          birthday: { $ifNull: ['$birthday', ''] },
+          birthday: {
+            $dateToString: {
+              format: '%d-%m-%Y',
+              date: {
+                $dateFromString: {
+                  dateString: '$birthday',
+                  format: '%Y-%m-%d',
+                },
+              },
+            },
+          },
           gmail: { $ifNull: ['$gmail', ''] },
           gender: { $ifNull: ['$gender', ''] },
           weight: { $ifNull: ['$weight', ''] },
           height: { $ifNull: ['$height', ''] },
           nameRole: { $ifNull: ['$nameRole', ''] }
         },
-      }
-    ]).skip(parseInt(offset))
-      .limit(parseInt(limit));
-    if (!usersWithRoles) {
+      },
+      { $skip: parseInt(offset) },
+      { $limit: parseInt(limit) }
+    ])
+    if (usersWithRoles.length === 0) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
-    res.status(status.OK).json({ message: message.OK, usersWithRoles });
+    res.status(status.OK).json({ message: message.OK, user: usersWithRoles });
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -234,6 +239,8 @@ const updateUser = async (req, res) => {
     user.gender = req.body.gender;
 
     await user.save();
+    const formattedBirthday = moment(user.birthday).format('DD-MM-YYYY');
+    user.birthday = formattedBirthday;
     const selectedUserFields = getSelectedUserFields(user)
     res.status(status.OK).json({ message: message.UPDATED, user: selectedUserFields })
   } catch (err) {
@@ -260,12 +267,15 @@ const updateUserWithId = async (req, res) => {
       }
     }
 
+
     user.username = req.body.username;
     user.weight = req.body.weight;
     user.height = req.body.height;
     user.gender = req.body.gender;
 
     await user.save();
+    const formattedBirthday = moment(user.birthday).format('DD-MM-YYYY');
+    user.birthday = formattedBirthday;
     const selectedUserFields = getSelectedUserFields(user)
     res.status(status.OK).json({ message: message.UPDATED, user: selectedUserFields })
   } catch (err) {
