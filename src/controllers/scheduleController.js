@@ -6,36 +6,29 @@ import { User } from '@/models/userModels.js';
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
 
-const getSelectedScheduleFields = (schedule) => {
-  return {
-    id: schedule._id,
-    userCreate: schedule.userCreate,
-    nameSchedule: schedule.nameSchedule,
-    type: schedule.type,
-    createAt: schedule.createAt,
-    timeLine: schedule.timeLine,
-  };
-};
-
 const createSchedule = async (req, res) => {
   try {
+    // Kiểm tra xem req.body.timeLine có tồn tại không
+    if (!req.body.timeLine || !Array.isArray(req.body.timeLine)) {
+      return res.status(status.BAD_REQUEST).json({ message: "Invalid timeLine data" });
+    }
+
     const newschedule = new Schedule({
       userCreate: req.userId,
-      nameSchedule: req.body.name,
-      type: req.body.type,
-      createAt: Date.now(),
+      nameSchedule: req.body.nameSchedule || "",
+      type: req.body.type || "",
       timeLine: req.body.timeLine
     });
-    if (!req.body.name) {
+
+    if (!req.body.nameSchedule || !req.body.type) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
 
     await newschedule.save();
-    const selectSchedule = getSelectedScheduleFields(newschedule)
-    res.status(status.OK).json({ message: message.OK, selectSchedule });
+    res.status(status.OK).json({ message: message.OK, schedule: newschedule });
   } catch (err) {
-    console.error(err)
-    return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
+    console.error(err);
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
 
@@ -75,6 +68,20 @@ const getSchedule = async (req, res) => {
       },
       {
         $lookup: {
+          from: 'times',
+          localField: 'timeLine.startTime',
+          foreignField: '_id',
+          as: 'startTime'
+        }
+      },
+      {
+        $unwind: {
+          path: '$startTime',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
           from: 'subactivities',
           localField: 'timeLine.subActivities',
           foreignField: '_id',
@@ -96,8 +103,11 @@ const getSchedule = async (req, res) => {
             type: '$type',
             userCreate: '$userCreate.name',
             idTimeLine: '$timeLine._id',
-            startTime: '$timeLine.startTime',
-            endTime: '$timeLine.endTime',
+            startTimeid: '$startTime._id',
+            startTimeHour: '$startTime.hour',
+            startTimeMinutes: '$startTime.minutes',
+            endTimeHour: '$endTime.hour',
+            endTimeMinutes: '$endTime.minutes',
             activityId: '$activity._id',
             activityName: '$activity.name',
           },
@@ -119,8 +129,17 @@ const getSchedule = async (req, res) => {
           timeLine: {
             $push: {
               idTimeLine: '$_id.idTimeLine',
-              startTime: '$_id.startTime',
-              endTime: '$_id.endTime',
+              startTime:
+              {
+                startTimeid: '$_id.startTimeid',
+                startTimeHour: '$_id.startTimeHour',
+                startTimeMinutes: '$_id.startTimeMinutes'
+              },
+              endTime: {
+                endTimeHourid: '$_id.endTimeHourid',
+                endTimeHour: '$_id.endTimeHour',
+                endTimeMinutes: '$_id.endTimeMinutes'
+              },
               activity: {
                 _id: '$_id.activityId',
                 name: '$_id.activityName'
@@ -147,7 +166,7 @@ const getSchedule = async (req, res) => {
       },
     ]).skip(parseInt(offset))
       .limit(parseInt(limit));
-
+    console.log(schedule[2].timeLine[0])
     if (!schedule || schedule.length === 0) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
