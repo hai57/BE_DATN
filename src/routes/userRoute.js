@@ -6,15 +6,15 @@ import { authenticateToken, checkTokenValidity } from '@/middlewares/index.js';
 
 const router = express.Router()
 
-router.get('/getAllUser', authenticateToken.verifyToken, getAllUser)
-router.get('/getUser', authenticateToken.verifyToken, getUser)
+router.get('/get-all-user', authenticateToken.verifyToken, getAllUser)
+router.get('/get-user', authenticateToken.verifyToken, getUser)
 register
 router.post('/register', register)
-router.post('/createUser', createUser)
-router.delete('/deleteUser', authenticateToken.verifyToken, deleteUser)
-router.put('/updateUser', authenticateToken.verifyToken, updateUser)
-router.put('/updateUserWithId', authenticateToken.verifyToken, updateUserWithId)
-router.get('/getToken', getToken)
+router.post('/create-user', createUser)
+router.delete('/delete-user', authenticateToken.verifyToken, deleteUser)
+router.put('/update-user', authenticateToken.verifyToken, updateUser)
+router.put('/update-user-with-id', authenticateToken.verifyToken, updateUserWithId)
+router.get('/get-token', getToken)
 router.get('/checkToken', checkTokenValidity)
 
 router.post('/login', login)

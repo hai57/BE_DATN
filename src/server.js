@@ -35,4 +35,4 @@ app.use('/v1/api/schedule', scheduleRoute);
 app.use('/v1/api/activities', activitiesRoute);
 app.use('/v1/api/noti', notiRoute);
 app.use('/v1/api/time', timeRoute);
-app.use('/v1/api/itemSchedule', itemScheduleRoute);
+app.use('/v1/api/item-schedule', itemScheduleRoute);

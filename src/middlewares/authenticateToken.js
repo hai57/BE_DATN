@@ -89,7 +89,7 @@ const checkTokenValidity = async (req, res) => {
         height: user.height || ''
       }
 
-      return res.status(status.OK).json({ message: 'Token is valid', user: selectUser });
+      return res.status(status.OK).json({ message: 'Token is valid', items: selectUser });
     });
   } catch (err) {
     console.error(err);

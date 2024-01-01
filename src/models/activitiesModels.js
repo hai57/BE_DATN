@@ -8,7 +8,7 @@ const activitiesSchema = new mongoose.Schema({
   name: {
     type: String
   },
-  desciption: {
+  description: {
     type: String
   },
   isParent: {

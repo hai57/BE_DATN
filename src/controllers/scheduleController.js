@@ -6,6 +6,35 @@ import { User } from '@/models/userModels.js';
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
 
+const getSelectedSCheduleFields = (schedule) => {
+  return {
+    id: schedule._id,
+    nameSchedule: schedule.nameSchedule || "",
+    userCreate: schedule.userCreate || "",
+    type: schedule.type || "",
+    timeLine: schedule.timeLine.map((timeLineItem) => {
+      return {
+        id: timeLineItem._id,
+        itemActivity: timeLineItem.itemActivity.map((activityItem) => {
+          return {
+            id: activityItem._id,
+            activity: activityItem.activity || "",
+            is_parent: activityItem.is_parent || false,
+            startTime: activityItem.startTime || 0,
+            endTime: activityItem.endTime || 0,
+            itemSubActivity: activityItem.itemSubActivity.map((subActivityItem) => {
+              return {
+                id: subActivityItem._id,
+                subActivities: subActivityItem.subActivities || ""
+              };
+            })
+          };
+        })
+      };
+    })
+  };
+};
+
 const createSchedule = async (req, res) => {
   try {
     // Kiểm tra xem req.body.timeLine có tồn tại không
@@ -25,7 +54,8 @@ const createSchedule = async (req, res) => {
     }
 
     await newschedule.save();
-    res.status(status.OK).json({ message: message.OK, schedule: newschedule });
+    const selectedSchedule = getSelectedSCheduleFields(newschedule)
+    res.status(status.OK).json({ message: message.OK, items: selectedSchedule });
   } catch (err) {
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -53,9 +83,15 @@ const getSchedule = async (req, res) => {
         }
       },
       {
+        $unwind: {
+          path: '$timeLine.itemActivity',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
         $lookup: {
           from: 'activities',
-          localField: 'timeLine.activity',
+          localField: 'timeLine.itemActivity.activity',
           foreignField: '_id',
           as: 'activity'
         }
@@ -69,7 +105,7 @@ const getSchedule = async (req, res) => {
       {
         $lookup: {
           from: 'times',
-          localField: 'timeLine.startTime',
+          localField: 'timeLine.itemActivity.startTime',
           foreignField: '_id',
           as: 'startTime'
         }
@@ -83,7 +119,7 @@ const getSchedule = async (req, res) => {
       {
         $lookup: {
           from: 'subactivities',
-          localField: 'timeLine.subActivities',
+          localField: 'timeLine.itemActivity.itemSubActivity.subActivities',
           foreignField: '_id',
           as: 'subActivities'
         }
@@ -103,7 +139,6 @@ const getSchedule = async (req, res) => {
             type: '$type',
             userCreate: '$userCreate.name',
             idTimeLine: '$timeLine._id',
-            startTimeid: '$startTime._id',
             startTimeHour: '$startTime.hour',
             startTimeMinutes: '$startTime.minutes',
             endTimeHour: '$endTime.hour',
@@ -171,7 +206,7 @@ const getSchedule = async (req, res) => {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
 
-    res.status(status.OK).json({ message: message.OK, schedule });
+    res.status(status.OK).json({ message: message.OK, items: schedule });
   } catch (err) {
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -184,17 +219,18 @@ const updateSchedule = async (req, res) => {
     const schedule = await Schedule.findById(scheduleId).exec();
     if (!schedule) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
-    } else if (!req.body.name || !req.body.type || !req.body.timeLine) {
-      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
+    } else if (!req.body.nameSchedule || !req.body.type || !req.body.timeLine) {
+      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD, missingFields });
     }
 
     schedule.user = req.userId;
-    schedule.nameSchedule = req.body.name;
+    schedule.nameSchedule = req.body.nameSchedule;
     schedule.type = req.body.type;
     schedule.timeLine = req.body.timeLine
 
     await schedule.save();
-    res.status(status.OK).json({ message: message.OK, schedule });
+    const selectedSchedule = getSelectedSCheduleFields(schedule)
+    res.status(status.OK).json({ message: message.OK, items: selectedSchedule });
   } catch (err) {
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -299,7 +335,7 @@ const getscheduleUser = async (req, res) => {
     if (!scheduleUser || scheduleUser.length === 0) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
-    res.status(status.OK).json({ message: message.OK, scheduleUser })
+    res.status(status.OK).json({ message: message.OK, items: scheduleUser })
   } catch (err) {
     console.error(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })

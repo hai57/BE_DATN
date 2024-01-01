@@ -5,15 +5,15 @@ import { authenticateToken } from '@/middlewares/index.js';
 
 const router = express.Router();
 
-router.post('/createItemSchedule', authenticateToken.verifyToken, createItemSchedule)
-router.get('/getAllItem', authenticateToken.verifyToken, getAllItem)
-router.put('/updateItemSchedule', authenticateToken.verifyToken, updateItemSchedule)
-router.delete('/deleteItemSchedule', authenticateToken.verifyToken, deleteItemSchedule)
+router.post('/create-item-schedule', authenticateToken.verifyToken, createItemSchedule)
+router.get('/get-all-item', authenticateToken.verifyToken, getAllItem)
+router.put('/update-item-schedule', authenticateToken.verifyToken, updateItemSchedule)
+router.delete('/delete-item-schedule', authenticateToken.verifyToken, deleteItemSchedule)
 
 // type schedule
-router.post('/createTypeSchedule', authenticateToken.verifyToken, createTypeSchedule)
-router.get('/getTypeSchedule', authenticateToken.verifyToken, getTypeSchedule)
-router.put('/updateTypeSchedule', authenticateToken.verifyToken, updateTypeSchedule)
-router.delete('/deleteTypeSchedule', authenticateToken.verifyToken, deleteTypeSchedule)
+router.post('/create-type-schedule', authenticateToken.verifyToken, createTypeSchedule)
+router.get('/get-type-schedule', authenticateToken.verifyToken, getTypeSchedule)
+router.put('/update-type-schedule', authenticateToken.verifyToken, updateTypeSchedule)
+router.delete('/delete-type-schedule', authenticateToken.verifyToken, deleteTypeSchedule)
 
 export default router;

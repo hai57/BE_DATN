@@ -4,6 +4,17 @@ import { SubActivities } from '@/models/subActivitiesModels.js'
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
 
+const getSelectedSubActivityFields = (subActivity) => {
+  return {
+    id: subActivity._id,
+    activity: subActivity.activity || '',
+    name: subActivity.name || '',
+    amount: subActivity.amount || '',
+    unit: subActivity.unit || '',
+    iconCode: subActivity.iconCode || ''
+  };
+};
+
 const getSubActivities = async (req, res) => {
   const offset = req.query.offset || 0
   const limit = req.query.limit || 10
@@ -21,14 +32,17 @@ const getSubActivities = async (req, res) => {
         $addFields: {
           nameActivities: { $arrayElemAt: ['$activities.description', 0] },
           idActivities: { $arrayElemAt: ['$activities._id', 0] },
+          id: '$_id'
         }
       },
       {
         $project: {
+          _id: 0,
+          id: 1,
           name: 1,
           amount: 1,
           iconCode: 1,
-          enum: 1,
+          unit: 1,
           nameActivities: 1,
           idActivities: 1
         },
@@ -42,7 +56,7 @@ const getSubActivities = async (req, res) => {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
 
-    res.status(status.OK).json({ message: message.OK, subActivities });
+    res.status(status.OK).json({ message: message.OK, items: subActivities });
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
@@ -63,8 +77,15 @@ const getSubActivitiesByIdActivity = async (req, res) => {
     if (!subActivities) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
-
-    res.status(status.OK).json({ message: message.OK, subActivities });
+    const formattedSubActivities = subActivities.map((subActivity) => ({
+      id: subActivity._id,
+      name: subActivity.name || '',
+      activity: subActivity.activity || '',
+      amount: subActivity.amount || '',
+      unit: subActivity.unit || '',
+      iconCode: subActivity.iconCode || ''
+    }));
+    res.status(status.OK).json({ message: message.OK, items: formattedSubActivities });
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -82,9 +103,12 @@ const createSubActivities = async (req, res) => {
       amount: req.body.amount,
       unit: req.body.unit
     });
-
+    if (!req.body.idActivities || !req.body.name || !req.body.amount || !req.body.unit) {
+      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
+    }
     await newSubActivities.save();
-    return res.status(status.CREATED).json({ message: message.CREATED, newSubActivities });
+    const selectedSubActivity = getSelectedSubActivityFields(newSubActivities)
+    return res.status(status.CREATED).json({ message: message.CREATED, items: selectedSubActivity });
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -96,13 +120,16 @@ const updateSubActivities = async (req, res) => {
     const checkSubactivitiesId = await SubActivities.findById(req.body.subActivitiesID).exec()
     if (!checkSubactivitiesId) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if (!req.body.amount) {
+    } else if (!req.body.name || !req.body.amount || !req.body.unit) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     checkSubactivitiesId.name = req.body.name
     checkSubactivitiesId.amount = req.body.amount
+    checkSubactivitiesId.unit = req.body.unit
+    checkSubactivitiesId.iconCode = req.body.iconCode
     await checkSubactivitiesId.save()
-    res.status(status.OK).json({ message: message.OK, checkSubactivitiesId })
+    const selectedSubActivity = getSelectedSubActivityFields(checkSubactivitiesId)
+    res.status(status.OK).json({ message: message.OK, items: selectedSubActivity })
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })

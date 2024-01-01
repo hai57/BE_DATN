@@ -3,6 +3,17 @@ import { Type } from '@/models/typeActivityModels.js';
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
 
+const getSelectedActivityFields = (activity) => {
+  return {
+    id: activity._id,
+    typeActivities: activity.typeActivities || '',
+    name: activity.name || '',
+    description: activity.description || '',
+    isParent: activity.isParent || '',
+    iconCode: activity.iconCode || ''
+  };
+};
+
 //type
 const createTypeActivities = async (req, res) => {
   try {
@@ -75,10 +86,14 @@ const getAllActivities = async (req, res) => {
       {
         $addFields: {
           idType: { $arrayElemAt: ['$typeActivities._id', 0] },
+          id: '$_id'
+
         }
       },
       {
         $project: {
+          _id: 0,
+          id: 1,
           name: 1,
           iconCode: 1,
           isParent: 1,
@@ -94,7 +109,7 @@ const getAllActivities = async (req, res) => {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
 
-    res.status(status.OK).json({ message: message.OK, activities });
+    res.status(status.OK).json({ message: message.OK, items: activities });
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -110,8 +125,8 @@ const getActivityById = async (req, res) => {
     if (!activity) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
-
-    res.status(status.OK).json({ message: message.OK, activity });
+    const items = getSelectedActivityFields(activity)
+    res.status(status.OK).json({ message: message.OK, items: items });
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
@@ -120,11 +135,12 @@ const getActivityById = async (req, res) => {
 const createActivities = async (req, res) => {
   try {
     const newActivities = new Activities(req.body);
-    if (!req.body.name) {
+    if (!req.body.name || !req.body.description || !req.body.isParent || !req.body.iconCode) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     await newActivities.save();
-    res.status(status.CREATED).json({ message: message.CREATED, newActivities });
+    const activity = getSelectedActivityFields(newActivities)
+    res.status(status.CREATED).json({ message: message.CREATED, items: activity });
   } catch (err) {
     console.log(err)
     res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -136,12 +152,16 @@ const updateActivities = async (req, res) => {
     const activities = await Activities.findById(req.body.idActivities)
     if (!activities) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
+    } else if (!req.body.name || !req.body.description || !req.body.isParent || !req.body.iconCode) {
+      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     activities.typeActivities = req.body.typeActivities;
     activities.name = req.body.name;
-    activities.desciption = req.body.desciption;
+    activities.description = req.body.description;
+    activities.iconCode = req.body.iconCode;
     await activities.save()
-    return res.status(status.OK).json({ message: message.OK, activities })
+    const activity = getSelectedActivityFields(activities)
+    return res.status(status.OK).json({ message: message.OK, items: activity })
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }

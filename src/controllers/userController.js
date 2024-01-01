@@ -46,7 +46,7 @@ const createUser = async (req, res) => {
     res.status(status.CREATED).json({
       status: 'Success',
       message: message.CREATED,
-      user: selectedUserFields,
+      items: selectedUserFields,
       token: token
     });
   } catch (err) {
@@ -88,7 +88,7 @@ const register = async (req, res) => {
     return res.status(status.CREATED).json({
       status: 'Success',
       message: message.CREATED,
-      user: selectedUserFields,
+      items: selectedUserFields,
       token: token
     });
   } catch (err) {
@@ -145,7 +145,7 @@ const getAllUser = async (req, res) => {
     if (usersWithRoles.length === 0) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
-    res.status(status.OK).json({ message: message.OK, user: usersWithRoles });
+    res.status(status.OK).json({ message: message.OK, items: usersWithRoles });
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -194,7 +194,7 @@ const getUser = async (req, res) => {
         return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
       }
 
-      res.status(status.OK).json({ message: message.OK, usersWithRoles })
+      res.status(status.OK).json({ message: message.OK, items: usersWithRoles })
     }
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
@@ -242,7 +242,7 @@ const updateUser = async (req, res) => {
     const formattedBirthday = moment(user.birthday).format('DD-MM-YYYY');
     user.birthday = formattedBirthday;
     const selectedUserFields = getSelectedUserFields(user)
-    res.status(status.OK).json({ message: message.UPDATED, user: selectedUserFields })
+    res.status(status.OK).json({ message: message.UPDATED, items: selectedUserFields })
   } catch (err) {
     console.error(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
@@ -277,7 +277,7 @@ const updateUserWithId = async (req, res) => {
     const formattedBirthday = moment(user.birthday).format('DD-MM-YYYY');
     user.birthday = formattedBirthday;
     const selectedUserFields = getSelectedUserFields(user)
-    res.status(status.OK).json({ message: message.UPDATED, user: selectedUserFields })
+    res.status(status.OK).json({ message: message.UPDATED, items: selectedUserFields })
   } catch (err) {
     console.error(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
@@ -324,7 +324,7 @@ const login = async (req, res) => {
         user.birthday = formattedBirthday;
         const selectedUserFields = getSelectedUserFields(user);
 
-        return res.status(status.OK).json({ user: selectedUserFields, token: newToken.token });
+        return res.status(status.OK).json({ items: selectedUserFields, token: newToken.token });
       } catch (err) {
         return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
       }
