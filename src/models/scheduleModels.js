@@ -10,7 +10,7 @@ const scheduleSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['day', 'week']
+    enum: ['Day', 'Week']
   },
   timeLine: [
     {
