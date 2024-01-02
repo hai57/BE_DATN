@@ -59,9 +59,21 @@ const createSchedule = async (req, res) => {
 
     const newschedule = new Schedule({
       userCreate: req.userId,
-      nameSchedule: req.body.nameSchedule || "",
-      type: req.body.type || "",
-      timeLine: req.body.timeLine
+      nameSchedule: req.body.nameSchedule,
+      type: req.body.type,
+      timeLine: req.body.timeLine.map(timeLineItem => {
+        return {
+          itemActivity: (timeLineItem.itemActivity || []).map(activityItem => {
+            return {
+              activity: activityItem.activity || null,
+              isParent: activityItem.isParent !== undefined ? activityItem.isParent : null,
+              startTime: activityItem.startTime || null,
+              endTime: activityItem.endTime || null,
+              itemSubActivity: activityItem.itemSubActivity || []
+            };
+          })
+        };
+      })
     });
 
 
@@ -223,7 +235,6 @@ const getSchedule = async (req, res) => {
       },
     ]).skip(parseInt(offset))
       .limit(parseInt(limit));
-    console.log(schedule[0].timeLine[0])
     if (!schedule || schedule.length === 0) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
