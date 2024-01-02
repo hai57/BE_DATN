@@ -55,7 +55,7 @@ const createSchedule = async (req, res) => {
 
     await newschedule.save();
     const selectedSchedule = getSelectedSCheduleFields(newschedule)
-    res.status(status.OK).json({ message: message.OK, items: selectedSchedule });
+    res.status(status.OK).json({ message: message.OK, schedule: selectedSchedule });
   } catch (err) {
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -106,7 +106,7 @@ const getSchedule = async (req, res) => {
         $lookup: {
           from: 'times',
           localField: 'timeLine.itemActivity.startTime',
-          foreignField: '_id',
+          foreignField: 'idTimes',
           as: 'startTime'
         }
       },
@@ -116,6 +116,7 @@ const getSchedule = async (req, res) => {
           preserveNullAndEmptyArrays: true
         }
       },
+
       {
         $lookup: {
           from: 'subactivities',
@@ -230,7 +231,7 @@ const updateSchedule = async (req, res) => {
 
     await schedule.save();
     const selectedSchedule = getSelectedSCheduleFields(schedule)
-    res.status(status.OK).json({ message: message.OK, items: selectedSchedule });
+    res.status(status.OK).json({ message: message.OK, schedule: selectedSchedule });
   } catch (err) {
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });

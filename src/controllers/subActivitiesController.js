@@ -108,7 +108,7 @@ const createSubActivities = async (req, res) => {
     }
     await newSubActivities.save();
     const selectedSubActivity = getSelectedSubActivityFields(newSubActivities)
-    return res.status(status.CREATED).json({ message: message.CREATED, items: selectedSubActivity });
+    return res.status(status.CREATED).json({ message: message.CREATED, subactivity: selectedSubActivity });
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -129,7 +129,7 @@ const updateSubActivities = async (req, res) => {
     checkSubactivitiesId.iconCode = req.body.iconCode
     await checkSubactivitiesId.save()
     const selectedSubActivity = getSelectedSubActivityFields(checkSubactivitiesId)
-    res.status(status.OK).json({ message: message.OK, items: selectedSubActivity })
+    res.status(status.OK).json({ message: message.OK, subactivity: selectedSubActivity })
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })

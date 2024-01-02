@@ -125,8 +125,8 @@ const getActivityById = async (req, res) => {
     if (!activity) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
-    const items = getSelectedActivityFields(activity)
-    res.status(status.OK).json({ message: message.OK, items: items });
+    const selectedActivity = getSelectedActivityFields(activity)
+    res.status(status.OK).json({ message: message.OK, activity: selectedActivity });
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
@@ -140,7 +140,7 @@ const createActivities = async (req, res) => {
     }
     await newActivities.save();
     const activity = getSelectedActivityFields(newActivities)
-    res.status(status.CREATED).json({ message: message.CREATED, items: activity });
+    res.status(status.CREATED).json({ message: message.CREATED, activity: activity });
   } catch (err) {
     console.log(err)
     res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -161,7 +161,7 @@ const updateActivities = async (req, res) => {
     activities.iconCode = req.body.iconCode;
     await activities.save()
     const activity = getSelectedActivityFields(activities)
-    return res.status(status.OK).json({ message: message.OK, items: activity })
+    return res.status(status.OK).json({ message: message.OK, activity: activity })
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
