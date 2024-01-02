@@ -24,11 +24,11 @@ const scheduleSchema = new mongoose.Schema({
             type: Boolean
           },
           startTime: {
-            type: mongoose.Schema.Types.Number,
+            type: mongoose.Schema.Types.String,
             ref: 'times'
           },
           endTime: {
-            type: mongoose.Schema.Types.Number,
+            type: mongoose.Schema.Types.String,
             ref: 'times'
           },
           itemSubActivity: [

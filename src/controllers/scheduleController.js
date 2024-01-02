@@ -19,9 +19,9 @@ const getSelectedSCheduleFields = (schedule) => {
           return {
             id: activityItem._id,
             activity: activityItem.activity || "",
-            is_parent: activityItem.is_parent || false,
-            startTime: activityItem.startTime || 0,
-            endTime: activityItem.endTime || 0,
+            isParent: activityItem.isParent || false,
+            startTime: activityItem.startTime || "",
+            endTime: activityItem.endTime || "",
             itemSubActivity: activityItem.itemSubActivity.map((subActivityItem) => {
               return {
                 id: subActivityItem._id,
@@ -38,8 +38,8 @@ const getSelectedSCheduleFields = (schedule) => {
 const createSchedule = async (req, res) => {
   try {
     if (
-      // !req.body.nameSchedule ||
-      // !req.body.type ||
+      !req.body.nameSchedule ||
+      !req.body.type ||
       !req.body.timeLine ||
       !Array.isArray(req.body.timeLine) ||
       !req.body.timeLine.every(timeLineItem =>
@@ -50,7 +50,7 @@ const createSchedule = async (req, res) => {
           activityItem.activity &&
           activityItem.startTime &&
           activityItem.endTime &&
-          activityItem.is_parent != undefined
+          activityItem.isParent != undefined
         )
       )
     ) {
@@ -61,18 +61,7 @@ const createSchedule = async (req, res) => {
       userCreate: req.userId,
       nameSchedule: req.body.nameSchedule || "",
       type: req.body.type || "",
-      timeLine: req.body.timeLine.map(timeLineItem => {
-        return {
-          itemActivity: (timeLineItem.itemActivity || []).map(activityItem => {
-            return {
-              activity: activityItem.activity || null,
-              is_parent: activityItem.is_parent != undefined ? activityItem.is_parent : null,
-              startTime: activityItem.startTime || null,
-              endTime: activityItem.endTime || null
-            };
-          })
-        };
-      })
+      timeLine: req.body.timeLine
     });
 
 
@@ -129,7 +118,7 @@ const getSchedule = async (req, res) => {
         $lookup: {
           from: 'times',
           localField: 'timeLine.itemActivity.startTime',
-          foreignField: 'idTimes',
+          foreignField: '_id',
           as: 'startTime'
         }
       },
@@ -144,7 +133,7 @@ const getSchedule = async (req, res) => {
         $lookup: {
           from: 'times',
           localField: 'timeLine.itemActivity.endTime',
-          foreignField: 'idTimes',
+          foreignField: '_id',
           as: 'endTime'
         }
       },
@@ -178,6 +167,7 @@ const getSchedule = async (req, res) => {
             type: '$type',
             userCreate: '$userCreate.name',
             idTimeLine: '$timeLine._id',
+            isParent: '$timeLine.isParent',
             startTimeHour: '$startTime.hour',
             startTimeMinutes: '$startTime.minutes',
             endTimeHour: '$endTime.hour',
@@ -202,6 +192,7 @@ const getSchedule = async (req, res) => {
           timeLine: {
             $push: {
               idTimeLine: '$_id.idTimeLine',
+              isParent: '$_id.isParent',
               startTime:
               {
                 hour: '$_id.startTimeHour',

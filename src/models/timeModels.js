@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const timeSchema = new mongoose.Schema({
   _id: {
-    type: Number,
+    type: String,
     required: true
   },
   hour: {
