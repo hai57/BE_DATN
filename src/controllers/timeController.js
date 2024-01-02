@@ -8,14 +8,14 @@ const createTime = async (req, res) => {
     // Sử dụng Promise.all để tạo và lưu đồng thời tất cả các lần
     const createdTimes = await Promise.all(timesToCreate.map(async (timeData) => {
 
-    // Tạo một thời gian mới
-    const newTime = new Time({
-      _id: timeData.idTimes,
-      hour: timeData.hour,
-      minutes: timeData.minutes,
-    });
+      // Tạo một thời gian mới
+      const newTime = new Time({
+        _id: timeData.idTimes,
+        hour: timeData.hour,
+        minutes: timeData.minutes,
+      });
 
-    return newTime.save();
+      return newTime.save();
     }));
     return res.status(status.CREATED).json(createdTimes);
   } catch (err) {
@@ -23,40 +23,41 @@ const createTime = async (req, res) => {
   }
 };
 
-const getTime = async(req, res) => {
+const getTime = async (req, res) => {
   try {
     //Sử dụng sort lấy dữ liệu sx tăng dần
-    const time = await Time.find().sort({_id:1})
+    const time = await Time.find().select({ _id: 0, id: '$_id', hour: '$hour', minutes: '$minutes' });
+
     return res.status(status.OK).json({ message: message.OK, time })
-  }catch(err) {
+  } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
 
-const updateTime = async(req, res) => {
-  try{
+const updateTime = async (req, res) => {
+  try {
     const idTimes = await Time.findById(req.body.idTimes).exec()
-    if(!idTimes) {
+    if (!idTimes) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
     idTimes.hour = req.body.hour;
     idTimes.minutes = req.body.minutes
     await idTimes.save()
     return res.status(status.OK).json({ message: message.OK, idTimes })
-  } catch(err) {
+  } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
 
-const deleteTime = async(req, res) => {
+const deleteTime = async (req, res) => {
   try {
     const idTimes = await Time.findById(req.body.idTimes).exec()
-    if(!idTimes) {
+    if (!idTimes) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
     await idTimes.deleteOne()
     return res.status(204).send()
-  } catch(err){
+  } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };

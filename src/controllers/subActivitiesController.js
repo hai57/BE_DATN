@@ -107,8 +107,7 @@ const createSubActivities = async (req, res) => {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     await newSubActivities.save();
-    const selectedSubActivity = getSelectedSubActivityFields(newSubActivities)
-    return res.status(status.CREATED).json({ message: message.CREATED, subactivity: selectedSubActivity });
+    return res.status(status.CREATED).json({ message: message.CREATED });
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });

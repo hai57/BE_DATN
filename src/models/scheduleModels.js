@@ -14,13 +14,13 @@ const scheduleSchema = new mongoose.Schema({
   },
   timeLine: [
     {
-      itemActivity: [
+      itemsActivity: [
         {
-          activity: {
+          activityID: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'activities'
           },
-          is_parent: {
+          isParent: {
             type: Boolean
           },
           startTime: {
@@ -31,9 +31,9 @@ const scheduleSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.String,
             ref: 'times'
           },
-          itemSubActivity: [
+          itemsSubActivity: [
             {
-              subActivities:
+              subActivityId:
               {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'subActivities'

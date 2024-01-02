@@ -6,6 +6,7 @@ import { message } from '@/constant/message.js';
 const getSelectedActivityFields = (activity) => {
   return {
     id: activity._id,
+    user: activity.user,
     typeActivities: activity.typeActivities || '',
     name: activity.name || '',
     description: activity.description || '',
@@ -97,7 +98,7 @@ const getAllActivities = async (req, res) => {
           name: 1,
           iconCode: 1,
           isParent: 1,
-          desciption: 1,
+          description: 1,
           Type: 1
         },
       },
@@ -134,13 +135,20 @@ const getActivityById = async (req, res) => {
 
 const createActivities = async (req, res) => {
   try {
-    const newActivities = new Activities(req.body);
+    const newActivities = new Activities(
+      {
+        name: req.body.name,
+        typeActivities: req.body.typeActivities,
+        description: req.body.description,
+        isParent: req.body.isParent,
+        iconCode: req.body.iconCode
+      }
+    );
     if (!req.body.name || !req.body.description || !req.body.isParent || !req.body.iconCode) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     await newActivities.save();
-    const activity = getSelectedActivityFields(newActivities)
-    res.status(status.CREATED).json({ message: message.CREATED, activity: activity });
+    res.status(status.CREATED).json({ message: message.CREATED });
   } catch (err) {
     console.log(err)
     res.status(status.ERROR).json({ message: message.ERROR.SERVER });
