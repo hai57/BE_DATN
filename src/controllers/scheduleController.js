@@ -38,8 +38,8 @@ const getSelectedSCheduleFields = (schedule) => {
 const createSchedule = async (req, res) => {
   try {
     if (
-      !req.body.nameSchedule ||
-      !req.body.type ||
+      // !req.body.nameSchedule ||
+      // !req.body.type ||
       !req.body.timeLine ||
       !Array.isArray(req.body.timeLine) ||
       !req.body.timeLine.every(timeLineItem =>
@@ -61,12 +61,20 @@ const createSchedule = async (req, res) => {
       userCreate: req.userId,
       nameSchedule: req.body.nameSchedule || "",
       type: req.body.type || "",
-      timeLine: req.body.timeLine
+      timeLine: req.body.timeLine.map(timeLineItem => {
+        return {
+          itemActivity: (timeLineItem.itemActivity || []).map(activityItem => {
+            return {
+              activity: activityItem.activity || null,
+              is_parent: activityItem.is_parent != undefined ? activityItem.is_parent : null,
+              startTime: activityItem.startTime || null,
+              endTime: activityItem.endTime || null
+            };
+          })
+        };
+      })
     });
 
-    if (!req.body.nameSchedule || !req.body.type) {
-      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
-    }
 
     await newschedule.save();
     const selectedSchedule = getSelectedSCheduleFields(newschedule)
