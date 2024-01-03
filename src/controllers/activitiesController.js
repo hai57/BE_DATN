@@ -144,11 +144,12 @@ const createActivities = async (req, res) => {
         iconCode: req.body.iconCode
       }
     );
-    if (!req.body.name || !req.body.description || !req.body.isParent || !req.body.iconCode) {
+    if (!req.body.name || !req.body.description) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     await newActivities.save();
-    res.status(status.CREATED).json({ message: message.CREATED });
+    const selectActivity = getSelectedActivityFields(newActivities)
+    res.status(status.CREATED).json({ message: message.CREATED, activity: selectActivity });
   } catch (err) {
     console.log(err)
     res.status(status.ERROR).json({ message: message.ERROR.SERVER });

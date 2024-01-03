@@ -28,7 +28,7 @@ const getTime = async (req, res) => {
     //Sử dụng sort lấy dữ liệu sx tăng dần
     const time = await Time.find().select({ _id: 0, id: '$_id', hour: '$hour', minutes: '$minutes' });
 
-    return res.status(status.OK).json({ message: message.OK, time })
+    return res.status(status.OK).json({ message: message.OK, times: time })
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
