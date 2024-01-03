@@ -160,7 +160,7 @@ const updateActivities = async (req, res) => {
     const activities = await Activities.findById(req.body.idActivities)
     if (!activities) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if (!req.body.name || !req.body.description || !req.body.isParent || !req.body.iconCode) {
+    } else if (!req.body.name || !req.body.description) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     activities.typeActivities = req.body.typeActivities;
