@@ -176,7 +176,7 @@ const getSchedule = async (req, res) => {
             nameSchedule: '$nameSchedule',
             createAt: '$createAt',
             type: '$type',
-            userCreate: '$userCreate.name',
+            userCreate: { $first: '$userCreate.name' },
             idTimeLine: '$timeLine._id',
             isParent: '$timeLine.isParent',
             startTimeHour: '$startTime.hour',
@@ -262,7 +262,7 @@ const updateSchedule = async (req, res) => {
 
     await schedule.save();
     const selectedSchedule = getSelectedSCheduleFields(schedule)
-    res.status(status.OK).json({ message: message.OK, schedule: selectedSchedule });
+    res.status(status.OK).json({ message: message.UPDATED, schedule: selectedSchedule });
   } catch (err) {
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -390,7 +390,7 @@ const updateScheduleUser = async (req, res) => {
     scheduleUserId.timeId = req.body.timeId;
     scheduleUserId.date = req.body.date;
     await scheduleUserId.save();
-    res.status(status.OK).json({ message: message.OK, scheduleUserId })
+    res.status(status.OK).json({ message: message.updateSchedule, scheduleUserId })
   } catch (err) {
     console.error(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })

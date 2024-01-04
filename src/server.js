@@ -7,10 +7,10 @@ import cors from 'cors';
 import userRoute from './routes/userRoute.js';
 import scheduleRoute from './routes/scheduleRoute.js';
 import activitiesRoute from './routes/activitiesRoute.js';
-import notiRoute from './routes/notificationRoute.js';
 import timeRoute from './routes/timeRoute.js';
-import itemScheduleRoute from './routes/itemScheduleRoute.js';
-import { timeoutMiddleware } from './middlewares/index.js'
+// import notiRoute from './routes/notificationRoute.js';
+// import itemScheduleRoute from './routes/itemScheduleRoute.js';
+// import { timeoutMiddleware } from './middlewares/index.js'
 
 dotenv.config();
 
@@ -33,6 +33,6 @@ app.use(cors())
 app.use('/v1/api/user', userRoute);
 app.use('/v1/api/schedule', scheduleRoute);
 app.use('/v1/api/activities', activitiesRoute);
-app.use('/v1/api/noti', notiRoute);
 app.use('/v1/api/time', timeRoute);
-app.use('/v1/api/item-schedule', itemScheduleRoute);
+// app.use('/v1/api/noti', notiRoute);
+// app.use('/v1/api/item-schedule', itemScheduleRoute);

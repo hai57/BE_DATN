@@ -43,7 +43,7 @@ const updateTime = async (req, res) => {
     idTimes.hour = req.body.hour;
     idTimes.minutes = req.body.minutes
     await idTimes.save()
-    return res.status(status.OK).json({ message: message.OK, idTimes })
+    return res.status(status.OK).json({ message: message.UPDATED, time: idTimes })
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }

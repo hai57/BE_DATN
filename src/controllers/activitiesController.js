@@ -50,7 +50,7 @@ const updateTypeActivities = async (req, res) => {
     }
     idType.name = req.body.name;
     await idType.save()
-    return res.status(status.OK).json({ message: message.OK, idType })
+    return res.status(status.OK).json({ message: message.UPDATED, type: idType })
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
@@ -170,7 +170,7 @@ const updateActivities = async (req, res) => {
     activities.iconCode = req.body.iconCode;
     await activities.save()
     const activity = getSelectedActivityFields(activities)
-    return res.status(status.OK).json({ message: message.OK, activity: activity })
+    return res.status(status.OK).json({ message: message.UPDATED, activity: activity })
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }

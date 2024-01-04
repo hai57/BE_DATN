@@ -129,7 +129,7 @@ const updateSubActivities = async (req, res) => {
     checkSubactivitiesId.iconCode = req.body.iconCode
     await checkSubactivitiesId.save()
     const selectedSubActivity = getSelectedSubActivityFields(checkSubactivitiesId)
-    res.status(status.OK).json({ message: message.OK, subactivity: selectedSubActivity })
+    res.status(status.OK).json({ message: message.UPDATED, subactivity: selectedSubActivity })
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
