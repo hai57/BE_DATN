@@ -127,36 +127,6 @@ const getSchedule = async (req, res) => {
       },
       {
         $lookup: {
-          from: 'times',
-          localField: 'timeLine.itemsActivity.startTime',
-          foreignField: '_id',
-          as: 'startTime'
-        }
-      },
-
-      {
-        $unwind: {
-          path: '$startTime',
-          preserveNullAndEmptyArrays: true
-        }
-      },
-      {
-        $lookup: {
-          from: 'times',
-          localField: 'timeLine.itemsActivity.endTime',
-          foreignField: '_id',
-          as: 'endTime'
-        }
-      },
-      {
-        $unwind: {
-          path: '$endTime',
-          preserveNullAndEmptyArrays: true
-        }
-      },
-
-      {
-        $lookup: {
           from: 'subactivities',
           localField: 'timeLine.itemsActivity.itemsSubActivity.subActivityId',
           foreignField: '_id',
@@ -177,21 +147,15 @@ const getSchedule = async (req, res) => {
             createAt: '$createAt',
             type: '$type',
             userCreate: { $first: '$userCreate.name' },
-            idTimeLine: '$timeLine._id',
-            isParent: '$timeLine.isParent',
-            startTimeHour: '$startTime.hour',
-            startTimeMinutes: '$startTime.minutes',
-            endTimeHour: '$endTime.hour',
-            endTimeMinutes: '$endTime.minutes',
+            idDaySchedule: '$timeLine._id',
+            isParent: '$timeLine.itemsActivity.isParent',
+            startTime: '$timeLine.itemsActivity.startTime',
+            endTime: '$timeLine.itemsActivity.endTime',
             activityId: '$activity._id',
             activityName: '$activity.name',
+            subActivityId: '$subActivities._id',
+            subActivityName: '$subActivities.name'
           },
-          subActivityID: {
-            $push: {
-              id: '$subActivities._id',
-              name: '$subActivities.name'
-            }
-          }
         }
       },
       {
@@ -202,22 +166,18 @@ const getSchedule = async (req, res) => {
           userCreate: { $first: '$_id.userCreate' },
           timeLine: {
             $push: {
-              idTimeLine: '$_id.idTimeLine',
-              isParent: '$_id.isParent',
-              startTime:
-              {
-                hour: '$_id.startTimeHour',
-                minutes: '$_id.startTimeMinutes'
-              },
-              endTime: {
-                hour: '$_id.endTimeHour',
-                minutes: '$_id.endTimeMinutes'
-              },
-              activity: {
-                id: '$_id.activityId',
-                name: '$_id.activityName'
-              },
-              subActivity: '$subActivityID'
+              idDaySchedule: '$_id.idDaySchedule',
+              itemsActivity: {
+                activityID: '$_id.activityId',
+                activityName: '$_id.activityName',
+                isParent: '$_id.isParent',
+                startTime: '$_id.startTime',
+                endTime: '$_id.endTime',
+                itemsSubActivity: {
+                  subActivityId: '$_id.subActivityId',
+                  subActivityName: '$_id.subActivityName'
+                }
+              }
             }
           }
         }
