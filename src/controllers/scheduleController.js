@@ -149,10 +149,12 @@ const getSchedule = async (req, res) => {
             userCreate: { $first: '$userCreate.name' },
             idDaySchedule: '$timeLine._id',
             isParent: '$timeLine.itemsActivity.isParent',
+            itemsActivityId: '$timeLine.itemsActivity._id',
             startTime: '$timeLine.itemsActivity.startTime',
             endTime: '$timeLine.itemsActivity.endTime',
             activityId: '$activity._id',
             activityName: '$activity.name',
+            itemsSubActivityId: { $first: '$timeLine.itemsActivity.itemsSubActivity._id' },
             subActivityId: '$subActivities._id',
             subActivityName: '$subActivities.name'
           },
@@ -168,12 +170,14 @@ const getSchedule = async (req, res) => {
             $push: {
               idDaySchedule: '$_id.idDaySchedule',
               itemsActivity: {
+                itemsActivityId: '$_id.itemsActivityId',
                 activityID: '$_id.activityId',
                 activityName: '$_id.activityName',
                 isParent: '$_id.isParent',
                 startTime: '$_id.startTime',
                 endTime: '$_id.endTime',
                 itemsSubActivity: {
+                  itemsSubActivityId: '$_id.itemsSubActivityId',
                   subActivityId: '$_id.subActivityId',
                   subActivityName: '$_id.subActivityName'
                 }
