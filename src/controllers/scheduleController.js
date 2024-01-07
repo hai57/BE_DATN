@@ -78,7 +78,8 @@ const createSchedule = async (req, res) => {
 
 
     await newschedule.save();
-    res.status(status.OK).json({ message: message.OK });
+    const selectedSchedule = getSelectedSCheduleFields(newschedule)
+    res.status(status.OK).json({ message: message.OK, schedule: selectedSchedule });
   } catch (err) {
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -126,6 +127,12 @@ const getSchedule = async (req, res) => {
         }
       },
       {
+        $unwind: {
+          path: '$timeLine.itemsActivity.itemsSubActivity',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
         $lookup: {
           from: 'subactivities',
           localField: 'timeLine.itemsActivity.itemsSubActivity.subActivityId',
@@ -142,46 +149,52 @@ const getSchedule = async (req, res) => {
       {
         $group: {
           _id: {
-            _id: '$_id',
-            nameSchedule: '$nameSchedule',
-            createAt: '$createAt',
-            type: '$type',
-            userCreate: { $first: '$userCreate.name' },
             idDaySchedule: '$timeLine._id',
+            nameSchedule: '$nameSchedule',
+            type: '$type',
+            activityID: '$timeLine.itemsActivity.activityID',
+            activityName: '$activity.name',
             isParent: '$timeLine.itemsActivity.isParent',
-            itemsActivityId: '$timeLine.itemsActivity._id',
             startTime: '$timeLine.itemsActivity.startTime',
             endTime: '$timeLine.itemsActivity.endTime',
-            activityId: '$activity._id',
-            activityName: '$activity.name',
-            itemsSubActivityId: { $first: '$timeLine.itemsActivity.itemsSubActivity._id' },
-            subActivityId: '$subActivities._id',
-            subActivityName: '$subActivities.name'
           },
+          itemsSubActivity: {
+            $push: {
+              itemsSubActivityId: '$timeLine.itemsActivity.itemsSubActivity._id',
+              subActivityId: '$subActivities._id',
+              subActivityName: '$subActivities.name'
+            }
+          }
         }
       },
       {
         $group: {
-          _id: '$_id._id',
+          _id: {
+            idDaySchedule: '$_id.idDaySchedule',
+            nameSchedule: '$_id.nameSchedule',
+            type: '$_id.type'
+          },
+          itemsActivity: {
+            $push: {
+              activityID: '$_id.activityID',
+              activityName: '$_id.activityName',
+              isParent: '$_id.isParent',
+              startTime: '$_id.startTime',
+              endTime: '$_id.endTime',
+              itemsSubActivity: '$itemsSubActivity'
+            }
+          }
+        }
+      },
+      {
+        $group: {
+          _id: '$_id.idDaySchedule',
           nameSchedule: { $first: '$_id.nameSchedule' },
           type: { $first: '$_id.type' },
-          userCreate: { $first: '$_id.userCreate' },
           timeLine: {
             $push: {
               idDaySchedule: '$_id.idDaySchedule',
-              itemsActivity: {
-                itemsActivityId: '$_id.itemsActivityId',
-                activityID: '$_id.activityId',
-                activityName: '$_id.activityName',
-                isParent: '$_id.isParent',
-                startTime: '$_id.startTime',
-                endTime: '$_id.endTime',
-                itemsSubActivity: {
-                  itemsSubActivityId: '$_id.itemsSubActivityId',
-                  subActivityId: '$_id.subActivityId',
-                  subActivityName: '$_id.subActivityName'
-                }
-              }
+              itemsActivity: '$itemsActivity'
             }
           }
         }
