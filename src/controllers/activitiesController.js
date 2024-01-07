@@ -86,7 +86,7 @@ const getAllActivities = async (req, res) => {
       },
       {
         $addFields: {
-          Type: { $arrayElemAt: ['$typeActivities.name', 0] },
+          type: { $arrayElemAt: ['$typeActivities.name', 0] },
           id: '$_id'
 
         }
@@ -99,7 +99,7 @@ const getAllActivities = async (req, res) => {
           iconCode: 1,
           isParent: 1,
           description: 1,
-          Type: 1
+          type: 1
         },
       },
 

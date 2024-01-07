@@ -86,12 +86,15 @@ const createSchedule = async (req, res) => {
   }
 };
 
-const getSchedule = async (req, res) => {
+const getScheduleDetail = async (req, res) => {
   const offset = req.params.offset ? parseInt(req.params.offset) : 0;
   const limit = req.params.limit ? parseInt(req.params.limit) : 10;
-
+  const scheduleId = req.params.scheduleId
   try {
     const schedule = await Schedule.aggregate([
+      {
+        $match: { _id: mongoose.Types.ObjectId(scheduleId) }
+      },
       {
         $lookup: {
           from: 'users',
@@ -149,10 +152,12 @@ const getSchedule = async (req, res) => {
       {
         $group: {
           _id: {
+            _id: '$_id',
             idDaySchedule: '$timeLine._id',
             nameSchedule: '$nameSchedule',
             type: '$type',
             userCreate: '$userCreate.name',
+            itemsActivityId: '$timeLine.itemsActivity._id',
             activityID: '$timeLine.itemsActivity.activityID',
             activityName: '$activity.name',
             isParent: '$timeLine.itemsActivity.isParent',
@@ -171,6 +176,7 @@ const getSchedule = async (req, res) => {
       {
         $group: {
           _id: {
+            _id: '$_id._id',
             idDaySchedule: '$_id.idDaySchedule',
             nameSchedule: '$_id.nameSchedule',
             userCreate: { $first: '$_id.userCreate' },
@@ -178,6 +184,7 @@ const getSchedule = async (req, res) => {
           },
           itemsActivity: {
             $push: {
+              itemsActivityId: '$_id.itemsActivityId',
               activityID: '$_id.activityID',
               activityName: '$_id.activityName',
               isParent: '$_id.isParent',
@@ -190,7 +197,7 @@ const getSchedule = async (req, res) => {
       },
       {
         $group: {
-          _id: '$_id.idDaySchedule',
+          _id: '$_id._id',
           nameSchedule: { $first: '$_id.nameSchedule' },
           type: { $first: '$_id.type' },
           userCreate: { $first: '$_id.userCreate' },
@@ -210,6 +217,47 @@ const getSchedule = async (req, res) => {
           type: 1,
           userCreate: 1,
           timeLine: 1
+        }
+      },
+    ]).skip(parseInt(offset))
+      .limit(parseInt(limit));
+    if (!schedule || schedule.length === 0) {
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
+    }
+
+    res.status(status.OK).json({ message: message.OK, items: schedule });
+  } catch (err) {
+    console.error(err);
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+  }
+};
+
+const getSchedule = async (req, res) => {
+  const offset = req.params.offset ? parseInt(req.params.offset) : 0;
+  const limit = req.params.limit ? parseInt(req.params.limit) : 10;
+
+  try {
+    const schedule = await Schedule.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userCreate',
+          foreignField: '_id',
+          as: 'userCreate'
+        }
+      },
+      {
+        $addFields: {
+          userCreate: { $first: '$userCreate.name' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          id: '$_id',
+          nameSchedule: 1,
+          type: 1,
+          userCreate: 1
         }
       },
     ]).skip(parseInt(offset))
@@ -391,4 +439,4 @@ const deleteScheduleUser = async (req, res) => {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
-export { createSchedule, getSchedule, updateSchedule, deleteSchedule, createScheduleUser, getscheduleUser, updateScheduleUser, deleteScheduleUser }
+export { createSchedule, getScheduleDetail, getSchedule, updateSchedule, deleteSchedule, createScheduleUser, getscheduleUser, updateScheduleUser, deleteScheduleUser }
