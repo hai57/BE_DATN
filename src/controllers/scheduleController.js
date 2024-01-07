@@ -152,6 +152,7 @@ const getSchedule = async (req, res) => {
             idDaySchedule: '$timeLine._id',
             nameSchedule: '$nameSchedule',
             type: '$type',
+            userCreate: '$userCreate.name',
             activityID: '$timeLine.itemsActivity.activityID',
             activityName: '$activity.name',
             isParent: '$timeLine.itemsActivity.isParent',
@@ -172,6 +173,7 @@ const getSchedule = async (req, res) => {
           _id: {
             idDaySchedule: '$_id.idDaySchedule',
             nameSchedule: '$_id.nameSchedule',
+            userCreate: { $first: '$_id.userCreate' },
             type: '$_id.type'
           },
           itemsActivity: {
@@ -191,6 +193,7 @@ const getSchedule = async (req, res) => {
           _id: '$_id.idDaySchedule',
           nameSchedule: { $first: '$_id.nameSchedule' },
           type: { $first: '$_id.type' },
+          userCreate: { $first: '$_id.userCreate' },
           timeLine: {
             $push: {
               idDaySchedule: '$_id.idDaySchedule',
