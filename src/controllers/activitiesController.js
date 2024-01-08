@@ -10,7 +10,7 @@ const getSelectedActivityFields = (activity) => {
     typeActivities: activity.typeActivities || '',
     name: activity.name || '',
     description: activity.description || '',
-    isParent: activity.isParent || '',
+    isParent: activity.isParent,
     iconCode: activity.iconCode || ''
   };
 };

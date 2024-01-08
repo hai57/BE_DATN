@@ -64,21 +64,19 @@ const register = async (req, res) => {
     const role = await Role.findById(defaultRole);
     if (!role) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.MISS_FIELD });
-    } else if (!req.body.username) {
-      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     } else if (!req.body.gmail) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     } else if (!req.body.password) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    if (req.body.birthday) {
-      const dateOfBirth = moment(req.body.birthday, 'DD-MM-YYYY').toDate();
-      if (Object.prototype.toString.call(dateOfBirth) === '[object Date]' && !isNaN(dateOfBirth)) {
-        user.birthday = moment(dateOfBirth).format('YYYY-MM-DD');
-      } else {
-        return res.status(status.BAD_REQUEST).json({ message: message.ERROR.SERVER });
-      }
-    }
+    // if (req.body.birthday) {
+    //   const dateOfBirth = moment(req.body.birthday, 'DD-MM-YYYY').toDate();
+    //   if (Object.prototype.toString.call(dateOfBirth) === '[object Date]' && !isNaN(dateOfBirth)) {
+    //     user.birthday = moment(dateOfBirth).format('YYYY-MM-DD');
+    //   } else {
+    //     return res.status(status.BAD_REQUEST).json({ message: message.ERROR.SERVER });
+    //   }
+    // }
     user.role = defaultRole;
     //token
     const token = generateToken(user);
