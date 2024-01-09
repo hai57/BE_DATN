@@ -318,8 +318,10 @@ const login = async (req, res) => {
       });
       try {
         await newToken.save();
-        const formattedBirthday = moment(user.birthday).format('DD-MM-YYYY');
-        user.birthday = formattedBirthday;
+        if (user.birthday) {
+          const formattedBirthday = moment(user.birthday).format('DD-MM-YYYY');
+          user.birthday = formattedBirthday;
+        }
         const selectedUserFields = getSelectedUserFields(user);
 
         return res.status(status.OK).json({ user: selectedUserFields, token: newToken.token });

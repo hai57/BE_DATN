@@ -225,7 +225,7 @@ const getScheduleDetail = async (req, res) => {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
 
-    res.status(status.OK).json({ message: message.OK, items: schedule });
+    res.status(status.OK).json({ message: message.OK, schedule: schedule });
   } catch (err) {
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
