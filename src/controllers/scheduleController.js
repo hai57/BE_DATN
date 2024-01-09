@@ -87,8 +87,6 @@ const createSchedule = async (req, res) => {
 };
 
 const getScheduleDetail = async (req, res) => {
-  const offset = req.params.offset ? parseInt(req.params.offset) : 0;
-  const limit = req.params.limit ? parseInt(req.params.limit) : 10;
   const scheduleId = req.params.scheduleId
   try {
     const schedule = await Schedule.aggregate([
@@ -219,13 +217,12 @@ const getScheduleDetail = async (req, res) => {
           timeLine: 1
         }
       },
-    ]).skip(parseInt(offset))
-      .limit(parseInt(limit));
+    ])
     if (!schedule || schedule.length === 0) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
-
-    res.status(status.OK).json({ message: message.OK, schedule: schedule });
+    const scheduleObject = schedule[0];
+    res.status(status.OK).json({ message: message.OK, schedule: scheduleObject });
   } catch (err) {
     console.error(err);
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
