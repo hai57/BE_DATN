@@ -188,7 +188,32 @@ const getScheduleDetail = async (req, res) => {
               isParent: '$_id.isParent',
               startTime: '$_id.startTime',
               endTime: '$_id.endTime',
-              itemsSubActivity: '$itemsSubActivity'
+              itemsSubActivity: {
+                $cond: {
+                  if: {
+                    $eq: [
+                      {
+                        $size: {
+                          $filter: {
+                            input: '$itemsSubActivity',
+                            as: 'subActivity',
+                            cond: { $ne: ['$$subActivity', {}] }
+                          }
+                        }
+                      },
+                      0
+                    ]
+                  },
+                  then: '$$REMOVE',
+                  else: {
+                    $filter: {
+                      input: '$itemsSubActivity',
+                      as: 'subActivity',
+                      cond: { $ne: ['$$subActivity', {}] }
+                    }
+                  }
+                }
+              }
             }
           }
         }
