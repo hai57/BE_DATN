@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { getAllActivities, createActivities, updateActivities, deleteActivities, getActivityById, createTypeActivities, getTypeActivities, updateTypeActivities, deleteTypeActivities } from '@/controllers/activitiesController.js';
+import { getAllActivities, createActivities, updateActivities, updateActivitiesByParamId, deleteActivities, getActivityById, createTypeActivities, getTypeActivities, updateTypeActivities, deleteTypeActivities } from '@/controllers/activitiesController.js';
 import { getSubActivities, getSubActivitiesByIdActivity, createSubActivities, updateSubActivities, deleteSubActivities } from '@/controllers/subActivitiesController.js';
 import { authenticateToken } from '@/middlewares/index.js'
 const router = express.Router()
@@ -8,6 +8,7 @@ const router = express.Router()
 router.post('/create-activities', authenticateToken.verifyToken, createActivities)
 router.get('/get-all-activities', authenticateToken.verifyToken, getAllActivities)
 router.put('/update-activities', authenticateToken.verifyToken, updateActivities)
+router.put('/update-activities-by-id/:activityId', authenticateToken.verifyToken, updateActivitiesByParamId)
 router.delete('/delete-activities', authenticateToken.verifyToken, deleteActivities)
 router.get('/get-activity-by-id/:activityId', authenticateToken.verifyToken, getActivityById)
 

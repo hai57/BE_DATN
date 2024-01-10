@@ -44,7 +44,6 @@ const createUser = async (req, res) => {
     const selectedUserFields = getSelectedUserFields(user)
     await user.save();
     res.status(status.CREATED).json({
-      status: 'Success',
       message: message.CREATED,
       user: selectedUserFields,
       token: token
@@ -69,14 +68,16 @@ const register = async (req, res) => {
     } else if (!req.body.password) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    // if (req.body.birthday) {
-    //   const dateOfBirth = moment(req.body.birthday, 'DD-MM-YYYY').toDate();
-    //   if (Object.prototype.toString.call(dateOfBirth) === '[object Date]' && !isNaN(dateOfBirth)) {
-    //     user.birthday = moment(dateOfBirth).format('YYYY-MM-DD');
-    //   } else {
-    //     return res.status(status.BAD_REQUEST).json({ message: message.ERROR.SERVER });
-    //   }
-    // }
+    if (req.body.birthday) {
+      const dateOfBirth = moment(req.body.birthday, 'DD-MM-YYYY').toDate();
+      if (Object.prototype.toString.call(dateOfBirth) === '[object Date]' && !isNaN(dateOfBirth)) {
+        user.birthday = moment(dateOfBirth).format('YYYY-MM-DD');
+      } else {
+        return res.status(status.BAD_REQUEST).json({ message: message.ERROR.SERVER });
+      }
+    } else {
+      user.birthday = '';
+    }
     user.role = defaultRole;
     //token
     const token = generateToken(user);
@@ -84,7 +85,6 @@ const register = async (req, res) => {
     await user.save();
     const selectedUserFields = getSelectedUserFields(user);
     return res.status(status.CREATED).json({
-      status: 'Success',
       message: message.CREATED,
       user: selectedUserFields,
       token: token
@@ -120,14 +120,20 @@ const getAllUser = async (req, res) => {
           id: 1,
           username: { $ifNull: ['$username', ''] },
           birthday: {
-            $dateToString: {
-              format: '%d-%m-%Y',
-              date: {
-                $dateFromString: {
-                  dateString: '$birthday',
-                  format: '%Y-%m-%d',
+            $cond: {
+              if: { $gt: ['$birthday', ''] },
+              then: {
+                $dateToString: {
+                  format: '%d-%m-%Y',
+                  date: {
+                    $dateFromString: {
+                      dateString: '$birthday',
+                      format: '%Y-%m-%d',
+                    },
+                  },
                 },
               },
+              else: '',
             },
           },
           gmail: { $ifNull: ['$gmail', ''] },
@@ -158,7 +164,7 @@ const getUser = async (req, res) => {
     } else {
       const usersWithRoles = await User.aggregate([
         {
-          $match: { gmail: gmail }
+          $match: { _id: mongoose.Types.ObjectId(user) }
         },
         {
           $lookup: {
@@ -247,7 +253,7 @@ const updateUser = async (req, res) => {
   }
 };
 
-const updateUserWithId = async (req, res) => {
+const updateUserWithIdForAdmin = async (req, res) => {
   try {
     const userId = req.body.id;
     const user = await User.findById(userId).exec();
@@ -306,7 +312,7 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ gmail })
     if (!user) {
-      return res.status(status.NOT_FOUND).json({ user: "", token: "" });
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND, user: "", token: "" });
     }
     if (user.password === password) {
       await Token.deleteMany({ user: user._id });
@@ -324,7 +330,7 @@ const login = async (req, res) => {
         }
         const selectedUserFields = getSelectedUserFields(user);
 
-        return res.status(status.OK).json({ user: selectedUserFields, token: newToken.token });
+        return res.status(status.OK).json({ message: message.LOGIN, user: selectedUserFields, token: newToken.token });
       } catch (err) {
         return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
       }
@@ -372,4 +378,4 @@ const getToken = async (req, res) => {
   }
 };
 
-export { createUser, getAllUser, getUser, updateUser, updateUserWithId, login, deleteUser, changePassword, getToken, register }
+export { createUser, getAllUser, getUser, updateUser, updateUserWithIdForAdmin, login, deleteUser, changePassword, getToken, register }

@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 
 const activitiesSchema = new mongoose.Schema({
-  typeActivities: {
+  type: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'types'
   },
-  name: {
+  activityName: {
     type: String
   },
   description: {

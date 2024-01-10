@@ -2,6 +2,7 @@ export const message = {
   CREATED: 'Created Success',
   OK: 'Request Accepted',
   UPDATED: 'Updated success',
+  LOGIN: 'Login success',
   ERROR: {
     MISS_FIELD: 'Missing Field.',
     NOT_FOUND: 'Not Found Data.',

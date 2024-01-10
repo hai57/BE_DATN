@@ -12,11 +12,14 @@ const scheduleSchema = new mongoose.Schema({
     type: String,
     enum: ['Day', 'Week']
   },
+  flag: {
+    type: Boolean
+  },
   timeLine: [
     {
       itemsActivity: [
         {
-          activityID: {
+          activityId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'activities'
           },

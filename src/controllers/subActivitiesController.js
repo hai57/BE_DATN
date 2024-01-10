@@ -7,8 +7,8 @@ import { message } from '@/constant/message.js';
 const getSelectedSubActivityFields = (subActivity) => {
   return {
     id: subActivity._id,
-    activity: subActivity.activity || '',
-    name: subActivity.name || '',
+    activityId: subActivity.activity || '',
+    subActivityName: subActivity.subActivityName || '',
     amount: subActivity.amount || '',
     unit: subActivity.unit || '',
     iconCode: subActivity.iconCode || ''
@@ -30,8 +30,8 @@ const getSubActivities = async (req, res) => {
       },
       {
         $addFields: {
-          nameActivities: { $arrayElemAt: ['$activities.description', 0] },
-          idActivities: { $arrayElemAt: ['$activities._id', 0] },
+          activityName: { $arrayElemAt: ['$activities.activityName', 0] },
+          activityId: { $arrayElemAt: ['$activities._id', 0] },
           id: '$_id'
         }
       },
@@ -39,12 +39,12 @@ const getSubActivities = async (req, res) => {
         $project: {
           _id: 0,
           id: 1,
-          name: 1,
+          subActivityName: 1,
           amount: 1,
           iconCode: 1,
           unit: 1,
-          nameActivities: 1,
-          idActivities: 1
+          activityId: 1,
+          activityName: 1
         },
       },
 
@@ -79,8 +79,8 @@ const getSubActivitiesByIdActivity = async (req, res) => {
     }
     const formattedSubActivities = subActivities.map((subActivity) => ({
       id: subActivity._id,
-      name: subActivity.name || '',
-      activity: subActivity.activity || '',
+      subActivityName: subActivity.subActivityName || '',
+      activityId: subActivity.activity || '',
       amount: subActivity.amount || '',
       unit: subActivity.unit || '',
       iconCode: subActivity.iconCode || ''
@@ -97,13 +97,13 @@ const createSubActivities = async (req, res) => {
 
     // Tạo một thời gian mới
     const newSubActivities = new SubActivities({
-      activity: req.body.idActivities,
+      activity: req.body.activityId,
       iconCode: req.body.iconCode,
-      name: req.body.name,
+      subActivityName: req.body.subActivityName,
       amount: req.body.amount,
       unit: req.body.unit
     });
-    if (!req.body.idActivities || !req.body.name || !req.body.amount || !req.body.unit) {
+    if (!req.body.activityId || !req.body.subActivityName || !req.body.amount || !req.body.unit) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     await newSubActivities.save();
@@ -117,13 +117,14 @@ const createSubActivities = async (req, res) => {
 
 const updateSubActivities = async (req, res) => {
   try {
-    const checkSubactivitiesId = await SubActivities.findById(req.body.subActivitiesID).exec()
+    const checkSubactivitiesId = await SubActivities.findById(req.body.subActivitiesId).exec()
     if (!checkSubactivitiesId) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if (!req.body.name || !req.body.amount || !req.body.unit) {
+    } else if (!req.body.subActivityName || !req.body.amount || !req.body.unit) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    checkSubactivitiesId.name = req.body.name
+    checkSubactivitiesId.activity = req.body.activityId
+    checkSubactivitiesId.subActivityName = req.body.subActivityName
     checkSubactivitiesId.amount = req.body.amount
     checkSubactivitiesId.unit = req.body.unit
     checkSubactivitiesId.iconCode = req.body.iconCode
@@ -138,7 +139,7 @@ const updateSubActivities = async (req, res) => {
 
 const deleteSubActivities = async (req, res) => {
   try {
-    const checkSubActivitiesId = await SubActivities.findById(req.body.subActivitiesID).exec()
+    const checkSubActivitiesId = await SubActivities.findById(req.body.subActivitiesId).exec()
     if (!checkSubActivitiesId) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }

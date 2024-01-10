@@ -6,9 +6,8 @@ import { message } from '@/constant/message.js';
 const getSelectedActivityFields = (activity) => {
   return {
     id: activity._id,
-    user: activity.user,
-    typeActivities: activity.typeActivities || '',
-    name: activity.name || '',
+    type: activity.type || '',
+    activityName: activity.activityName || '',
     description: activity.description || '',
     isParent: activity.isParent,
     iconCode: activity.iconCode || ''
@@ -79,14 +78,15 @@ const getAllActivities = async (req, res) => {
       {
         $lookup: {
           from: 'types',
-          localField: 'typeActivities',
+          localField: 'type',
           foreignField: '_id',
           as: 'typeActivities'
         }
       },
       {
         $addFields: {
-          type: { $arrayElemAt: ['$typeActivities.name', 0] },
+          type: { $arrayElemAt: ['$typeActivities._id', 0] },
+          typeName: { $arrayElemAt: ['$typeActivities.name', 0] },
           id: '$_id'
 
         }
@@ -95,11 +95,12 @@ const getAllActivities = async (req, res) => {
         $project: {
           _id: 0,
           id: 1,
-          name: 1,
+          activityName: 1,
           iconCode: 1,
           isParent: 1,
           description: 1,
-          type: 1
+          type: 1,
+          typeName: 1
         },
       },
 
@@ -137,14 +138,14 @@ const createActivities = async (req, res) => {
   try {
     const newActivities = new Activities(
       {
-        name: req.body.name,
-        typeActivities: req.body.typeActivities,
+        activityName: req.body.activityName,
+        type: req.body.type,
         description: req.body.description,
         isParent: req.body.isParent,
         iconCode: req.body.iconCode
       }
     );
-    if (!req.body.name || !req.body.description) {
+    if (!req.body.activityName || !req.body.description || !req.body.type) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     await newActivities.save();
@@ -158,19 +159,39 @@ const createActivities = async (req, res) => {
 
 const updateActivities = async (req, res) => {
   try {
-    const activities = await Activities.findById(req.body.idActivities)
-    if (!activities) {
+    const activity = await Activities.findById(req.body.activityId)
+    if (!activity) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
-    } else if (!req.body.name || !req.body.description) {
+    } else if (!req.body.activityName || !req.body.description || !req.body.type) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    activities.typeActivities = req.body.typeActivities;
-    activities.name = req.body.name;
-    activities.description = req.body.description;
-    activities.iconCode = req.body.iconCode;
-    await activities.save()
-    const activity = getSelectedActivityFields(activities)
-    return res.status(status.OK).json({ message: message.UPDATED, activity: activity })
+    activity.type = req.body.type;
+    activity.activityName = req.body.activityName;
+    activity.description = req.body.description;
+    activity.iconCode = req.body.iconCode;
+    await activity.save()
+    const selectedActivity = getSelectedActivityFields(activity)
+    return res.status(status.OK).json({ message: message.UPDATED, activity: selectedActivity })
+  } catch (err) {
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
+  }
+};
+
+const updateActivitiesByParamId = async (req, res) => {
+  try {
+    const activity = await Activities.findById(req.params.activityId)
+    if (!activity) {
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
+    } else if (!req.body.activityName || !req.body.description) {
+      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
+    }
+    activity.type = req.body.type;
+    activity.activityName = req.body.activityName;
+    activity.description = req.body.description;
+    activity.iconCode = req.body.iconCode;
+    await activity.save()
+    const selectedActivity = getSelectedActivityFields(activity)
+    return res.status(status.OK).json({ message: message.UPDATED, activity: selectedActivity })
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
@@ -178,16 +199,16 @@ const updateActivities = async (req, res) => {
 
 const deleteActivities = async (req, res) => {
   try {
-    const activitiesId = req.body.idActivities
-    const activity = await Activities.findById(activitiesId).exec()
+    const activityId = req.body.activityId
+    const activity = await Activities.findById(activityId).exec()
     if (!activity) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
-    await Activities.findByIdAndRemove(activitiesId);
+    await Activities.findByIdAndRemove(activityId);
     return res.status(status.OK).json({ message: message.OK });
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };
 
-export { createActivities, getAllActivities, updateActivities, deleteActivities, getActivityById, createTypeActivities, getTypeActivities, updateTypeActivities, deleteTypeActivities }
+export { createActivities, getAllActivities, updateActivities, updateActivitiesByParamId, deleteActivities, getActivityById, createTypeActivities, getTypeActivities, updateTypeActivities, deleteTypeActivities }

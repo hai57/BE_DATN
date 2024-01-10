@@ -8,7 +8,7 @@ const subActivitiesSchema = new mongoose.Schema({
   iconCode: {
     type: String
   },
-  name: {
+  subActivityName: {
     type: String
   },
   amount: {
@@ -16,7 +16,7 @@ const subActivitiesSchema = new mongoose.Schema({
   },
   unit: {
     type: String,
-    enum: ['kg', 's']
+    enum: ['g', 's']
   }
 }, {
   versionKey: false,
