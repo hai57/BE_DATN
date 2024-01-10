@@ -6,7 +6,7 @@ import { message } from '@/constant/message.js';
 
 const getSelectedSubActivityFields = (subActivity) => {
   return {
-    id: subActivity._id,
+    subActivityId: subActivity._id,
     activityId: subActivity.activity || '',
     subActivityName: subActivity.subActivityName || '',
     amount: subActivity.amount || '',
@@ -32,13 +32,13 @@ const getSubActivities = async (req, res) => {
         $addFields: {
           activityName: { $arrayElemAt: ['$activities.activityName', 0] },
           activityId: { $arrayElemAt: ['$activities._id', 0] },
-          id: '$_id'
+          subActivityId: '$_id'
         }
       },
       {
         $project: {
           _id: 0,
-          id: 1,
+          subActivityId: 1,
           subActivityName: 1,
           amount: 1,
           iconCode: 1,
@@ -78,7 +78,7 @@ const getSubActivitiesByIdActivity = async (req, res) => {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
     }
     const formattedSubActivities = subActivities.map((subActivity) => ({
-      id: subActivity._id,
+      subActivityId: subActivity._id,
       subActivityName: subActivity.subActivityName || '',
       activityId: subActivity.activity || '',
       amount: subActivity.amount || '',
@@ -117,7 +117,7 @@ const createSubActivities = async (req, res) => {
 
 const updateSubActivities = async (req, res) => {
   try {
-    const checkSubactivitiesId = await SubActivities.findById(req.body.subActivitiesId).exec()
+    const checkSubactivitiesId = await SubActivities.findById(req.body.subActivityId).exec()
     if (!checkSubactivitiesId) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     } else if (!req.body.subActivityName || !req.body.amount || !req.body.unit) {

@@ -12,6 +12,7 @@ const getSelectedSCheduleFields = (schedule) => {
     nameSchedule: schedule.nameSchedule || "",
     userCreate: schedule.userCreate || "",
     type: schedule.type || "",
+    flag: schedule.flag,
     timeLine: schedule.timeLine.map((timeLineItem) => {
       return {
         id: timeLineItem._id,
@@ -313,6 +314,7 @@ const updateSchedule = async (req, res) => {
     schedule.user = req.userId;
     schedule.nameSchedule = req.body.nameSchedule;
     schedule.type = req.body.type;
+    schedule.flag = req.body.flag;
     schedule.timeLine = req.body.timeLine
 
     await schedule.save();

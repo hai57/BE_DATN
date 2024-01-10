@@ -5,7 +5,7 @@ import { message } from '@/constant/message.js';
 
 const getSelectedActivityFields = (activity) => {
   return {
-    id: activity._id,
+    activityId: activity._id,
     type: activity.type || '',
     activityName: activity.activityName || '',
     description: activity.description || '',
@@ -87,14 +87,14 @@ const getAllActivities = async (req, res) => {
         $addFields: {
           type: { $arrayElemAt: ['$typeActivities._id', 0] },
           typeName: { $arrayElemAt: ['$typeActivities.name', 0] },
-          id: '$_id'
+          activityId: '$_id'
 
         }
       },
       {
         $project: {
           _id: 0,
-          id: 1,
+          activityId: 1,
           activityName: 1,
           iconCode: 1,
           isParent: 1,
