@@ -168,7 +168,9 @@ const getScheduleDetail = async (req, res) => {
             $push: {
               itemsSubActivityId: '$timeLine.itemsActivity.itemsSubActivity._id',
               subActivityId: '$subActivities._id',
-              subActivityName: '$subActivities.subActivityName'
+              subActivityName: '$subActivities.subActivityName',
+              type: '$subActivities.type',
+              amount: '$subActivities.amount'
             }
           }
         }

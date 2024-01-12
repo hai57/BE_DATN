@@ -8,6 +8,7 @@ import userRoute from './routes/userRoute.js';
 import scheduleRoute from './routes/scheduleRoute.js';
 import activitiesRoute from './routes/activitiesRoute.js';
 import timeRoute from './routes/timeRoute.js';
+import caloriesRoute from './routes/caloriesRoute.js';
 // import notiRoute from './routes/notificationRoute.js';
 // import itemScheduleRoute from './routes/itemScheduleRoute.js';
 // import { timeoutMiddleware } from './middlewares/index.js'
@@ -34,5 +35,6 @@ app.use('/v1/api/user', userRoute);
 app.use('/v1/api/schedule', scheduleRoute);
 app.use('/v1/api/activities', activitiesRoute);
 app.use('/v1/api/time', timeRoute);
+app.use('/v1/api/calo', caloriesRoute)
 // app.use('/v1/api/noti', notiRoute);
 // app.use('/v1/api/item-schedule', itemScheduleRoute);

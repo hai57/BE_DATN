@@ -16,7 +16,10 @@ const subActivitiesSchema = new mongoose.Schema({
   },
   unit: {
     type: String,
-    enum: ['g', 's']
+    enum: ['g', 'min']
+  },
+  type: {
+    enum: ["consumption", "absorption"]
   }
 }, {
   versionKey: false,

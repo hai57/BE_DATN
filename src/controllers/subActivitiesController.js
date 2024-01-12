@@ -43,6 +43,7 @@ const getSubActivities = async (req, res) => {
           amount: 1,
           iconCode: 1,
           unit: 1,
+          type: 1,
           activityId: 1,
           activityName: 1
         },
@@ -83,7 +84,8 @@ const getSubActivitiesByIdActivity = async (req, res) => {
       activityId: subActivity.activity || '',
       amount: subActivity.amount || '',
       unit: subActivity.unit || '',
-      iconCode: subActivity.iconCode || ''
+      iconCode: subActivity.iconCode || '',
+      type: subActivity.type || ''
     }));
     res.status(status.OK).json({ message: message.OK, items: formattedSubActivities });
   } catch (err) {

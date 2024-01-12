@@ -6,6 +6,7 @@ import { Token } from '@/models/tokenModels.js';
 import { generateToken } from '@/middlewares/index.js';
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
+import { Calories } from '@/models/caloriesModels.js';
 
 const getSelectedUserFields = (user) => {
   return {
@@ -53,8 +54,6 @@ const createUser = async (req, res) => {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
-
-
 
 const register = async (req, res) => {
   try {
@@ -344,6 +343,89 @@ const login = async (req, res) => {
   }
 };
 
+const loginAdmin = async (req, res) => {
+  const { gmail, password } = req.body;
+
+  try {
+    const user = await User.findOne({ gmail })
+    if (!user) {
+      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND, user: "", token: "" });
+    } else if (user.role.equals("655587830fa87df47f00aeaf")) {
+      return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISSING_ADMIN, user: "", token: "" });
+
+    }
+    if (user.password === password) {
+      await Token.deleteMany({ user: user._id });
+      const token = generateToken(user);
+      const newToken = new Token({
+        user: user,
+        token,
+        expiration: token.tokenExpiration
+      });
+      try {
+        await newToken.save();
+        if (user.birthday) {
+          const formattedBirthday = moment(user.birthday).format('DD-MM-YYYY');
+          user.birthday = formattedBirthday;
+        }
+        const selectedUserFields = getSelectedUserFields(user);
+
+        return res.status(status.OK).json({ message: message.LOGIN, user: selectedUserFields, token: newToken.token });
+      } catch (err) {
+        return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
+      }
+    } else {
+      res.status(status.UNAUTHORIZED).json({ message: message.ERROR.INVALID });
+    }
+  }
+  catch (err) {
+    console.error(err)
+    res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+  }
+};
+
+const calculateAge = (birthday) => {
+  const today = moment();
+  const birthdate = moment(birthday, 'YYYY-MM-DD');
+  const age = today.diff(birthdate, 'years');
+  return age;
+};
+
+const getCaloriesNeed = async (req, res) => {
+  const user = await User.findById(req.userId);
+  const caloriesList = await Calories.find();
+  const age = calculateAge(user.birthday);
+
+  try {
+    let matchedCaloriesInfo = null;
+
+    for (const caloriesInfo of caloriesList) {
+      const minAge = parseInt(caloriesInfo.minAge);
+      const maxAge = parseInt(caloriesInfo.maxAge);
+
+      if (
+        caloriesInfo.gender.toLowerCase() === user.gender.toLowerCase() &&
+        age >= minAge &&
+        age <= maxAge
+      ) {
+        matchedCaloriesInfo = caloriesInfo;
+        break;
+      }
+    }
+
+    if (matchedCaloriesInfo) {
+      return res.status(status.OK).json({
+        message: message.OK,
+        caloriesNeed: matchedCaloriesInfo.caloriesNeed
+      });
+    } else {
+      return res.status(status.OK).json({ message: "No matching record found" });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+  }
+};
 //tao moi token cho nguoi dung
 // const refreshToken = async (req, res) => {
 //   const { gmail } = req.body;
@@ -378,4 +460,4 @@ const getToken = async (req, res) => {
   }
 };
 
-export { createUser, getAllUser, getUser, updateUser, updateUserWithIdForAdmin, login, deleteUser, changePassword, getToken, register }
+export { createUser, getAllUser, getUser, updateUser, updateUserWithIdForAdmin, login, loginAdmin, deleteUser, changePassword, getToken, register, getCaloriesNeed }
