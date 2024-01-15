@@ -2,8 +2,7 @@ import mongoose from 'mongoose';
 
 const activitiesSchema = new mongoose.Schema({
   type: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'types'
+    type: String
   },
   activityName: {
     type: String

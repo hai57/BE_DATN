@@ -55,7 +55,7 @@ const deleteTime = async (req, res) => {
     if (!idTimes) {
       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
-    await idTimes.deleteOne()
+    await Time.findByIdAndRemove(idTimes)
     return res.status(204).send()
   } catch (err) {
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })

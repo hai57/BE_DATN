@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { createRole, getRole, updateRole, deleteRole } from '@/controllers/roleController.js';
+import { createStatis, getStatis, updateStatis, deleteStatis } from '@/controllers/statisController.js';
 import { createUser, getAllUser, getUser, updateUser, updateUserWithIdForAdmin, deleteUser, getToken, login, register, loginAdmin, getCaloriesNeed } from '@/controllers/userController.js';
 import { authenticateToken, checkTokenValidity } from '@/middlewares/index.js';
 
@@ -27,5 +28,8 @@ router.post('/createRole', createRole)
 router.get('/getRole', getRole)
 router.put('/updateRole', updateRole)
 router.delete('/deleteRole', deleteRole)
+
+router.post('/create-statis', authenticateToken.verifyToken, createStatis)
+router.get('/get-statis', authenticateToken.verifyToken, getStatis)
 
 export default router;

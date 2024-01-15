@@ -1,5 +1,5 @@
 import { Activities } from '@/models/activitiesModels.js';
-import { Type } from '@/models/typeActivityModels.js';
+import { Type } from '@/models/typeModels.js';
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
 
@@ -173,6 +173,7 @@ const updateActivities = async (req, res) => {
     const selectedActivity = getSelectedActivityFields(activity)
     return res.status(status.OK).json({ message: message.UPDATED, activity: selectedActivity })
   } catch (err) {
+    console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER })
   }
 };

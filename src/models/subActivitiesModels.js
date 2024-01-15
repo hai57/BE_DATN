@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
 const subActivitiesSchema = new mongoose.Schema({
-  activity: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'activities'
-  },
   iconCode: {
     type: String
   },
@@ -19,7 +15,7 @@ const subActivitiesSchema = new mongoose.Schema({
     enum: ['g', 'm']
   },
   type: {
-    enum: ["consumption", "absorption"]
+    type: String
   }
 }, {
   versionKey: false,

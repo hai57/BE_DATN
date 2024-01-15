@@ -7,7 +7,6 @@ import { message } from '@/constant/message.js';
 const getSelectedSubActivityFields = (subActivity) => {
   return {
     subActivityId: subActivity._id,
-    activityId: subActivity.activity || '',
     subActivityName: subActivity.subActivityName || '',
     amount: subActivity.amount || '',
     unit: subActivity.unit || '',
@@ -22,16 +21,16 @@ const getSubActivities = async (req, res) => {
     const subActivities = await SubActivities.aggregate([
       {
         $lookup: {
-          from: 'activities',
-          localField: 'activity',
+          from: 'types',
+          localField: 'type',
           foreignField: '_id',
-          as: 'activities'
+          as: 'types'
         }
       },
       {
         $addFields: {
-          activityName: { $arrayElemAt: ['$activities.activityName', 0] },
-          activityId: { $arrayElemAt: ['$activities._id', 0] },
+          typeName: { $arrayElemAt: ['$types.name', 0] },
+          type: { $arrayElemAt: ['$types._id', 0] },
           subActivityId: '$_id'
         }
       },
@@ -44,8 +43,7 @@ const getSubActivities = async (req, res) => {
           iconCode: 1,
           unit: 1,
           type: 1,
-          activityId: 1,
-          activityName: 1
+          typeName: 1
         },
       },
 
@@ -63,49 +61,47 @@ const getSubActivities = async (req, res) => {
   }
 };
 
-const getSubActivitiesByIdActivity = async (req, res) => {
-  const activityId = req.params.activityId;
-  const offset = req.query.offset || 0;
-  const limit = req.query.limit || 10;
+// const getSubActivitiesByIdActivity = async (req, res) => {
+//   const activityId = req.params.activityId;
+//   const offset = req.query.offset || 0;
+//   const limit = req.query.limit || 10;
 
-  try {
-    const subActivities = await SubActivities.find({
-      activity: mongoose.Types.ObjectId(activityId)
-    })
-      .skip(parseInt(offset))
-      .limit(parseInt(limit))
+//   try {
+//     const subActivities = await SubActivities.find({
+//       activity: mongoose.Types.ObjectId(activityId)
+//     })
+//       .skip(parseInt(offset))
+//       .limit(parseInt(limit))
 
-    if (!subActivities) {
-      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
-    }
-    const formattedSubActivities = subActivities.map((subActivity) => ({
-      subActivityId: subActivity._id,
-      subActivityName: subActivity.subActivityName || '',
-      activityId: subActivity.activity || '',
-      amount: subActivity.amount || '',
-      unit: subActivity.unit || '',
-      iconCode: subActivity.iconCode || '',
-      type: subActivity.type || ''
-    }));
-    res.status(status.OK).json({ message: message.OK, items: formattedSubActivities });
-  } catch (err) {
-    console.log(err)
-    return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
-  }
-}
+//     if (!subActivities) {
+//       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND });
+//     }
+//     const formattedSubActivities = subActivities.map((subActivity) => ({
+//       subActivityId: subActivity._id,
+//       subActivityName: subActivity.subActivityName || '',
+//       amount: subActivity.amount || '',
+//       unit: subActivity.unit || '',
+//       iconCode: subActivity.iconCode || '',
+//       type: subActivity.type || ''
+//     }));
+//     res.status(status.OK).json({ message: message.OK, items: formattedSubActivities });
+//   } catch (err) {
+//     console.log(err)
+//     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+//   }
+// }
 
 const createSubActivities = async (req, res) => {
   try {
 
     // Tạo một thời gian mới
     const newSubActivities = new SubActivities({
-      activity: req.body.activityId,
       iconCode: req.body.iconCode,
       subActivityName: req.body.subActivityName,
       amount: req.body.amount,
       unit: req.body.unit
     });
-    if (!req.body.activityId || !req.body.subActivityName || !req.body.amount || !req.body.unit) {
+    if (!req.body.subActivityName || !req.body.amount || !req.body.unit) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
     await newSubActivities.save();
@@ -125,10 +121,10 @@ const updateSubActivities = async (req, res) => {
     } else if (!req.body.subActivityName || !req.body.amount || !req.body.unit) {
       return res.status(status.BAD_REQUEST).json({ message: message.ERROR.MISS_FIELD });
     }
-    checkSubactivitiesId.activity = req.body.activityId
     checkSubactivitiesId.subActivityName = req.body.subActivityName
     checkSubactivitiesId.amount = req.body.amount
     checkSubactivitiesId.unit = req.body.unit
+    checkSubactivitiesId.type = req.body.type
     checkSubactivitiesId.iconCode = req.body.iconCode
     await checkSubactivitiesId.save()
     const selectedSubActivity = getSelectedSubActivityFields(checkSubactivitiesId)
@@ -152,4 +148,4 @@ const deleteSubActivities = async (req, res) => {
   };
 };
 
-export { getSubActivities, getSubActivitiesByIdActivity, createSubActivities, updateSubActivities, deleteSubActivities }
+export { getSubActivities, createSubActivities, updateSubActivities, deleteSubActivities }

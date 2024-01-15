@@ -11,16 +11,12 @@ const scheduleUserSchema = new mongoose.Schema({
     ref: 'schedules',
     required: true
   },
-  time: {
-    type: mongoose.Schema.Types.Number,
-    ref: 'times',
-    required: true
+  status: {
+    type: Boolean
   },
-  date: {
-    type: Date,
-    required: true
+  startDay: {
+    type: Date
   },
-
 }, {
   versionKey: false,
 });

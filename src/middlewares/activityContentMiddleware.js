@@ -1,4 +1,4 @@
-import { Type } from '@/models/typeActivityModels.js';
+import { Type } from '@/models/typeModels.js';
 import { status } from '@/constant/status.js';
 import { message } from '@/constant/message.js';
 
