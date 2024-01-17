@@ -10,6 +10,7 @@ const getSelectedSubActivityFields = (subActivity) => {
     subActivityName: subActivity.subActivityName || '',
     amount: subActivity.amount || '',
     unit: subActivity.unit || '',
+    type: subActivity.type || '',
     iconCode: subActivity.iconCode || ''
   };
 };
