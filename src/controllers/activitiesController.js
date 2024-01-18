@@ -70,48 +70,96 @@ const deleteTypeActivities = async (req, res) => {
 
 //Activities
 
-const getAllActivities = async (req, res) => {
+const getActivities = async (req, res) => {
   const offset = req.query.offset || 0
   const limit = req.query.limit || 10
+  const typeParam = req.params.type;
   try {
-    const activities = await Activities.aggregate([
-      {
-        $lookup: {
-          from: 'types',
-          localField: 'type',
-          foreignField: '_id',
-          as: 'typeActivities'
-        }
-      },
-      {
-        $addFields: {
-          type: { $arrayElemAt: ['$typeActivities._id', 0] },
-          typeName: { $arrayElemAt: ['$typeActivities.name', 0] },
-          activityId: '$_id'
+    let activities;
 
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          activityId: 1,
-          activityName: 1,
-          iconCode: 1,
-          isParent: 1,
-          description: 1,
-          type: 1,
-          typeName: 1
+    if (typeParam === "1" || typeParam === "2" || typeParam === "3") {
+      activities = await Activities.aggregate([
+        {
+          $match: {
+            type: typeParam
+          }
         },
-      },
+        {
+          $lookup: {
+            from: 'types',
+            localField: 'type',
+            foreignField: '_id',
+            as: 'typeActivities'
+          }
+        },
+        {
+          $addFields: {
+            type: { $arrayElemAt: ['$typeActivities._id', 0] },
+            typeName: { $arrayElemAt: ['$typeActivities.name', 0] },
+            activityId: '$_id'
 
-    ]).skip(parseInt(offset))
-      .limit(parseInt(limit));
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            activityId: 1,
+            activityName: 1,
+            iconCode: 1,
+            isParent: 1,
+            description: 1,
+            type: 1,
+            typeName: 1
+          },
+        },
+        {
+          $skip: offset
+        },
+        {
+          $limit: limit
+        }
+      ])
+    } else {
+      activities = await Activities.aggregate([
+        {
+          $lookup: {
+            from: 'types',
+            localField: 'type',
+            foreignField: '_id',
+            as: 'typeActivities'
+          }
+        },
+        {
+          $addFields: {
+            type: { $arrayElemAt: ['$typeActivities._id', 0] },
+            typeName: { $arrayElemAt: ['$typeActivities.name', 0] },
+            activityId: '$_id'
 
-    if (!activities) {
-      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            activityId: 1,
+            activityName: 1,
+            iconCode: 1,
+            isParent: 1,
+            description: 1,
+            type: 1,
+            typeName: 1
+          },
+        },
+        {
+          $skip: offset
+        },
+        {
+          $limit: limit
+        }
+      ])
     }
 
-    res.status(status.OK).json({ message: message.OK, items: activities });
+
+    return res.status(status.OK).json({ message: message.OK, items: activities });
   } catch (err) {
     console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
@@ -212,4 +260,4 @@ const deleteActivities = async (req, res) => {
   }
 };
 
-export { createActivities, getAllActivities, updateActivities, updateActivitiesByParamId, deleteActivities, getActivityById, createTypeActivities, getTypeActivities, updateTypeActivities, deleteTypeActivities }
+export { createActivities, getActivities, updateActivities, updateActivitiesByParamId, deleteActivities, getActivityById, createTypeActivities, getTypeActivities, updateTypeActivities, deleteTypeActivities }

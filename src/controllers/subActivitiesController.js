@@ -18,58 +18,108 @@ const getSelectedSubActivityFields = (subActivity) => {
 const getSubActivities = async (req, res) => {
   const offset = req.query.offset || 0
   const limit = req.query.limit || 10
+  const typeParam = req.params.type;
   try {
-    const subActivities = await SubActivities.aggregate([
-      {
-        $lookup: {
-          from: 'types',
-          localField: 'type',
-          foreignField: '_id',
-          as: 'types'
-        }
-      },
-      {
-        $addFields: {
-          typeName: { $arrayElemAt: ['$types.name', 0] },
-          type: { $arrayElemAt: ['$types._id', 0] },
-          subActivityId: '$_id'
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          subActivityId: 1,
-          subActivityName: 1,
-          amount: 1,
-          iconCode: 1,
-          unit: 1,
-          type: 1,
-          typeName: 1
+    let subActivities;
+
+    if (typeParam === "1" || typeParam === "2" || typeParam === "3") {
+      subActivities = await SubActivities.aggregate([
+        {
+          $match: {
+            type: typeParam
+          }
         },
-      },
+        {
+          $lookup: {
+            from: 'types',
+            localField: 'type',
+            foreignField: '_id',
+            as: 'types'
+          }
+        },
+        {
+          $addFields: {
+            typeName: { $arrayElemAt: ['$types.name', 0] },
+            type: { $arrayElemAt: ['$types._id', 0] },
+            subActivityId: '$_id'
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            subActivityId: 1,
+            subActivityName: 1,
+            amount: 1,
+            iconCode: 1,
+            unit: 1,
+            type: 1,
+            typeName: 1
+          },
+        },
+        {
+          $skip: offset
+        },
+        {
+          $limit: limit
+        }
+      ])
 
-    ])
-      .skip(parseInt(offset))
-      .limit(parseInt(limit));
+    } else {
+      subActivities = await SubActivities.aggregate([
+        {
+          $lookup: {
+            from: 'types',
+            localField: 'type',
+            foreignField: '_id',
+            as: 'types'
+          }
+        },
+        {
+          $addFields: {
+            typeName: { $arrayElemAt: ['$types.name', 0] },
+            type: { $arrayElemAt: ['$types._id', 0] },
+            subActivityId: '$_id'
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            subActivityId: 1,
+            subActivityName: 1,
+            amount: 1,
+            iconCode: 1,
+            unit: 1,
+            type: 1,
+            typeName: 1
+          },
+        },
+        {
+          $skip: offset
+        },
+        {
+          $limit: limit
+        }
+      ])
 
-    if (!subActivities) {
-      return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
     }
+    console.log("type", typeParam)
 
     res.status(status.OK).json({ message: message.OK, items: subActivities });
   } catch (err) {
+    console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
 
-// const getSubActivitiesByIdActivity = async (req, res) => {
-//   const activityId = req.params.activityId;
+
+// const getSubActivitiesByIdType = async (req, res) => {
+//   const type = req.params.type;
 //   const offset = req.query.offset || 0;
 //   const limit = req.query.limit || 10;
 
 //   try {
 //     const subActivities = await SubActivities.find({
-//       activity: mongoose.Types.ObjectId(activityId)
+//       type: mongoose.Types.String(type)
 //     })
 //       .skip(parseInt(offset))
 //       .limit(parseInt(limit))
@@ -91,6 +141,60 @@ const getSubActivities = async (req, res) => {
 //     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
 //   }
 // }
+// const getSubActivitiesByIdType = async (req, res) => {
+//   const offset = req.query.offset || 0
+//   const limit = req.query.limit || 10
+//   const type = req.params.type;
+
+//   try {
+//     const subActivities = await SubActivities.aggregate([
+//       {
+//         $match: {
+//           type: type
+//         }
+//       },
+//       {
+//         $lookup: {
+//           from: 'types',
+//           localField: 'type',
+//           foreignField: '_id',
+//           as: 'types'
+//         }
+//       },
+//       {
+//         $addFields: {
+//           typeName: { $arrayElemAt: ['$types.name', 0] },
+//           type: { $arrayElemAt: ['$types._id', 0] },
+//           subActivityId: '$_id'
+//         }
+//       },
+//       {
+//         $project: {
+//           _id: 0,
+//           subActivityId: 1,
+//           subActivityName: 1,
+//           amount: 1,
+//           iconCode: 1,
+//           unit: 1,
+//           type: 1,
+//           typeName: 1
+//         },
+//       },
+
+//     ])
+//       .skip(parseInt(offset))
+//       .limit(parseInt(limit));
+
+//     if (!subActivities) {
+//       return res.status(status.NOT_FOUND).json({ message: message.ERROR.NOT_FOUND })
+//     }
+
+//     res.status(status.OK).json({ message: message.OK, items: subActivities });
+//   } catch (err) {
+//     console.log(err)
+//     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
+//   }
+// };
 
 const createSubActivities = async (req, res) => {
   try {

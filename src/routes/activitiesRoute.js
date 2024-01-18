@@ -1,12 +1,12 @@
 import express from 'express'
 
-import { getAllActivities, createActivities, updateActivities, updateActivitiesByParamId, deleteActivities, getActivityById, createTypeActivities, getTypeActivities, updateTypeActivities, deleteTypeActivities } from '@/controllers/activitiesController.js';
+import { getActivities, createActivities, updateActivities, updateActivitiesByParamId, deleteActivities, getActivityById, createTypeActivities, getTypeActivities, updateTypeActivities, deleteTypeActivities } from '@/controllers/activitiesController.js';
 import { getSubActivities, createSubActivities, updateSubActivities, deleteSubActivities } from '@/controllers/subActivitiesController.js';
 import { authenticateToken } from '@/middlewares/index.js'
 const router = express.Router()
 
 router.post('/create-activities', authenticateToken.verifyToken, createActivities)
-router.get('/get-all-activities', authenticateToken.verifyToken, getAllActivities)
+router.get('/get-activities/:type', authenticateToken.verifyToken, getActivities)
 router.put('/update-activities', authenticateToken.verifyToken, updateActivities)
 router.put('/update-activities-by-id/:activityId', authenticateToken.verifyToken, updateActivitiesByParamId)
 router.delete('/delete-activities', authenticateToken.verifyToken, deleteActivities)
@@ -16,8 +16,7 @@ router.get('/get-activity-by-id/:activityId', authenticateToken.verifyToken, get
 //sub activities
 
 router.post('/create-subactivities', authenticateToken.verifyToken, createSubActivities)
-router.get('/get-subactivities', authenticateToken.verifyToken, getSubActivities)
-// router.get('/get-subactivities-by-id-activity/:activityId', authenticateToken.verifyToken, getSubActivitiesByIdActivity)
+router.get('/get-subactivities/:type', authenticateToken.verifyToken, getSubActivities)
 router.put('/update-subactivities', authenticateToken.verifyToken, updateSubActivities)
 router.delete('/delete-subactivities', authenticateToken.verifyToken, deleteSubActivities)
 
