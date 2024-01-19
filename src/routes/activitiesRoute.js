@@ -5,20 +5,20 @@ import { getSubActivities, createSubActivities, updateSubActivities, deleteSubAc
 import { authenticateToken } from '@/middlewares/index.js'
 const router = express.Router()
 
-router.post('/create-activities', authenticateToken.verifyToken, createActivities)
-router.get('/get-activities/:type', authenticateToken.verifyToken, getActivities)
-router.put('/update-activities', authenticateToken.verifyToken, updateActivities)
-router.put('/update-activities-by-id/:activityId', authenticateToken.verifyToken, updateActivitiesByParamId)
-router.delete('/delete-activities', authenticateToken.verifyToken, deleteActivities)
+router.post('/create-activity', authenticateToken.verifyToken, createActivities)
+router.get('/get-activity', authenticateToken.verifyToken, getActivities)
+router.put('/update-activity', authenticateToken.verifyToken, updateActivities)
+router.put('/update-activity-by-id/:activityId', authenticateToken.verifyToken, updateActivitiesByParamId)
+router.delete('/delete-activity', authenticateToken.verifyToken, deleteActivities)
 router.get('/get-activity-by-id/:activityId', authenticateToken.verifyToken, getActivityById)
 
 
 //sub activities
 
-router.post('/create-subactivities', authenticateToken.verifyToken, createSubActivities)
-router.get('/get-subactivities/:type', authenticateToken.verifyToken, getSubActivities)
-router.put('/update-subactivities', authenticateToken.verifyToken, updateSubActivities)
-router.delete('/delete-subactivities', authenticateToken.verifyToken, deleteSubActivities)
+router.post('/create-subactivity', authenticateToken.verifyToken, createSubActivities)
+router.get('/get-subactivity', authenticateToken.verifyToken, getSubActivities)
+router.put('/update-subactivity', authenticateToken.verifyToken, updateSubActivities)
+router.delete('/delete-subactivity', authenticateToken.verifyToken, deleteSubActivities)
 
 //type Activities
 

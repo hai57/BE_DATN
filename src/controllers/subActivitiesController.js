@@ -18,7 +18,7 @@ const getSelectedSubActivityFields = (subActivity) => {
 const getSubActivities = async (req, res) => {
   const offset = req.query.offset || 0
   const limit = req.query.limit || 10
-  const typeParam = req.params.type;
+  const typeParam = req.query.type;
   try {
     let subActivities;
 
@@ -102,11 +102,8 @@ const getSubActivities = async (req, res) => {
       ])
 
     }
-    console.log("type", typeParam)
-
     res.status(status.OK).json({ message: message.OK, items: subActivities });
   } catch (err) {
-    console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };

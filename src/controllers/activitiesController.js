@@ -73,7 +73,7 @@ const deleteTypeActivities = async (req, res) => {
 const getActivities = async (req, res) => {
   const offset = req.query.offset || 0
   const limit = req.query.limit || 10
-  const typeParam = req.params.type;
+  const typeParam = req.query.type;
   try {
     let activities;
 
@@ -157,7 +157,7 @@ const getActivities = async (req, res) => {
         }
       ])
     }
-
+    console.log(typeParam)
 
     return res.status(status.OK).json({ message: message.OK, items: activities });
   } catch (err) {
