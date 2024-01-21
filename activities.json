@@ -1,0 +1,37 @@
+[{
+  "_id": {
+    "$oid": "65816b171b6d09f2070ff1c0"
+  },
+  "isParent": true,
+  "description": "Là hoạt động di chuyển giữa đôi chân",
+  "iconCode": "Hinh chay bo",
+  "activityName": "Chạy bộ",
+  "type": "2"
+},{
+  "_id": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "isParent": true,
+  "description": "là một hành động cơ bản trong đời sống hàng ngày của nhiều người trên khắp thế giới",
+  "iconCode": "Hinh chay",
+  "activityName": "Ăn uống",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "65817bf96c1684084528c11c"
+  },
+  "isParent": false,
+  "description": "là một trạng thái tự nhiên của cơ thể và tâm trí, thường xảy ra hàng ngày để duy trì sức khỏe và hoạt động chức năng cơ bản của cơ thể",
+  "activityName": "Ngủ",
+  "type": "1",
+  "iconCode": ""
+},{
+  "_id": {
+    "$oid": "659b599c41c8a26b43359658"
+  },
+  "description": "Hành động quan trọng giúp duy trì cân bằng nước, hỗ trợ tiêu hóa, làm mát cơ thể, vận chuyển chất dinh dưỡng, loại bỏ độc tố, và bảo vệ khớp và cơ bắp",
+  "isParent": false,
+  "iconCode": "iconCode",
+  "activityName": "Uống nước",
+  "type": "2"
+}]
