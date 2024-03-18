@@ -10,9 +10,6 @@ import activitiesRoute from './routes/activitiesRoute.js';
 import timeRoute from './routes/timeRoute.js';
 import caloriesRoute from './routes/caloriesRoute.js';
 import typeRoute from './routes/typeRoute.js';
-// import notiRoute from './routes/notificationRoute.js';
-// import itemScheduleRoute from './routes/itemScheduleRoute.js';
-// import { timeoutMiddleware } from './middlewares/index.js'
 
 dotenv.config();
 
@@ -26,7 +23,7 @@ mongoose.connect((process.env.MONGODB_URL), { useUnifiedTopology: true, useNewUr
   }).catch((err) => {
     console.log('Mongo DB Connection Error', err)
   })
-// app.use(timeoutMiddleware(6000));
+
 //Cấu hình Express để xử lý dữ liệu lớn, đa dạng
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
@@ -38,5 +35,3 @@ app.use('/v1/api/activities', activitiesRoute);
 app.use('/v1/api/time', timeRoute);
 app.use('/v1/api/calo', caloriesRoute)
 app.use('/v1/api/type', typeRoute)
-// app.use('/v1/api/noti', notiRoute);
-// app.use('/v1/api/item-schedule', itemScheduleRoute);

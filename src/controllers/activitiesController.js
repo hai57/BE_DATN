@@ -157,11 +157,8 @@ const getActivities = async (req, res) => {
         }
       ])
     }
-    console.log(typeParam)
-
     return res.status(status.OK).json({ message: message.OK, items: activities });
   } catch (err) {
-    console.log(err)
     return res.status(status.ERROR).json({ message: message.ERROR.SERVER });
   }
 };
