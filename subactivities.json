@@ -1,0 +1,561 @@
+[{
+  "_id": {
+    "$oid": "65816b4a1b6d09f2070ff1c5"
+  },
+  "amount": 12,
+  "unit": "m",
+  "iconCode": "Hinh chay",
+  "subActivityName": "chạy nước rút",
+  "type": "2"
+},{
+  "_id": {
+    "$oid": "65817b956c1684084528c116"
+  },
+  "amount": 15,
+  "unit": "m",
+  "iconCode": "",
+  "subActivityName": "Chạy bền",
+  "type": "2"
+},{
+  "_id": {
+    "$oid": "6592bd80fc1eb23d6a34d8d1"
+  },
+  "iconCode": "Hinh chay",
+  "amount": 12,
+  "unit": "m",
+  "subActivityName": "Chạy bộ",
+  "type": "2"
+},{
+  "_id": {
+    "$oid": "659e8941db455ccad867e331"
+  },
+  "subActivityName": "Quinoa chín",
+  "amount": 222,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e89bbdb455ccad867e338"
+  },
+  "subActivityName": "Hạt lanh",
+  "amount": 87,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8a59db455ccad867e33a"
+  },
+  "subActivityName": "Nấm",
+  "amount": 12,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8a72db455ccad867e33c"
+  },
+  "subActivityName": "thịt gà ",
+  "amount": 165,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8adfdb455ccad867e340"
+  },
+  "subActivityName": "Salad rau xanh với gà nướng ",
+  "amount": 350,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8af3db455ccad867e344"
+  },
+  "subActivityName": "Hành tây ",
+  "amount": 22,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8b02db455ccad867e346"
+  },
+  "subActivityName": "Hạt hạnh nhân",
+  "amount": 180,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8b40db455ccad867e348"
+  },
+  "subActivityName": "Sốt dầu giấm hạch nhân",
+  "amount": 120,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8b58db455ccad867e34a"
+  },
+  "subActivityName": "Cá hồi nướng",
+  "amount": 206,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8b62db455ccad867e34c"
+  },
+  "subActivityName": "Khoai lang nướng ",
+  "amount": 112,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8b6bdb455ccad867e34e"
+  },
+  "subActivityName": "Rau củ hấp",
+  "amount": 41,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8be7db455ccad867e350"
+  },
+  "subActivityName": "Cà chua",
+  "amount": 22,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8c11db455ccad867e354"
+  },
+  "subActivityName": "Quả mâm xôi",
+  "amount": 84,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8cbadb455ccad867e35c"
+  },
+  "subActivityName": "Bánh mì nguyên hạt ",
+  "amount": 160,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8cc8db455ccad867e35e"
+  },
+  "subActivityName": "Hỗn hợp bơ hạt óc chó",
+  "amount": 130,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8cdddb455ccad867e362"
+  },
+  "subActivityName": "Bún gạo gói với rau sống",
+  "amount": 220,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8cfcdb455ccad867e364"
+  },
+  "subActivityName": "Tôm",
+  "amount": 143,
+  "unit": "g",
+  "type": "3"
+},{
+  "_id": {
+    "$oid": "659e8d11db455ccad867e366"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Bún ",
+  "amount": 50,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e8d2ddb455ccad867e36a"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Sốt nước mắm pha",
+  "amount": 242,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e8d4cdb455ccad867e36e"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Súp lơ xanh",
+  "amount": 150,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e8d7edb455ccad867e37c"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Cà rốt",
+  "amount": 100,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e8d88db455ccad867e37e"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Nấm ",
+  "amount": 50,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e8d94db455ccad867e380"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Gạo nâu",
+  "amount": 100,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e94fedb455ccad867e3c3"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Chuối",
+  "amount": 136,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e968cdb455ccad867e3d4"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Bánh mì sandwich thịt gà",
+  "amount": 200,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e969edb455ccad867e3d6"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Rau diếp",
+  "amount": 50,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e96b0db455ccad867e3d8"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Quả lựu ",
+  "amount": 100,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e96bbdb455ccad867e3da"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Cơm gạo lứt",
+  "amount": 200,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e96d6db455ccad867e3dc"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Sườn non rim ",
+  "amount": 150,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e96e4db455ccad867e3de"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Bắp cải xào tỏi",
+  "amount": 100,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9702db455ccad867e3e0"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Súp cua bí ngô ",
+  "amount": 100,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e970edb455ccad867e3e4"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Cá basa nướng muối ớt",
+  "amount": 150,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9717db455ccad867e3e6"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Cà chua bi ",
+  "amount": 100,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9723db455ccad867e3e8"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Cà tím",
+  "amount": 50,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e973ddb455ccad867e3ea"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Bánh mì trứng ốp",
+  "amount": 200,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9748db455ccad867e3ec"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Trứng gà luộc",
+  "amount": 100,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9753db455ccad867e3ee"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Dưa hấu",
+  "amount": 50,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e975cdb455ccad867e3f0"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Cơm chiên thập cẩm",
+  "amount": 200,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9768db455ccad867e3f2"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Gà xào nấm",
+  "amount": 150,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9794db455ccad867e3f4"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Rau xà lách ",
+  "amount": 50,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e979ddb455ccad867e3f6"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Dưa leo",
+  "amount": 50,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e97a7db455ccad867e3fa"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Gỏi cuốn tôm thịt",
+  "amount": 200,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e97b9db455ccad867e3fe"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Rau sống",
+  "amount": 50,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e97d6db455ccad867e40f"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Sốt hoisin",
+  "amount": 242,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9837db455ccad867e41d"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Cơm trắng ",
+  "amount": 200,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9841db455ccad867e41f"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Sò điệp hấp",
+  "amount": 150,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9855db455ccad867e42d"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Bí ngô xào tỏi",
+  "amount": 100,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e985fdb455ccad867e42f"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Rau xà lách",
+  "amount": 50,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9894db455ccad867e451"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Súp cua bí ngô ",
+  "amount": 201,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e98bbdb455ccad867e469"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Cháo yến mạch",
+  "amount": 100,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e98c3db455ccad867e46b"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Dứa",
+  "amount": 50,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e98cadb455ccad867e46d"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Hạt chia",
+  "amount": 15,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e98fcdb455ccad867e480"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Cháo hạt sen nấu dừa ",
+  "amount": 200,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9912db455ccad867e48e"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Gỏi cá trích",
+  "amount": 200,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e9920db455ccad867e490"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Gà nướng mật ong",
+  "amount": 150,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659e992bdb455ccad867e492"
+  },
+  "activity": {
+    "$oid": "65817b3e6c1684084528c106"
+  },
+  "subActivityName": "Rau củ xào ",
+  "amount": 100,
+  "unit": "g"
+},{
+  "_id": {
+    "$oid": "659ea9e91a63ece0097c452e"
+  },
+  "subActivityName": "đa",
+  "amount": 312,
+  "unit": "g"
+}]

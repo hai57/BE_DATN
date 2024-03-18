@@ -1,0 +1,94 @@
+[{
+  "_id": {
+    "$oid": "655587dfaa921d97eb3822ea"
+  },
+  "name": "Cuong",
+  "age": "23",
+  "gmail": "cuong@gmail.com",
+  "address": "Man Thien",
+  "password": "1234",
+  "role": {
+    "$oid": "6555877d0fa87df47f00aead"
+  },
+  "birthday": "2020-10-20",
+  "gender": "nam",
+  "height": "57",
+  "username": "Cuong",
+  "weight": "100"
+},{
+  "_id": {
+    "$oid": "658169d40857ed6844c289cb"
+  },
+  "name": "hien",
+  "age": "25",
+  "gmail": "hien@gmail.com",
+  "address": "man thien",
+  "password": "1234",
+  "role": {
+    "$oid": "655587830fa87df47f00aeaf"
+  },
+  "birthday": "2020-05-20",
+  "gender": "nam",
+  "height": "170",
+  "username": "Hien",
+  "weight": "75"
+},{
+  "_id": {
+    "$oid": "65816a040857ed6844c289ce"
+  },
+  "name": "vinh",
+  "age": "23",
+  "gmail": "vinh@gmail.com",
+  "address": "Man Thien",
+  "password": "1234",
+  "role": {
+    "$oid": "655587830fa87df47f00aeaf"
+  },
+  "birthday": "1975-02-03",
+  "gender": "nam",
+  "height": "163",
+  "username": "hoang",
+  "weight": "66"
+},{
+  "_id": {
+    "$oid": "65816a661b6d09f2070ff1b4"
+  },
+  "name": "hai",
+  "age": "23",
+  "gmail": "hai@gmail.com",
+  "address": "man thien",
+  "password": "1234",
+  "role": {
+    "$oid": "6555877d0fa87df47f00aead"
+  },
+  "birthday": "2005-07-20",
+  "gender": "nam",
+  "height": "166",
+  "username": "hai",
+  "weight": "68"
+},{
+  "_id": {
+    "$oid": "659549494b8d08914bd2ec41"
+  },
+  "username": "Linh",
+  "birthday": "2002-07-07",
+  "gmail": "linh@gmail.com",
+  "gender": "nữ",
+  "weight": "48",
+  "height": "150",
+  "password": "1234"
+},{
+  "_id": {
+    "$oid": "659e54e118e433996c928005"
+  },
+  "username": "vinh",
+  "birthday": "2001-07-18",
+  "gmail": "vinh123@gmail.com",
+  "gender": "nam",
+  "password": "1234",
+  "weight": "88",
+  "height": "155",
+  "role": {
+    "$oid": "6555877d0fa87df47f00aead"
+  }
+}]
