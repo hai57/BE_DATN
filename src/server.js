@@ -29,6 +29,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 app.use(cors())
 
+//http://localhost:8000/
 app.use('/v1/api/user', userRoute);
 app.use('/v1/api/schedule', scheduleRoute);
 app.use('/v1/api/activities', activitiesRoute);
